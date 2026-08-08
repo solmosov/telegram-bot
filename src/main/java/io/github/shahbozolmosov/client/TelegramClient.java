@@ -77,14 +77,15 @@ public final class TelegramClient {
         }
     }
 
-    public TelegramResponse<List<Update>> getUpdates() {
-        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates";
+    public TelegramResponse<List<Update>> getUpdates(long offset) {
+        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout=30";
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
                 .build();
 
+        System.out.println("[TG API] getUpdates: " + url);
         try {
             HttpResponse<String> response = httpClient.send(
                     request,
@@ -129,14 +130,14 @@ public final class TelegramClient {
 
         String body = """
                 {
-                    "chat_id": %d,
-                    "text": "%s"
+                  "chat_id": %d,
+                  "text": "%s"
                 }
                 """.formatted(chatId, text);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .header("Context-Type", "application/json")
+                .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
 
@@ -148,7 +149,7 @@ public final class TelegramClient {
 
             if (response.statusCode() != 200) {
                 throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
+                        "Telegram API returned HTTP status: " + response.statusCode() + " " + response.body()
                 );
             }
 

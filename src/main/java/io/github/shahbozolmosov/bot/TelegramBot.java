@@ -30,18 +30,7 @@ public final class TelegramBot {
             for (Update update : res.result()) {
                 offset = update.updateId() + 1;
 
-                Message message = update.message();
-
-                if (message != null) {
-
-                    CommandHandler handler = commandHandlers.get(message.text());
-                    if (handler != null) {
-                        BotContext context = new BotContext(telegramClient, update);
-
-                        handler.handle(context);
-                    }
-                }
-
+                processUpdate(update);
 
                 System.out.println("Processing update: " + update.updateId());
             }
@@ -53,6 +42,25 @@ public final class TelegramBot {
             CommandHandler handler
     ) {
         commandHandlers.put(command, handler);
+    }
+
+    private void processUpdate(Update update) {
+        Message message = update.message();
+
+        if (message != null) {
+            CommandHandler handler = commandHandlers.get(message.text());
+
+            if (handler != null) {
+                BotContext context = new BotContext(
+                        telegramClient,
+                        update
+                );
+
+                handler.handle(context);
+            }
+        }
+
+        System.out.println("Processing update: " + update.updateId());
     }
 
 }

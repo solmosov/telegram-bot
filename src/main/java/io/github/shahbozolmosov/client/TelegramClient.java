@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.client;
 
+import io.github.shahbozolmosov.exception.TelegramApiException;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.User;
 import tools.jackson.core.type.TypeReference;
@@ -38,10 +39,25 @@ public final class TelegramClient {
                 HttpResponse.BodyHandlers.ofString()
         );
 
-        return objectMapper.readValue(
+        if (response.statusCode() != 200) {
+            throw new IOException(
+                    "Telegram API returned HTTP status: " + response.statusCode()
+            );
+        }
+
+        TelegramResponse<User> telegramResponse = objectMapper.readValue(
                 response.body(),
                 new TypeReference<TelegramResponse<User>>() {
                 }
         );
+
+        if (!telegramResponse.ok()) {
+            throw new TelegramApiException(
+                    telegramResponse.errorCode(),
+                    telegramResponse.description()
+            );
+        }
+
+        return telegramResponse;
     }
 }

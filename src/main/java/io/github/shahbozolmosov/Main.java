@@ -1,17 +1,15 @@
 package io.github.shahbozolmosov;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import io.github.shahbozolmosov.client.TelegramClient;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        TelegramClient client = new TelegramClient("8821261401:AAFy2Tdl9ajQdsPswInQ29gpVjULitoVTe4");
+
+        String response = client.getMe();
+
+        System.out.println(response);
     }
 }

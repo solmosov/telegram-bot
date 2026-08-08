@@ -5,7 +5,7 @@ import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.User;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         TelegramClient client = new TelegramClient("8821261401:AAFy2Tdl9ajQdsPswInQ29gpVjULitoVTe4");
 
         TelegramResponse<User> response = client.getMe();

@@ -7,6 +7,8 @@ import io.github.shahbozolmosov.handler.CommandHandler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
+import io.github.shahbozolmosov.scanner.ClassScanner;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -46,28 +48,71 @@ public final class TelegramBot {
         commandHandlers.put(command, handler);
     }
 
-    public void registerCommands(Object instance) {
-        Class<?> clazz = instance.getClass();
+    public void registerCommands() {
+        String packageName = resolveApplicationPackage();
+        ClassScanner scanner = new ClassScanner();
 
-        for (Method method : clazz.getDeclaredMethods()) {
-            Command command = method.getAnnotation(Command.class);
+        List<Class<?>> classes = scanner.scan(packageName);
+        ClassInstanceFactory factory = new ClassInstanceFactory();
 
+        for (Class<?> clazz : classes) {
 
-            if (command == null) {
+            Method[] methods = clazz.getDeclaredMethods();
+
+            boolean hasCommand = false;
+
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Command.class)) {
+                    hasCommand = true;
+                    break;
+                }
+            }
+
+            if (!hasCommand) {
                 continue;
             }
 
-            CommandHandler handler = context -> {
-                try {
-                    method.invoke(instance, context);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+            Object instance = factory.create(clazz);
+
+            for (Method method : clazz.getDeclaredMethods()) {
+                Command command = method.getAnnotation(Command.class);
+
+                if (command == null) {
+                    continue;
                 }
-            };
+
+                CommandHandler handler = context -> {
+                    try {
+                        method.invoke(instance, context);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                };
 
 
-            registerCommand(command.value(), handler);
+                registerCommand(command.value(), handler);
+            }
         }
+    }
+
+    private String resolveApplicationPackage() {
+        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+            if (!element.getMethodName().equals("main")) {
+                continue;
+            }
+
+            try {
+                Class<?> mainClass = Class.forName(element.getClassName());
+
+                return mainClass.getPackageName();
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Main application class was not found"
+        );
     }
 
     private void processUpdate(Update update) {

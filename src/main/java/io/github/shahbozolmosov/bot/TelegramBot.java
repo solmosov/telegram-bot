@@ -1,6 +1,7 @@
 package io.github.shahbozolmosov.bot;
 
 import io.github.shahbozolmosov.client.TelegramClient;
+import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.handler.CommandHandler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
@@ -35,7 +36,9 @@ public final class TelegramBot {
 
                     CommandHandler handler = commandHandlers.get(message.text());
                     if (handler != null) {
-                        handler.handle(update);
+                        BotContext context = new BotContext(telegramClient, update);
+
+                        handler.handle(context);
                     }
                 }
 

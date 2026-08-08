@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.bot;
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
-import io.github.shahbozolmosov.handler.CommandHandler;
+import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
@@ -18,11 +18,11 @@ import java.util.Map;
 public final class TelegramBot {
 
     private final TelegramClient telegramClient;
-    private final Map<String, CommandHandler> commandHandlers;
+    private final Map<String, Handler> handlers;
 
     public TelegramBot(String botToken) {
         this.telegramClient = new TelegramClient(botToken);
-        this.commandHandlers = new HashMap<>();
+        this.handlers = new HashMap<>();
     }
 
     public void start() {
@@ -43,9 +43,9 @@ public final class TelegramBot {
 
     public void registerCommand(
             String command,
-            CommandHandler handler
+            Handler handler
     ) {
-        commandHandlers.put(command, handler);
+        this.handlers.put(command, handler);
     }
 
     public void registerCommands() {
@@ -81,7 +81,7 @@ public final class TelegramBot {
                     continue;
                 }
 
-                CommandHandler handler = context -> {
+                Handler handler = context -> {
                     try {
                         method.invoke(instance, context);
                     } catch (Exception ex) {
@@ -119,7 +119,7 @@ public final class TelegramBot {
         Message message = update.message();
 
         if (message != null) {
-            CommandHandler handler = commandHandlers.get(message.text());
+            Handler handler = this.handlers.get(message.text());
 
             if (handler != null) {
                 BotContext context = new BotContext(

@@ -24,6 +24,10 @@ public final class ClassScanner {
             return List.of();
         }
 
+        return scanDirectory(directory, packageName);
+    }
+
+    private List<Class<?>> scanDirectory(File directory, String packageName) {
         List<Class<?>> classes = new ArrayList<>();
 
         File[] files = directory.listFiles();
@@ -35,6 +39,12 @@ public final class ClassScanner {
         for (File file : files) {
 
             if (!file.getName().endsWith(".class")) {
+                classes.addAll(
+                        scanDirectory(
+                                file,
+                                packageName + "." + file.getName()
+                        )
+                );
                 continue;
             }
 

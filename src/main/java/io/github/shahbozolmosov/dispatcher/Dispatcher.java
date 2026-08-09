@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.type.MessageType;
+import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.List;
 
@@ -22,6 +23,13 @@ public final class Dispatcher {
             BotContext context
     ) {
         dispatchUpdateHandlers(context);
+
+        if(update.type() == UpdateType.MESSAGE){
+            dispatchMessage(update, context);
+        }
+    }
+
+    private void dispatchMessage(Update update, BotContext context) {
         Message message = update.message();
 
         if (message == null) {

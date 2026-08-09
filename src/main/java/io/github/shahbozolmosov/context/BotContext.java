@@ -3,7 +3,10 @@ package io.github.shahbozolmosov.context;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.model.From;
 import io.github.shahbozolmosov.model.Message;
+import io.github.shahbozolmosov.model.PhotoSize;
 import io.github.shahbozolmosov.model.Update;
+
+import java.util.List;
 
 public final class BotContext {
 
@@ -36,6 +39,10 @@ public final class BotContext {
 
     public String text() {
         return update.message().text();
+    }
+
+    public String caption() {
+        return update.message().caption();
     }
 
     public void sendMessage(String text) {

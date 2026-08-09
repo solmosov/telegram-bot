@@ -15,6 +15,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Map;
 
 public final class TelegramClient {
 
@@ -128,17 +129,12 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendMessage(long chatId, String text) {
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
-        String body = """
-                {
-                  "chat_id": %d,
-                  "text": "%s"
-                }
-                """.formatted(chatId, text);
+        String jsonBody = generateBody(chatId, text);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 
         try {
@@ -180,5 +176,14 @@ public final class TelegramClient {
                     ex
             );
         }
+    }
+
+    private String generateBody(long chatId, String text) {
+        Map<String, Object> body = Map.of(
+                "chat_id", chatId,
+                "text", text
+        );
+
+        return objectMapper.writeValueAsString(body);
     }
 }

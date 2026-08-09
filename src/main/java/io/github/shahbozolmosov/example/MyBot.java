@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.example;
 
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
+import io.github.shahbozolmosov.annotation.Photo;
 import io.github.shahbozolmosov.annotation.Updates;
 import io.github.shahbozolmosov.context.BotContext;
 
@@ -25,6 +26,12 @@ public class MyBot {
     public void anyText(BotContext context) {
         System.out.println("-------------------------any hello render");
         context.sendMessage("any hello render");
+    }
+
+    @Photo
+    public void allSendingPhotos(BotContext context){
+        System.out.println("-------------------------photo received");
+        context.sendMessage("Photo received: " + context.update().message().photo().get(0).fileId());
     }
 
     public void other() {

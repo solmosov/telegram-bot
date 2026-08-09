@@ -23,6 +23,7 @@ public class MyBot {
     @Message
     public void anyText(BotContext context){
         System.out.println("-------------------------any hello render");
+        context.sendMessage("any hello render");
     }
 
     public void other(){

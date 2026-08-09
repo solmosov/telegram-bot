@@ -12,7 +12,10 @@ import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
-import io.github.shahbozolmosov.type.UpdateType;
+import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
+import io.github.shahbozolmosov.scanner.resolver.CommandAnnotationHandlerResolver;
+import io.github.shahbozolmosov.scanner.resolver.MessageAnnotationHandlerResolver;
+import io.github.shahbozolmosov.scanner.resolver.UpdateAnnotationHandlerResolver;
 
 import java.util.List;
 
@@ -40,10 +43,18 @@ public final class TelegramBot {
         );
 
         this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
+
+        List<AnnotationHandlerResolver> annotationHandlerResolvers = List.of(
+                new CommandAnnotationHandlerResolver(),
+                new MessageAnnotationHandlerResolver(),
+                new UpdateAnnotationHandlerResolver()
+        );
+
         this.handlerRegistrar = new HandlerRegistrar(
                 new ClassScanner(),
                 new ClassInstanceFactory(),
-                registry
+                registry,
+                annotationHandlerResolvers
         );
     }
 

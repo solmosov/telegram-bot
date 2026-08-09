@@ -2,7 +2,8 @@ package io.github.shahbozolmosov.scanner;
 
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registery.Registry;
+import io.github.shahbozolmosov.registry.HandlerRegistration;
+import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.type.MessageType;
 
 import java.lang.reflect.Method;
@@ -65,11 +66,13 @@ public final class HandlerRegistrar {
                     }
                 };
 
-                registry.register(
+                HandlerRegistration registration = new HandlerRegistration(
                         MessageType.COMMAND,
                         command.value(),
                         handler
                 );
+
+                registry.register(registration);
             }
         }
     }

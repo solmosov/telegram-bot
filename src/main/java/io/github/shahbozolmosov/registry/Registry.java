@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.registery;
+package io.github.shahbozolmosov.registry;
 
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.type.MessageType;
@@ -9,14 +9,10 @@ import java.util.Map;
 public final class Registry {
     private final Map<MessageType, Map<String, Handler>> handlers = new HashMap<>();
 
-    public void register(
-            MessageType type,
-            String key,
-            Handler handler
-    ) {
+    public void register(HandlerRegistration registration) {
         handlers
-                .computeIfAbsent(type, k -> new HashMap<>())
-                .put(key, handler);
+                .computeIfAbsent(registration.type(), k -> new HashMap<>())
+                .put(registration.key(), registration.handler());
     }
 
     public Handler find(

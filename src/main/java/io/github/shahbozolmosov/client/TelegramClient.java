@@ -86,7 +86,6 @@ public final class TelegramClient {
                 .GET()
                 .build();
 
-        System.out.println("[TG API] getUpdates: " + url);
         try {
             HttpResponse<String> response = httpClient.send(
                     request,

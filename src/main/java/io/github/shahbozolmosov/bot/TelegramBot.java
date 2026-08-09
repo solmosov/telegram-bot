@@ -3,26 +3,29 @@ package io.github.shahbozolmosov.bot;
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.registery.Registry;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
+import io.github.shahbozolmosov.type.MessageType;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class TelegramBot {
 
     private final TelegramClient telegramClient;
-    private final Map<String, Handler> handlers;
+    private final Registry registry;
+    private final Dispatcher dispatcher;
 
     public TelegramBot(String botToken) {
         this.telegramClient = new TelegramClient(botToken);
-        this.handlers = new HashMap<>();
+        this.registry = new Registry();
+        this.dispatcher = new Dispatcher(registry);
     }
 
     public void start() {
@@ -34,20 +37,31 @@ public final class TelegramBot {
             for (Update update : res.result()) {
                 offset = update.updateId() + 1;
 
-                processUpdate(update);
+                BotContext context = new BotContext(
+                        telegramClient,
+                        update
+                );
+
+                dispatcher.dispatch(update, context);
 
                 System.out.println("Processing update: " + update.updateId());
             }
         }
     }
 
+    // TODO: move to other class
     public void registerCommand(
             String command,
             Handler handler
     ) {
-        this.handlers.put(command, handler);
+        registry.register(
+                MessageType.COMMAND,
+                command,
+                handler
+        );
     }
 
+    // TODO: move to other class
     public void registerCommands() {
         String packageName = resolveApplicationPackage();
         ClassScanner scanner = new ClassScanner();
@@ -95,6 +109,7 @@ public final class TelegramBot {
         }
     }
 
+    // TODO: move to other class
     private String resolveApplicationPackage() {
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
             if (!element.getMethodName().equals("main")) {
@@ -114,23 +129,4 @@ public final class TelegramBot {
                 "Main application class was not found"
         );
     }
-
-    private void processUpdate(Update update) {
-        Message message = update.message();
-
-        if (message != null) {
-            Handler handler = this.handlers.get(message.text());
-
-            if (handler != null) {
-                BotContext context = new BotContext(
-                        telegramClient,
-                        update
-                );
-                handler.handle(context);
-            }
-        }
-
-        System.out.println("Processing update: " + update.updateId());
-    }
-
 }

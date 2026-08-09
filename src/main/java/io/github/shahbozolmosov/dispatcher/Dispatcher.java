@@ -2,11 +2,8 @@ package io.github.shahbozolmosov.dispatcher;
 
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.type.MessageType;
-import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ public final class Dispatcher {
         dispatchUpdateHandlers(context);
 
         for(UpdateTypeDispatcher typeDispatcher : updateTypeDispatchers){
-            if(update.type() == UpdateType.MESSAGE){
+            if(typeDispatcher.supports(update.type())){
                typeDispatcher.dispatch(update, context);
             }
         }
@@ -42,15 +39,5 @@ public final class Dispatcher {
         for (Handler handler : handlers) {
             handler.handle(context);
         }
-    }
-
-    private MessageType resolveType(Message message) {
-        String text = message.text();
-
-        if (text != null && text.startsWith("/")) {
-            return MessageType.COMMAND;
-        }
-
-        return MessageType.TEXT;
     }
 }

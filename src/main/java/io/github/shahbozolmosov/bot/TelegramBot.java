@@ -3,12 +3,15 @@ package io.github.shahbozolmosov.bot;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
+import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
+import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
+import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.List;
 
@@ -19,10 +22,16 @@ public final class TelegramBot {
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
 
+
     public TelegramBot(String botToken) {
         this.telegramClient = new TelegramClient(botToken);
         this.registry = new Registry();
-        this.dispatcher = new Dispatcher(registry);
+
+        List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
+                new MessageUpdateDispatcher(registry)
+        );
+
+        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
         this.handlerRegistrar = new HandlerRegistrar(
                 new ClassScanner(),
                 new ClassInstanceFactory(),

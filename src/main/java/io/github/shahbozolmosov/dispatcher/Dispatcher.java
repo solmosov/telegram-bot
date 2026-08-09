@@ -13,9 +13,14 @@ import java.util.List;
 public final class Dispatcher {
 
     private final Registry registry;
+    private final List<UpdateTypeDispatcher> updateTypeDispatchers;
 
-    public Dispatcher(Registry registry) {
+    public Dispatcher(
+            Registry registry,
+            List<UpdateTypeDispatcher> updateTypeDispatchers
+            ) {
         this.registry = registry;
+        this.updateTypeDispatchers = updateTypeDispatchers;
     }
 
     public void dispatch(
@@ -24,27 +29,9 @@ public final class Dispatcher {
     ) {
         dispatchUpdateHandlers(context);
 
-        if(update.type() == UpdateType.MESSAGE){
-            dispatchMessage(update, context);
-        }
-    }
-
-    private void dispatchMessage(Update update, BotContext context) {
-        Message message = update.message();
-
-        if (message == null) {
-            return;
-        }
-
-        MessageType type = resolveType(message);
-
-        String key = message.text();
-
-        List<Handler> handlers = registry.find(type, key);
-
-        if (!handlers.isEmpty()) {
-            for (Handler handler : handlers) {
-                handler.handle(context);
+        for(UpdateTypeDispatcher typeDispatcher : updateTypeDispatchers){
+            if(update.type() == UpdateType.MESSAGE){
+               typeDispatcher.dispatch(update, context);
             }
         }
     }

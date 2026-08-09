@@ -10,12 +10,17 @@ import java.util.Map;
 
 public final class Registry {
     private final Map<MessageType, Map<String, List<Handler>>> handlers = new HashMap<>();
+    private final List<Handler> updateHandlers = new ArrayList<>();
 
     public void register(HandlerMapping registration) {
         handlers
                 .computeIfAbsent(registration.type(), k -> new HashMap<>())
                 .computeIfAbsent(registration.key(), k -> new ArrayList<>())
                 .add(registration.handler());
+    }
+
+    public void registerUpdateHandler(Handler handler) {
+        updateHandlers.add(handler);
     }
 
     public List<Handler> find(
@@ -43,5 +48,9 @@ public final class Registry {
         }
 
         return result;
+    }
+
+    public  List<Handler> getUpdateHandlers(){
+        return updateHandlers;
     }
 }

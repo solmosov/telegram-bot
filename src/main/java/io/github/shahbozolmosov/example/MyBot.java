@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.example;
 
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
+import io.github.shahbozolmosov.annotation.Updates;
 import io.github.shahbozolmosov.context.BotContext;
 
 public class MyBot {
@@ -28,5 +29,11 @@ public class MyBot {
 
     public void other(){
         System.out.println("Other method");
+    }
+
+
+    @Updates
+    public void log(BotContext context){
+        System.out.println("Running log: render");
     }
 }

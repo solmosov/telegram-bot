@@ -21,6 +21,7 @@ public final class Dispatcher {
             Update update,
             BotContext context
     ) {
+        dispatchUpdateHandlers(context);
         Message message = update.message();
 
         if (message == null) {
@@ -37,6 +38,14 @@ public final class Dispatcher {
             for (Handler handler : handlers) {
                 handler.handle(context);
             }
+        }
+    }
+
+    private void dispatchUpdateHandlers(BotContext context) {
+        List<Handler> handlers = registry.getUpdateHandlers();
+
+        for (Handler handler : handlers) {
+            handler.handle(context);
         }
     }
 

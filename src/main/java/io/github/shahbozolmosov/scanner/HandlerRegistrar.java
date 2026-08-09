@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.scanner;
 
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
+import io.github.shahbozolmosov.annotation.Updates;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.HandlerMapping;
 import io.github.shahbozolmosov.registry.Registry;
@@ -55,8 +56,9 @@ public final class HandlerRegistrar {
 
                 Command command = method.getAnnotation(Command.class);
                 Message message = method.getAnnotation(Message.class);
+                Updates updates = method.getAnnotation(Updates.class);
 
-                if (command == null && message == null) {
+                if (command == null && message == null && updates == null) {
                     continue;
                 }
 
@@ -68,6 +70,7 @@ public final class HandlerRegistrar {
                     }
                 };
 
+                // @Command
                 if (command != null) {
                     HandlerMapping registration = new HandlerMapping(
                             MessageType.COMMAND,
@@ -77,6 +80,7 @@ public final class HandlerRegistrar {
                     registry.register(registration);
                 }
 
+                // @Message
                 if (message != null) {
                     String key = message.value().isEmpty()
                             ? null
@@ -90,7 +94,10 @@ public final class HandlerRegistrar {
                     registry.register(registration);
                 }
 
-
+                // @Update
+                if (updates != null) {
+                    registry.registerUpdateHandler(handler);
+                }
             }
         }
     }

@@ -7,12 +7,12 @@ import io.github.shahbozolmosov.context.BotContext;
 
 public class MyBot {
     @Command("/start")
-    public void start(BotContext context){
-        context.sendMessage("Welcome, Hello World");
+    public void start(BotContext context) {
+        context.sendMessage(context.from().firstName() + " welcome, Hello World");
     }
 
     @Command("/help")
-    public void help(BotContext context){
+    public void help(BotContext context) {
         context.sendMessage("Help");
     }
 
@@ -22,18 +22,18 @@ public class MyBot {
     }
 
     @Message
-    public void anyText(BotContext context){
+    public void anyText(BotContext context) {
         System.out.println("-------------------------any hello render");
         context.sendMessage("any hello render");
     }
 
-    public void other(){
+    public void other() {
         System.out.println("Other method");
     }
 
 
     @Updates
-    public void log(BotContext context){
-        System.out.println("Running log: render");
+    public void onUpdate(BotContext context) {
+        System.out.println("Running log: update_id=" + context.update());
     }
 }

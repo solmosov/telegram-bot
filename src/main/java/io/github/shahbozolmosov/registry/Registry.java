@@ -41,16 +41,18 @@ public final class Registry {
             result.addAll(exactHandlers);
         }
 
-        List<Handler> globalHandlers = typeHandlers.get(null);
+        if (key != null) {
+            List<Handler> globalHandlers = typeHandlers.get(null);
 
-        if (globalHandlers != null) {
-            result.addAll(globalHandlers);
+            if (globalHandlers != null) {
+                result.addAll(globalHandlers);
+            }
         }
 
         return result;
     }
 
-    public  List<Handler> getUpdateHandlers(){
+    public List<Handler> getUpdateHandlers() {
         return updateHandlers;
     }
 }

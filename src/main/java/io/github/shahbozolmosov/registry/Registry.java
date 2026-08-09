@@ -3,28 +3,45 @@ package io.github.shahbozolmosov.registry;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.type.MessageType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class Registry {
-    private final Map<MessageType, Map<String, Handler>> handlers = new HashMap<>();
+    private final Map<MessageType, Map<String, List<Handler>>> handlers = new HashMap<>();
 
     public void register(HandlerMapping registration) {
         handlers
                 .computeIfAbsent(registration.type(), k -> new HashMap<>())
-                .put(registration.key(), registration.handler());
+                .computeIfAbsent(registration.key(), k -> new ArrayList<>())
+                .add(registration.handler());
     }
 
-    public Handler find(
+    public List<Handler> find(
             MessageType type,
             String key
     ) {
-        Map<String, Handler> typeHandlers = handlers.get(type);
+        Map<String, List<Handler>> typeHandlers = handlers.get(type);
 
         if (typeHandlers == null) {
-            return null;
+            return List.of();
         }
 
-        return typeHandlers.get(key);
+        List<Handler> result = new ArrayList<>();
+
+        List<Handler> exactHandlers = typeHandlers.get(key);
+
+        if (exactHandlers != null) {
+            result.addAll(exactHandlers);
+        }
+
+        List<Handler> globalHandlers = typeHandlers.get(null);
+
+        if (globalHandlers != null) {
+            result.addAll(globalHandlers);
+        }
+
+        return result;
     }
 }

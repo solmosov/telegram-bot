@@ -15,9 +15,14 @@ public class MyBot {
         context.sendMessage("Help");
     }
 
-    @Message
+    @Message("hello")
     public void hello(BotContext context) {
         context.sendMessage("hello");
+    }
+
+    @Message
+    public void anyText(BotContext context){
+        System.out.println("-------------------------any hello render");
     }
 
     public void other(){

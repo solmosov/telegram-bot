@@ -7,6 +7,8 @@ import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.type.MessageType;
 
+import java.util.List;
+
 public final class Dispatcher {
 
     private final Registry registry;
@@ -29,10 +31,12 @@ public final class Dispatcher {
 
         String key = message.text();
 
-        Handler handler = registry.find(type, key);
+        List<Handler> handlers = registry.find(type, key);
 
-        if (handler != null) {
-            handler.handle(context);
+        if (!handlers.isEmpty()) {
+            for (Handler handler : handlers) {
+                handler.handle(context);
+            }
         }
     }
 

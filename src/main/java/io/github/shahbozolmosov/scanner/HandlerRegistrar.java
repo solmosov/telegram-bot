@@ -36,16 +36,16 @@ public final class HandlerRegistrar {
 
             Method[] methods = clazz.getDeclaredMethods();
 
-            boolean hasCommand = false;
+            boolean hasHandler = false;
 
             for (Method method : methods) {
-                if (method.isAnnotationPresent(Command.class)) {
-                    hasCommand = true;
+                if (method.isAnnotationPresent(Command.class) || method.isAnnotationPresent(Message.class)) {
+                    hasHandler = true;
                     break;
                 }
             }
 
-            if (!hasCommand) {
+            if (!hasHandler) {
                 continue;
             }
 
@@ -78,9 +78,13 @@ public final class HandlerRegistrar {
                 }
 
                 if (message != null) {
+                    String key = message.value().isEmpty()
+                            ? null
+                            : message.value();
+
                     HandlerMapping registration = new HandlerMapping(
                             MessageType.TEXT,
-                            null,
+                            key,
                             handler
                     );
                     registry.register(registration);

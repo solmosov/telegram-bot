@@ -5,6 +5,10 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
+import io.github.shahbozolmosov.dispatcher.resolver.CommandMessageTypeResolver;
+import io.github.shahbozolmosov.dispatcher.resolver.FallbackMessageTypeResolver;
+import io.github.shahbozolmosov.dispatcher.resolver.MessageTypeResolver;
+import io.github.shahbozolmosov.dispatcher.resolver.TextMessageTypeResolver;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
@@ -27,8 +31,14 @@ public final class TelegramBot {
         this.telegramClient = new TelegramClient(botToken);
         this.registry = new Registry();
 
+
+        List<MessageTypeResolver> messageTypeResolvers = List.of(
+                new CommandMessageTypeResolver()
+        );
+        FallbackMessageTypeResolver fallbackMessageTypeResolver = new TextMessageTypeResolver();
+
         List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
-                new MessageUpdateDispatcher(registry)
+                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver)
         );
 
         this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);

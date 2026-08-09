@@ -1,6 +1,8 @@
 package io.github.shahbozolmosov.dispatcher;
 
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.dispatcher.resolver.FallbackMessageTypeResolver;
+import io.github.shahbozolmosov.dispatcher.resolver.MessageTypeResolver;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.Update;
@@ -9,12 +11,22 @@ import io.github.shahbozolmosov.type.MessageType;
 import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
-    private final Registry registry;
 
-    public MessageUpdateDispatcher(Registry registry) {
+    private final Registry registry;
+    private final List<MessageTypeResolver> resolvers;
+    private final FallbackMessageTypeResolver fallbackMessageTypeResolver;
+
+    public MessageUpdateDispatcher(
+            Registry registry,
+            List<MessageTypeResolver> resolvers,
+            FallbackMessageTypeResolver fallbackResolver
+    ) {
         this.registry = registry;
+        this.resolvers = resolvers;
+        this.fallbackMessageTypeResolver = fallbackResolver;
     }
 
     @Override
@@ -37,12 +49,14 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
     }
 
     private MessageType resolveType(Message message) {
-        String text = message.text();
+        for (MessageTypeResolver resolver : resolvers) {
+            Optional<MessageType> resolved = resolver.resolve(message);
 
-        if (text != null && text.startsWith("/")) {
-            return MessageType.COMMAND;
+            if (resolved.isPresent()) {
+                return resolved.get();
+            }
         }
 
-        return MessageType.TEXT;
+        return fallbackMessageTypeResolver.resolve(message);
     }
 }

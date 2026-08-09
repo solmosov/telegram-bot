@@ -4,7 +4,7 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.registery.Registry;
+import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.type.MessageType;
 
 public final class Dispatcher {

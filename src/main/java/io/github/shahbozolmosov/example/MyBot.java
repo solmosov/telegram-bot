@@ -31,7 +31,7 @@ public class MyBot {
     @Photo
     public void allSendingPhotos(BotContext context){
         System.out.println("-------------------------photo received");
-        context.sendMessage("Photo received: " + context.update().message().photo().get(0).fileId());
+        context.sendMessage("Photo received: " + context.originalPhoto().fileId());
     }
 
     public void other() {

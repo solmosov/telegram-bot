@@ -9,7 +9,7 @@ import java.util.Map;
 public final class Registry {
     private final Map<MessageType, Map<String, Handler>> handlers = new HashMap<>();
 
-    public void register(HandlerRegistration registration) {
+    public void register(HandlerMapping registration) {
         handlers
                 .computeIfAbsent(registration.type(), k -> new HashMap<>())
                 .put(registration.key(), registration.handler());

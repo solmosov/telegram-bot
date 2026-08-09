@@ -1,8 +1,9 @@
 package io.github.shahbozolmosov.scanner;
 
 import io.github.shahbozolmosov.annotation.Command;
+import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registry.HandlerRegistration;
+import io.github.shahbozolmosov.registry.HandlerMapping;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.type.MessageType;
 
@@ -53,8 +54,9 @@ public final class HandlerRegistrar {
             for (Method method : methods) {
 
                 Command command = method.getAnnotation(Command.class);
+                Message message = method.getAnnotation(Message.class);
 
-                if (command == null) {
+                if (command == null && message == null) {
                     continue;
                 }
 
@@ -66,13 +68,25 @@ public final class HandlerRegistrar {
                     }
                 };
 
-                HandlerRegistration registration = new HandlerRegistration(
-                        MessageType.COMMAND,
-                        command.value(),
-                        handler
-                );
+                if (command != null) {
+                    HandlerMapping registration = new HandlerMapping(
+                            MessageType.COMMAND,
+                            command.value(),
+                            handler
+                    );
+                    registry.register(registration);
+                }
 
-                registry.register(registration);
+                if (message != null) {
+                    HandlerMapping registration = new HandlerMapping(
+                            MessageType.TEXT,
+                            null,
+                            handler
+                    );
+                    registry.register(registration);
+                }
+
+
             }
         }
     }

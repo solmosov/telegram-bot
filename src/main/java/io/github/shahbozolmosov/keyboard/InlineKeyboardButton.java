@@ -1,14 +1,18 @@
 package io.github.shahbozolmosov.keyboard;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.nio.charset.StandardCharsets;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record InlineKeyboardButton(
         String text,
 
         @JsonProperty("callback_data")
-        String callbackData
+        String callbackData,
+
+        String url
 ) implements KeyboardElement {
 
     public InlineKeyboardButton {

@@ -12,7 +12,14 @@ public final class InlineKeyboard {
             String text,
             String callbackData
     ) {
-        return new InlineKeyboardButton(text, callbackData);
+        return new InlineKeyboardButton(text, callbackData, null);
+    }
+
+    public static InlineKeyboardButton buttonUrl(
+            String text,
+            String url
+    ) {
+        return new InlineKeyboardButton(text, null, url);
     }
 
     public static InlineKeyboardRow row(

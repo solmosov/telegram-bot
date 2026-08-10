@@ -6,8 +6,7 @@ import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.InlineKeyboard;
 
-import static io.github.shahbozolmosov.keyboard.InlineKeyboard.button;
-import static io.github.shahbozolmosov.keyboard.InlineKeyboard.row;
+import static io.github.shahbozolmosov.keyboard.InlineKeyboard.*;
 
 @BotHandler
 public class MyBotOrders {
@@ -19,7 +18,8 @@ public class MyBotOrders {
                         button("Order 1", "order:1"),
                         button("Order 2", "order:2"),
                         button("Order 3", "order:3")
-                )
+                ),
+                buttonUrl("Google", "https://google.com")
         );
 
         context.sendMessage("Orders", inlineKeyboard);

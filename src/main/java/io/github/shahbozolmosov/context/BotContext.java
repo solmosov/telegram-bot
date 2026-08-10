@@ -1,12 +1,7 @@
 package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
 import io.github.shahbozolmosov.model.*;
-import io.github.shahbozolmosov.request.EditMessageRequest;
-import io.github.shahbozolmosov.request.SendMessageRequest;
-
-import java.util.List;
 
 public final class BotContext {
 

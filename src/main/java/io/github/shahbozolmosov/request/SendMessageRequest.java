@@ -2,8 +2,7 @@ package io.github.shahbozolmosov.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.shahbozolmosov.keyboard.InlineKeyboardButton;
-import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
+import io.github.shahbozolmosov.keyboard.inline.InlineKeyboardMarkup;
 import io.github.shahbozolmosov.model.ParseMode;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

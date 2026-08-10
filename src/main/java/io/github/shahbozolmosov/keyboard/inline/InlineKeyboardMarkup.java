@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.keyboard;
+package io.github.shahbozolmosov.keyboard.inline;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

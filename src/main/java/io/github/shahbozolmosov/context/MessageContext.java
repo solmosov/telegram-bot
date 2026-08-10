@@ -1,7 +1,7 @@
 package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
+import io.github.shahbozolmosov.keyboard.inline.InlineKeyboardMarkup;
 import io.github.shahbozolmosov.model.From;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.ParseMode;

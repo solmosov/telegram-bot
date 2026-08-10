@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.keyboard;
+package io.github.shahbozolmosov.keyboard.inline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +29,11 @@ public final class InlineKeyboard {
     }
 
     public static InlineKeyboardMarkup of(
-            KeyboardElement... elements
+            InlineKeyboardElement... elements
     ) {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        for (KeyboardElement element : elements) {
+        for (InlineKeyboardElement element : elements) {
             if (element instanceof InlineKeyboardButton button) {
                 rows.add(List.of(button));
             } else if (element instanceof InlineKeyboardRow(List<InlineKeyboardButton> buttons)) {

@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.keyboard;
+package io.github.shahbozolmosov.keyboard.inline;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,7 +13,7 @@ public record InlineKeyboardButton(
         String callbackData,
 
         String url
-) implements KeyboardElement {
+) implements InlineKeyboardElement {
 
     public InlineKeyboardButton {
         if (callbackData != null) {

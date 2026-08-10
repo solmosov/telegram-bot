@@ -16,6 +16,7 @@ public final class BotContext {
 
 
     private final MessageContext messageContext;
+    private final PhotoContext photoContext;
 
     public BotContext(
             TelegramClient client,
@@ -26,6 +27,10 @@ public final class BotContext {
         this.messageContext = update.message() != null
                 ? new MessageContext(client, update.message())
                 : null;
+
+        this.photoContext = update.message() != null
+                ? new PhotoContext(update.message())
+                : null;
     }
 
     // --------------------- Current Update ---------------------
@@ -33,40 +38,17 @@ public final class BotContext {
         return update;
     }
 
+    // --------------------- Message Context ---------------------
     public MessageContext message() {
         return messageContext;
     }
 
 
-    // --------------------- Photo ---------------------
-    public PhotoSize originalPhoto() {
-        List<PhotoSize> sizes = update.message().photo();
-
-        if (sizes == null || sizes.isEmpty()) {
-            throw new IllegalStateException(
-                    "originalPhoto() called but this update has no photo. "
-                            + "Make sure this is only used inside a @Photo handler."
-            );
-        }
-
-        PhotoSize largest = sizes.getFirst();
-
-        for (PhotoSize size : sizes) {
-            if (size.width() * size.height() > largest.width() * largest.height()) {
-                largest = size;
-            }
-        }
-
-        return largest;
+    // --------------------- Photo Context ---------------------
+    public PhotoContext photo() {
+        return photoContext;
     }
 
-    public List<PhotoSize> photoAllSizes() {
-        return update.message().photo();
-    }
-
-    public String caption() {
-        return update.message().caption();
-    }
 
     // --------------------- Answer Callback Query ---------------------
     public TelegramResponse<Boolean> answerCallbackQuery() {

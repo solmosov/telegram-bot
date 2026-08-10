@@ -242,11 +242,6 @@ public final class TelegramClient {
                     new LimitedBodyHandler(MAX_RESPONSE_SIZE)
             );
 
-            if (response.statusCode() != 200) {
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
 
             byte[] body = response.body();
 
@@ -256,7 +251,23 @@ public final class TelegramClient {
                 );
             }
 
-            return new String(body, StandardCharsets.UTF_8);
+            String responseBody = new String(
+                    body,
+                    StandardCharsets.UTF_8
+            );
+
+            if (response.statusCode() != 200) {
+                System.err.println(
+                        "[TelegramClient] Telegram API error: "
+                                + responseBody
+                );
+
+                throw new IOException(
+                        "Telegram API returned HTTP status: " + response.statusCode()
+                );
+            }
+
+            return responseBody;
         } catch (IOException ex) {
             throw new TelegramClientException(
                     "Failed to communicate with Telegram API",

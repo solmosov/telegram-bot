@@ -2,10 +2,7 @@ package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
-import io.github.shahbozolmosov.model.From;
-import io.github.shahbozolmosov.model.Message;
-import io.github.shahbozolmosov.model.PhotoSize;
-import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.model.*;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 
 import java.util.List;
@@ -28,11 +25,22 @@ public final class BotContext {
     }
 
     public Message message() {
-        return update.message();
+
+        if (update.message() != null) {
+            return update.message();
+        }
+
+        CallbackQuery callbackQuery = update.callbackQuery();
+
+        if (callbackQuery != null) {
+            return callbackQuery.message();
+        }
+
+        return null;
     }
 
     public long chatId() {
-        return update.message().chat().id();
+        return this.message().chat().id();
     }
 
     public From from() {
@@ -44,9 +52,8 @@ public final class BotContext {
     }
 
     public void sendMessage(String text) {
-        System.out.println("[BotContext] sendMessage: " + update.message().chat().id() + " = " + text);
         telegramClient.sendMessage(
-                update.message().chat().id(),
+                this.chatId(),
                 text
         );
     }
@@ -54,7 +61,7 @@ public final class BotContext {
     public void sendMessage(String text, InlineKeyboardMarkup replyMarkup) {
         telegramClient.sendMessage(
                 new SendMessageRequest(
-                        update.message().chat().id(),
+                        this.chatId(),
                         text,
                         replyMarkup
                 )
@@ -89,5 +96,19 @@ public final class BotContext {
 
     public String caption() {
         return update.message().caption();
+    }
+
+    // Callback Query
+    public void answerCallbackQuery() {
+        telegramClient.answerCallbackQuery(
+                update.callbackQuery().id()
+        );
+    }
+
+    public void answerCallbackQuery(String text) {
+        telegramClient.answerCallbackQuery(
+                update.callbackQuery().id(),
+                text
+        );
     }
 }

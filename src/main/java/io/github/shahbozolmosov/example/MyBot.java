@@ -3,10 +3,6 @@ package io.github.shahbozolmosov.example;
 import io.github.shahbozolmosov.annotation.*;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.InlineKeyboard;
-import io.github.shahbozolmosov.keyboard.InlineKeyboardButton;
-import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
-
-import java.util.List;
 
 import static io.github.shahbozolmosov.keyboard.InlineKeyboard.button;
 import static io.github.shahbozolmosov.keyboard.InlineKeyboard.row;
@@ -47,8 +43,7 @@ public class MyBot {
 
     @CallbackQuery("pizza")
     public void callbackQueryPizza(BotContext context) {
-//        context.sendMessage("Pizza is selected");
-        System.out.println("Pizza is selected");
+        context.answerCallbackQuery("Pizza is selected");
     }
 
     @CallbackQuery

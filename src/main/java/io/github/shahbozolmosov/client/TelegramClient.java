@@ -94,6 +94,7 @@ public final class TelegramClient {
     }
 
 
+    // --------------------- Send Message ---------------------
     public TelegramResponse<Message> sendMessage(
             long chatId,
             String text
@@ -120,6 +121,57 @@ public final class TelegramClient {
         return execute(
                 request,
                 new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    // --------------------- Answer callback query ---------------------
+    public TelegramResponse<Boolean> answerCallbackQuery(
+            String callbackQueryId
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/answerCallbackQuery";
+
+        String jsonBody = objectMapper.writeValueAsString(
+                Map.of(
+                        "callback_query_id", callbackQueryId
+                )
+        );
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Boolean>>() {
+                }
+        );
+    }
+
+    public TelegramResponse<Boolean> answerCallbackQuery(
+            String callbackQueryId,
+            String text
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/answerCallbackQuery";
+
+        String jsonBody = objectMapper.writeValueAsString(
+                Map.of(
+                        "callback_query_id", callbackQueryId,
+                        "text", text
+                )
+        );
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Boolean>>() {
                 }
         );
     }

@@ -4,15 +4,17 @@ import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.type.MessageType;
 
 import java.util.List;
+import java.util.Map;
 
 public final class Registry {
 
     private final MessageRegistry messageRegistry;
+    private final CallbackRegistry callbackRegistry;
     private final UpdateRegistry updateRegistry;
-
 
     public Registry() {
         this.messageRegistry = new MessageRegistry();
+        this.callbackRegistry = new CallbackRegistry();
         this.updateRegistry = new UpdateRegistry();
     }
 
@@ -30,11 +32,21 @@ public final class Registry {
     }
 
 
+    // Callback
+    public void registerCallbackQuery(String key, Handler handler) {
+        callbackRegistry.register(key, handler);
+    }
+
+    public List<Handler> findCallbackQuery(String key) {
+        return callbackRegistry.find(key);
+    }
+
     // Update
     public void registerUpdateHandler(Handler handler) {
         updateRegistry.register(handler);
 
     }
+
     public List<Handler> getUpdateHandlers() {
         return updateRegistry.getHandlers();
     }

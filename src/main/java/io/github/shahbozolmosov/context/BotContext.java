@@ -3,6 +3,7 @@ package io.github.shahbozolmosov.context;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
 import io.github.shahbozolmosov.model.*;
+import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 
 import java.util.List;
@@ -40,6 +41,10 @@ public final class BotContext {
         return null;
     }
 
+    public long messageId() {
+        return message().messageId();
+    }
+
     public long chatId() {
         return this.message().chat().id();
     }
@@ -64,6 +69,26 @@ public final class BotContext {
         telegramClient.sendMessage(
                 new SendMessageRequest(
                         this.chatId(),
+                        text,
+                        replyMarkup
+                )
+        );
+    }
+
+    // --------------------- Edit message ---------------------
+    public void editMessage(String text) {
+        telegramClient.editMessage(
+                chatId(),
+                messageId(),
+                text
+        );
+    }
+
+    public void editMessage(String text, InlineKeyboardMarkup replyMarkup) {
+        telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId(),
+                        messageId(),
                         text,
                         replyMarkup
                 )

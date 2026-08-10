@@ -8,7 +8,9 @@ import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.polling.Polling;
 import io.github.shahbozolmosov.registry.Registry;
+import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
@@ -57,48 +59,15 @@ public final class TelegramBot {
     }
 
     public void start() {
-        String packageName = resolveApplicationPackage();
+        String packageName = new ApplicationPackageResolver().resolve();
 
         handlerRegistrar.register(packageName);
 
-        long offset = 0;
-
-        while (true) {
-            TelegramResponse<List<Update>> res = telegramClient.getUpdates(offset);
-
-            for (Update update : res.result()) {
-                offset = update.updateId() + 1;
-
-                BotContext context = new BotContext(
-                        telegramClient,
-                        update
-                );
-
-                dispatcher.dispatch(update, context);
-
-                System.out.println("Processing update: " + update.updateId());
-            }
-        }
-    }
-
-    // TODO: move to other class
-    private String resolveApplicationPackage() {
-        for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-            if (!element.getMethodName().equals("main")) {
-                continue;
-            }
-
-            try {
-                Class<?> mainClass = Class.forName(element.getClassName());
-
-                return mainClass.getPackageName();
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        throw new IllegalArgumentException(
-                "Main application class was not found"
+        // Polling
+        Polling polling = new Polling(
+                telegramClient,
+                dispatcher
         );
+        polling.start();
     }
 }

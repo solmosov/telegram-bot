@@ -6,14 +6,20 @@ import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.model.User;
+import tools.jackson.core.StreamReadConstraints;
+import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
+import javax.xml.stream.events.Characters;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +30,34 @@ public final class TelegramClient {
     private final String botToken;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final UpdateCountValidator updateCountValidator;
+
+    private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
+    private static final int MAX_NESTING_DEPTH = 100;
+    private static final int MAX_STRING_LENGTH = 1_000_000;
+    private static final int CONNECTION_TIMEOUT = 10; // 10 second
+    private static final int GET_UPDATES_REQUEST_TIMEOUT = 40; // 40 second
+    private static final int MAX_UPDATES = 100;
 
     public TelegramClient(String botToken) {
         this.botToken = botToken;
-        this.httpClient = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
+        this.httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
+                .build();
+
+
+        // JACKSON
+        StreamReadConstraints constraints = StreamReadConstraints.builder()
+                .maxNestingDepth(MAX_NESTING_DEPTH)
+                .maxStringLength(MAX_STRING_LENGTH)
+                .build();
+        JsonFactory jsonFactory = JsonFactory.builder()
+                .streamReadConstraints(constraints)
+                .build();
+        this.objectMapper = JsonMapper.builder(jsonFactory)
+                .build();
+
+        this.updateCountValidator = new UpdateCountValidator(objectMapper, MAX_UPDATES);
     }
 
     public TelegramResponse<User> getMe() {
@@ -39,43 +68,11 @@ public final class TelegramClient {
                 .GET()
                 .build();
 
-        try {
-            HttpResponse<String> response = httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
-
-            if (response.statusCode() != 200) {
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
-
-            TelegramResponse<User> telegramResponse = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<TelegramResponse<User>>() {
-                    }
-            );
-
-            if (!telegramResponse.ok()) {
-                throw new TelegramApiException(
-                        telegramResponse.errorCode(),
-                        telegramResponse.description()
-                );
-            }
-
-            return telegramResponse;
-        } catch (IOException ex) {
-            throw new TelegramClientException(
-                    "Failed to communicate with Telegram API",
-                    ex
-            );
-        } catch (InterruptedException ex) {
-            throw new TelegramClientException(
-                    "Telegram API request was interrupted",
-                    ex
-            );
-        }
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<User>>() {
+                }
+        );
     }
 
     public TelegramResponse<List<Update>> getUpdates(long offset) {
@@ -83,46 +80,16 @@ public final class TelegramClient {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .timeout(Duration.ofSeconds(GET_UPDATES_REQUEST_TIMEOUT))
                 .GET()
                 .build();
 
-        try {
-            HttpResponse<String> response = httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
 
-            if (response.statusCode() != 200) {
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
-
-            TelegramResponse<List<Update>> telegramResponse = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<TelegramResponse<List<Update>>>() {
-                    }
-            );
-
-            if (!telegramResponse.ok()) {
-                throw new TelegramApiException(
-                        telegramResponse.errorCode(),
-                        telegramResponse.description()
-                );
-            }
-
-            return telegramResponse;
-        } catch (IOException ex) {
-            throw new TelegramClientException(
-                    "Failed to communicate with Telegram API",
-                    ex
-            );
-        } catch (InterruptedException ex) {
-            throw new TelegramClientException(
-                    "Telegram API request was interrupted",
-                    ex
-            );
-        }
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<List<Update>>>() {
+                }
+        );
     }
 
     public TelegramResponse<Message> sendMessage(long chatId, String text) {
@@ -135,41 +102,67 @@ public final class TelegramClient {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
 
+    private <T> T execute(
+            HttpRequest request,
+            TypeReference<T> typeReference
+    ) {
+        String responseBody = execute(request);
+
+
+        if (typeReference.getType().getTypeName().contains("TelegramResponse<java.util.List<io.github.shahbozolmosov.model.Update>>")) {
+            updateCountValidator.validate(responseBody);
+        }
+
+        T response = objectMapper.readValue(
+                responseBody,
+                typeReference
+        );
+
+        if (response instanceof TelegramResponse<?> telegramResponse && !telegramResponse.ok()) {
+            throw new TelegramApiException(
+                    telegramResponse.errorCode(),
+                    telegramResponse.description()
+            );
+        }
+
+        return response;
+    }
+
+    private String execute(HttpRequest request) {
         try {
-            HttpResponse<String> response = httpClient.send(
+            HttpResponse<byte[]> response = httpClient.send(
                     request,
-                    HttpResponse.BodyHandlers.ofString()
+                    new LimitedBodyHandler(MAX_RESPONSE_SIZE)
             );
 
             if (response.statusCode() != 200) {
                 throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode() + " " + response.body()
+                        "Telegram API returned HTTP status: " + response.statusCode()
                 );
             }
 
-            TelegramResponse<Message> telegramResponse = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<TelegramResponse<Message>>() {
-                    }
-            );
+            byte[] body = response.body();
 
-            if (!telegramResponse.ok()) {
-                throw new TelegramApiException(
-                        telegramResponse.errorCode(),
-                        telegramResponse.description()
+            if (body.length > MAX_RESPONSE_SIZE) {
+                throw new TelegramClientException(
+                        "Telegram API response is too large: " + body.length + "bytes"
                 );
             }
 
-            return telegramResponse;
+            return new String(body, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             throw new TelegramClientException(
                     "Failed to communicate with Telegram API",
                     ex
             );
         } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-
             throw new TelegramClientException(
                     "Telegram API request was interrupted",
                     ex

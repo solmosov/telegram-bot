@@ -124,7 +124,7 @@ public final class TelegramClient {
         try {
             HttpResponse<byte[]> response = httpClient.send(
                     request,
-                    HttpResponse.BodyHandlers.ofByteArray()
+                    new LimitedBodyHandler(MAX_RESPONSE_SIZE)
             );
 
             if (response.statusCode() != 200) {

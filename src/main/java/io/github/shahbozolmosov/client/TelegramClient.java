@@ -6,8 +6,11 @@ import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.model.User;
+import tools.jackson.core.StreamReadConstraints;
+import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import javax.xml.stream.events.Characters;
 import java.io.IOException;
@@ -28,11 +31,22 @@ public final class TelegramClient {
     private final ObjectMapper objectMapper;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
+    private static final int MAX_NESTING_DEPTH = 100;
 
     public TelegramClient(String botToken) {
         this.botToken = botToken;
         this.httpClient = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
+
+
+        // JACKSON
+        StreamReadConstraints constraints = StreamReadConstraints.builder()
+                .maxNestingDepth(MAX_NESTING_DEPTH)
+                .build();
+        JsonFactory jsonFactory = JsonFactory.builder()
+                .streamReadConstraints(constraints)
+                .build();
+        this.objectMapper = JsonMapper.builder(jsonFactory)
+                .build();
     }
 
     public TelegramResponse<User> getMe() {

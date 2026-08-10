@@ -17,19 +17,24 @@ public final class BotContext {
 
     private final MessageContext messageContext;
     private final PhotoContext photoContext;
+    private final CallbackQueryContext callbackQueryContext;
 
     public BotContext(
-            TelegramClient client,
+            TelegramClient telegramClient,
             Update update
     ) {
-        this.telegramClient = client;
+        this.telegramClient = telegramClient;
         this.update = update;
         this.messageContext = update.message() != null
-                ? new MessageContext(client, update.message())
+                ? new MessageContext(telegramClient, update.message())
                 : null;
 
         this.photoContext = update.message() != null
                 ? new PhotoContext(update.message())
+                : null;
+
+        this.callbackQueryContext = update.callbackQuery() != null
+                ? new CallbackQueryContext(telegramClient, update.callbackQuery())
                 : null;
     }
 
@@ -50,19 +55,11 @@ public final class BotContext {
     }
 
 
-    // --------------------- Answer Callback Query ---------------------
-    public TelegramResponse<Boolean> answerCallbackQuery() {
-        return telegramClient.answerCallbackQuery(
-                update.callbackQuery().id()
-        );
+    // --------------------- Answer Callback Query Context ---------------------
+    public CallbackQueryContext callbackQuery() {
+        return callbackQueryContext;
     }
 
-    public TelegramResponse<Boolean> answerCallbackQuery(String text) {
-        return telegramClient.answerCallbackQuery(
-                update.callbackQuery().id(),
-                text
-        );
-    }
 
     // --------------------- Callback Params ---------------------
     public void setCallbackParams(String[] callbackParams) {

@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.scanner;
 
+import io.github.shahbozolmosov.annotation.BotHandler;
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.annotation.Updates;
@@ -31,32 +32,12 @@ public final class HandlerRegistrar {
     }
 
     public void register(String packageName) {
-        List<Class<?>> classes = scanner.scan(packageName);
+        List<Class<?>> classes = scanner.scan(packageName, BotHandler.class);
 
         for (Class<?> clazz : classes) {
-
-            if (clazz.isInterface()) {
-                continue;
-            }
-
-            Method[] methods = clazz.getDeclaredMethods();
-
-            boolean hasHandler = false;
-
-            for (Method method : methods) {
-                if (hasSupportingResolver(method)) {
-                    hasHandler = true;
-                    break;
-                }
-            }
-
-            if (!hasHandler) {
-                continue;
-            }
-
             Object instance = factory.create(clazz);
 
-            for (Method method : methods) {
+            for (Method method : clazz.getDeclaredMethods()) {
                 for (AnnotationHandlerResolver resolver : resolvers) {
                     if (!resolver.supports(method)) {
                         continue;
@@ -77,8 +58,8 @@ public final class HandlerRegistrar {
     }
 
     private boolean hasSupportingResolver(Method method) {
-        for(AnnotationHandlerResolver resolver : resolvers){
-            if(resolver.supports(method)){
+        for (AnnotationHandlerResolver resolver : resolvers) {
+            if (resolver.supports(method)) {
                 return true;
             }
         }

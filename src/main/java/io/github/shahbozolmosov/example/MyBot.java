@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.keyboard.InlineKeyboard;
 import static io.github.shahbozolmosov.keyboard.InlineKeyboard.button;
 import static io.github.shahbozolmosov.keyboard.InlineKeyboard.row;
 
+@BotHandler
 public class MyBot {
     @Command("/start")
     public void start(BotContext context) {

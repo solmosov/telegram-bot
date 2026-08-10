@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.model.User;
+import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
@@ -17,6 +18,7 @@ import javax.xml.stream.events.Characters;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -111,6 +113,37 @@ public final class TelegramClient {
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
         System.out.println("[TelegramClient] jsonBody: " + jsonBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    // --------------------- Edit Message ---------------------
+    public TelegramResponse<Message> editMessage(
+            long chatId,
+            long messageId,
+            String text
+    ) {
+        return editMessage(
+                new EditMessageRequest(chatId, messageId, text, null)
+        );
+    }
+
+    public TelegramResponse<Message> editMessage(
+            EditMessageRequest requestBody
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

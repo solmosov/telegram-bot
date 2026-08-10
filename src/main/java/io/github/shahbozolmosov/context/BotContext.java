@@ -59,15 +59,15 @@ public final class BotContext {
     }
 
     // --------------------- Send Message ---------------------
-    public void sendMessage(String text) {
-        telegramClient.sendMessage(
+    public TelegramResponse<Message> sendMessage(String text) {
+        return telegramClient.sendMessage(
                 this.chatId(),
                 text
         );
     }
 
-    public void sendMessage(String text, InlineKeyboardMarkup replyMarkup) {
-        telegramClient.sendMessage(
+    public TelegramResponse<Message> sendMessage(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
                 new SendMessageRequest(
                         this.chatId(),
                         text,
@@ -77,16 +77,16 @@ public final class BotContext {
     }
 
     // --------------------- Edit message ---------------------
-    public void editMessage(String text) {
-        telegramClient.editMessage(
+    public TelegramResponse<Message> editMessage(String text) {
+        return telegramClient.editMessage(
                 chatId(),
                 messageId(),
                 text
         );
     }
 
-    public void editMessage(String text, InlineKeyboardMarkup replyMarkup) {
-        telegramClient.editMessage(
+    public TelegramResponse<Message> editMessage(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.editMessage(
                 new EditMessageRequest(
                         chatId(),
                         messageId(),

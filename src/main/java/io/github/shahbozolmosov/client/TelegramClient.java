@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.model.User;
+import io.github.shahbozolmosov.request.SendMessageRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
@@ -92,16 +93,30 @@ public final class TelegramClient {
         );
     }
 
-    public TelegramResponse<Message> sendMessage(long chatId, String text) {
+
+    public TelegramResponse<Message> sendMessage(
+            long chatId,
+            String text
+    ) {
+        return sendMessage(
+                new SendMessageRequest(chatId, text, null)
+        );
+    }
+
+    public TelegramResponse<Message> sendMessage(
+            SendMessageRequest requestBody
+    ) {
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
-        String jsonBody = generateBody(chatId, text);
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+        System.out.println("[TelegramClient] jsonBody: " + jsonBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
+
         return execute(
                 request,
                 new TypeReference<TelegramResponse<Message>>() {
@@ -168,14 +183,5 @@ public final class TelegramClient {
                     ex
             );
         }
-    }
-
-    private String generateBody(long chatId, String text) {
-        Map<String, Object> body = Map.of(
-                "chat_id", chatId,
-                "text", text
-        );
-
-        return objectMapper.writeValueAsString(body);
     }
 }

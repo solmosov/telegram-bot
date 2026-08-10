@@ -1,9 +1,6 @@
 package io.github.shahbozolmosov.example;
 
-import io.github.shahbozolmosov.annotation.Command;
-import io.github.shahbozolmosov.annotation.Message;
-import io.github.shahbozolmosov.annotation.Photo;
-import io.github.shahbozolmosov.annotation.Updates;
+import io.github.shahbozolmosov.annotation.*;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.InlineKeyboardButton;
@@ -48,6 +45,17 @@ public class MyBot {
         context.sendMessage("Inline Keyboard text", inlineKeyboard);
     }
 
+    @CallbackQuery("pizza")
+    public void callbackQueryPizza(BotContext context) {
+//        context.sendMessage("Pizza is selected");
+        System.out.println("Pizza is selected");
+    }
+
+    @CallbackQuery
+    public void watchAllCallback(BotContext context) {
+        System.out.println("----------- All Callback Query ------- " + context.update().callbackQuery());
+    }
+
     @Photo
     public void allSendingPhotos(BotContext context) {
         System.out.println("-------------------------photo received");
@@ -61,6 +69,6 @@ public class MyBot {
 
     @Updates
     public void onUpdate(BotContext context) {
-        System.out.println("Running log: update_id=" + context.update());
+        System.out.println("Running log: update_id=" + context.update().updateId());
     }
 }

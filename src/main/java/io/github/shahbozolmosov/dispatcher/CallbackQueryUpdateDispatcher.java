@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.type.UpdateType;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
@@ -26,7 +27,18 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
     public void dispatch(Update update, BotContext botContext) {
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        List<Handler> handlers = registry.findCallbackQuery(callbackQuery.data());
+        String data = callbackQuery.data();
+
+        String[] parts = data.split(":");
+
+        String prefix = parts[0];
+
+        String[] params = Arrays.copyOfRange(parts, 1, parts.length);
+
+        // BotContext
+        botContext.setCallbackParams(params);
+
+        List<Handler> handlers = registry.findCallbackQuery(prefix);
 
         for (Handler handler : handlers) {
             handler.handle(botContext);

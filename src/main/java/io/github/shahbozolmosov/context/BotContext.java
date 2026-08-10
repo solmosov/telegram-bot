@@ -12,6 +12,7 @@ public final class BotContext {
 
     private final TelegramClient telegramClient;
     private final Update update;
+    private String[] callbackParams;
 
     public BotContext(
             TelegramClient client,
@@ -126,16 +127,24 @@ public final class BotContext {
     }
 
     // --------------------- Answer Callback Query ---------------------
-    public void answerCallbackQuery() {
-        telegramClient.answerCallbackQuery(
+    public TelegramResponse<Boolean> answerCallbackQuery() {
+        return telegramClient.answerCallbackQuery(
                 update.callbackQuery().id()
         );
     }
 
-    public void answerCallbackQuery(String text) {
-        telegramClient.answerCallbackQuery(
+    public TelegramResponse<Boolean> answerCallbackQuery(String text) {
+        return telegramClient.answerCallbackQuery(
                 update.callbackQuery().id(),
                 text
         );
+    }
+
+    public void setCallbackParams(String[] callbackParams) {
+        this.callbackParams = callbackParams;
+    }
+
+    public String[] callbackParams() {
+        return callbackParams;
     }
 }

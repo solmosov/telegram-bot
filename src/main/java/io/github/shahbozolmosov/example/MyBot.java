@@ -5,6 +5,10 @@ import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.annotation.Photo;
 import io.github.shahbozolmosov.annotation.Updates;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.keyboard.InlineKeyboardButton;
+import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
+
+import java.util.List;
 
 public class MyBot {
     @Command("/start")
@@ -25,7 +29,21 @@ public class MyBot {
     @Message
     public void anyText(BotContext context) {
         System.out.println("-------------------------any hello render");
-        context.sendMessage("any hello render");
+    }
+
+    @Message("inline keyboard")
+    public void inlineKeyboard(BotContext context){
+        var inlineKeyboard = new InlineKeyboardMarkup(
+                List.of(
+                        List.of(
+                                new InlineKeyboardButton("Pizza", "pizza")
+                        ),
+                        List.of(
+                                new InlineKeyboardButton("Burger", "burger")
+                        )
+                )
+        );
+        context.sendMessage("Inline Keyboard text", inlineKeyboard);
     }
 
     @Photo

@@ -1,10 +1,12 @@
 package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
+import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
 import io.github.shahbozolmosov.model.From;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.PhotoSize;
 import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.request.SendMessageRequest;
 
 import java.util.List;
 
@@ -46,6 +48,16 @@ public final class BotContext {
         telegramClient.sendMessage(
                 update.message().chat().id(),
                 text
+        );
+    }
+
+    public void sendMessage(String text, InlineKeyboardMarkup replyMarkup) {
+        telegramClient.sendMessage(
+                new SendMessageRequest(
+                        update.message().chat().id(),
+                        text,
+                        replyMarkup
+                )
         );
     }
 

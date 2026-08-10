@@ -8,6 +8,7 @@ import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.polling.Polling;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
@@ -61,24 +62,12 @@ public final class TelegramBot {
 
         handlerRegistrar.register(packageName);
 
-        long offset = 0;
-
-        while (true) {
-            TelegramResponse<List<Update>> res = telegramClient.getUpdates(offset);
-
-            for (Update update : res.result()) {
-                offset = update.updateId() + 1;
-
-                BotContext context = new BotContext(
-                        telegramClient,
-                        update
-                );
-
-                dispatcher.dispatch(update, context);
-
-                System.out.println("Processing update: " + update.updateId());
-            }
-        }
+        // Polling
+        Polling polling = new Polling(
+                telegramClient,
+                dispatcher
+        );
+        polling.start();
     }
 
     // TODO: move to other class

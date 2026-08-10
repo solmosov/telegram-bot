@@ -26,7 +26,7 @@ public final class InlineKeyboard {
     ) {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
-        for (Object element : elements) {
+        for (KeyboardElement element : elements) {
             if (element instanceof InlineKeyboardButton button) {
                 rows.add(List.of(button));
             } else if (element instanceof InlineKeyboardRow(List<InlineKeyboardButton> buttons)) {

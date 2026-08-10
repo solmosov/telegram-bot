@@ -20,6 +20,7 @@ public final class BotContext {
         this.update = update;
     }
 
+    // --------------------- Current Update ---------------------
     public Update update() {
         return update;
     }
@@ -51,6 +52,7 @@ public final class BotContext {
         return update.message().text();
     }
 
+    // --------------------- Send Message ---------------------
     public void sendMessage(String text) {
         telegramClient.sendMessage(
                 this.chatId(),
@@ -68,7 +70,7 @@ public final class BotContext {
         );
     }
 
-    // Photo
+    // --------------------- Photo ---------------------
     public PhotoSize originalPhoto() {
         List<PhotoSize> sizes = update.message().photo();
 
@@ -98,7 +100,7 @@ public final class BotContext {
         return update.message().caption();
     }
 
-    // Callback Query
+    // --------------------- Answer Callback Query ---------------------
     public void answerCallbackQuery() {
         telegramClient.answerCallbackQuery(
                 update.callbackQuery().id()

@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.type;
 
 public enum UpdateType {
-    MESSAGE
+    MESSAGE,
+    CALLBACK_QUERY
 }

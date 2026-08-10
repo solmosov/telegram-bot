@@ -7,5 +7,5 @@ public record InlineKeyboardButton(
 
         @JsonProperty("callback_data")
         String callbackData
-) {
+) implements KeyboardElement {
 }

@@ -15,26 +15,22 @@ public final class InlineKeyboard {
         return new InlineKeyboardButton(text, callbackData);
     }
 
-    public static List<InlineKeyboardButton> row(
+    public static InlineKeyboardRow row(
             InlineKeyboardButton... buttons
     ) {
-        return List.of(buttons);
+        return new InlineKeyboardRow(List.of(buttons));
     }
 
     public static InlineKeyboardMarkup of(
-            Object... elements
+            KeyboardElement... elements
     ) {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 
         for (Object element : elements) {
             if (element instanceof InlineKeyboardButton button) {
                 rows.add(List.of(button));
-            } else if (element instanceof List<?> row) {
-                rows.add(
-                        row.stream()
-                                .map(item -> (InlineKeyboardButton) item)
-                                .toList()
-                );
+            } else if (element instanceof InlineKeyboardRow row) {
+                rows.add(row.buttons());
             }
         }
 

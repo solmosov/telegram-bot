@@ -29,8 +29,8 @@ public final class InlineKeyboard {
         for (Object element : elements) {
             if (element instanceof InlineKeyboardButton button) {
                 rows.add(List.of(button));
-            } else if (element instanceof InlineKeyboardRow row) {
-                rows.add(row.buttons());
+            } else if (element instanceof InlineKeyboardRow(List<InlineKeyboardButton> buttons)) {
+                rows.add(buttons);
             }
         }
 

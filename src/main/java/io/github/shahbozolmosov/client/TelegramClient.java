@@ -19,6 +19,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +34,14 @@ public final class TelegramClient {
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
     private static final int MAX_STRING_LENGTH = 1_000_000;
+    private static final int CONNECTION_TIMEOUT = 10; // 10 second
+    private static final int GET_UPDATES_REQUEST_TIMEOUT = 40; // 40 second
 
     public TelegramClient(String botToken) {
         this.botToken = botToken;
-        this.httpClient = HttpClient.newHttpClient();
+        this.httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
+                .build();
 
 
         // JACKSON
@@ -71,6 +76,7 @@ public final class TelegramClient {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .timeout(Duration.ofSeconds(GET_UPDATES_REQUEST_TIMEOUT))
                 .GET()
                 .build();
 

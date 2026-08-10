@@ -34,95 +34,55 @@ public final class TelegramClient {
     public TelegramResponse<User> getMe() {
         String url = API_BASE_URL + "/bot" + botToken + "/getMe";
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
+        String responseBody = execute(
+                HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .GET()
+                        .build()
+        );
 
-        try {
-            HttpResponse<String> response = httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
 
-            if (response.statusCode() != 200) {
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
+        TelegramResponse<User> telegramResponse = objectMapper.readValue(
+                responseBody,
+                new TypeReference<TelegramResponse<User>>() {
+                }
+        );
 
-            TelegramResponse<User> telegramResponse = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<TelegramResponse<User>>() {
-                    }
-            );
-
-            if (!telegramResponse.ok()) {
-                throw new TelegramApiException(
-                        telegramResponse.errorCode(),
-                        telegramResponse.description()
-                );
-            }
-
-            return telegramResponse;
-        } catch (IOException ex) {
-            throw new TelegramClientException(
-                    "Failed to communicate with Telegram API",
-                    ex
-            );
-        } catch (InterruptedException ex) {
-            throw new TelegramClientException(
-                    "Telegram API request was interrupted",
-                    ex
+        if (!telegramResponse.ok()) {
+            throw new TelegramApiException(
+                    telegramResponse.errorCode(),
+                    telegramResponse.description()
             );
         }
+
+        return telegramResponse;
     }
 
     public TelegramResponse<List<Update>> getUpdates(long offset) {
         String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout=30";
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
+        String responseBody = execute(
+                HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .GET()
+                        .build()
+        );
 
-        try {
-            HttpResponse<String> response = httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
 
-            if (response.statusCode() != 200) {
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
+        TelegramResponse<List<Update>> telegramResponse = objectMapper.readValue(
+                responseBody,
+                new TypeReference<TelegramResponse<List<Update>>>() {
+                }
+        );
 
-            TelegramResponse<List<Update>> telegramResponse = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<TelegramResponse<List<Update>>>() {
-                    }
-            );
-
-            if (!telegramResponse.ok()) {
-                throw new TelegramApiException(
-                        telegramResponse.errorCode(),
-                        telegramResponse.description()
-                );
-            }
-
-            return telegramResponse;
-        } catch (IOException ex) {
-            throw new TelegramClientException(
-                    "Failed to communicate with Telegram API",
-                    ex
-            );
-        } catch (InterruptedException ex) {
-            throw new TelegramClientException(
-                    "Telegram API request was interrupted",
-                    ex
+        if (!telegramResponse.ok()) {
+            throw new TelegramApiException(
+                    telegramResponse.errorCode(),
+                    telegramResponse.description()
             );
         }
+
+        return telegramResponse;
     }
 
     public TelegramResponse<Message> sendMessage(long chatId, String text) {
@@ -130,12 +90,29 @@ public final class TelegramClient {
 
         String jsonBody = generateBody(chatId, text);
 
-        HttpRequest request = HttpRequest.newBuilder()
+        String responseBody = execute(HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                .build();
+                .build());
 
+        TelegramResponse<Message> telegramResponse = objectMapper.readValue(
+                responseBody,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+
+        if (!telegramResponse.ok()) {
+            throw new TelegramApiException(
+                    telegramResponse.errorCode(),
+                    telegramResponse.description()
+            );
+        }
+
+        return telegramResponse;
+    }
+
+    private String execute(HttpRequest request) {
         try {
             HttpResponse<String> response = httpClient.send(
                     request,
@@ -144,32 +121,17 @@ public final class TelegramClient {
 
             if (response.statusCode() != 200) {
                 throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode() + " " + response.body()
+                        "Telegram API returned HTTP status: " + response.statusCode()
                 );
             }
 
-            TelegramResponse<Message> telegramResponse = objectMapper.readValue(
-                    response.body(),
-                    new TypeReference<TelegramResponse<Message>>() {
-                    }
-            );
-
-            if (!telegramResponse.ok()) {
-                throw new TelegramApiException(
-                        telegramResponse.errorCode(),
-                        telegramResponse.description()
-                );
-            }
-
-            return telegramResponse;
+            return response.body();
         } catch (IOException ex) {
             throw new TelegramClientException(
                     "Failed to communicate with Telegram API",
                     ex
             );
         } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-
             throw new TelegramClientException(
                     "Telegram API request was interrupted",
                     ex

@@ -96,6 +96,139 @@ public final class BotContext {
         );
     }
 
+    // --------------------- Send HTML ---------------------
+    public TelegramResponse<Message> sendHtml(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.HTML,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Message> sendHtml(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.HTML,
+                        replyMarkup
+                )
+        );
+    }
+
+    public TelegramResponse<Message> editHtml(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.HTML,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Message> editHtml(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.HTML,
+                        replyMarkup
+                )
+        );
+    }
+    // --------------------- Send Markdown ---------------------
+    public TelegramResponse<Message> sendMarkdown(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Message> sendMarkdown(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN,
+                        replyMarkup
+                )
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdown(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdown(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN,
+                        replyMarkup
+                )
+        );
+    }
+    // --------------------- Send Markdown V2 ---------------------
+    public TelegramResponse<Message> sendMarkdownV2(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN_V2,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Message> sendMarkdownV2(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN_V2,
+                        replyMarkup
+                )
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdownV2(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN_V2,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdownV2(String text, InlineKeyboardMarkup replyMarkup) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ParseMode.MARKDOWN_V2,
+                        replyMarkup
+                )
+        );
+    }
+
     // --------------------- Photo ---------------------
     public PhotoSize originalPhoto() {
         List<PhotoSize> sizes = update.message().photo();

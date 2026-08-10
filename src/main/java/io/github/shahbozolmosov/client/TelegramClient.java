@@ -32,6 +32,7 @@ public final class TelegramClient {
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
+    private static final int MAX_STRING_LENGTH = 1_000_000;
 
     public TelegramClient(String botToken) {
         this.botToken = botToken;
@@ -41,6 +42,7 @@ public final class TelegramClient {
         // JACKSON
         StreamReadConstraints constraints = StreamReadConstraints.builder()
                 .maxNestingDepth(MAX_NESTING_DEPTH)
+                .maxStringLength(MAX_STRING_LENGTH)
                 .build();
         JsonFactory jsonFactory = JsonFactory.builder()
                 .streamReadConstraints(constraints)

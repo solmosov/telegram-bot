@@ -5,10 +5,14 @@ import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.annotation.Photo;
 import io.github.shahbozolmosov.annotation.Updates;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.keyboard.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.InlineKeyboardButton;
 import io.github.shahbozolmosov.keyboard.InlineKeyboardMarkup;
 
 import java.util.List;
+
+import static io.github.shahbozolmosov.keyboard.InlineKeyboard.button;
+import static io.github.shahbozolmosov.keyboard.InlineKeyboard.row;
 
 public class MyBot {
     @Command("/start")
@@ -32,22 +36,20 @@ public class MyBot {
     }
 
     @Message("inline keyboard")
-    public void inlineKeyboard(BotContext context){
-        var inlineKeyboard = new InlineKeyboardMarkup(
-                List.of(
-                        List.of(
-                                new InlineKeyboardButton("Pizza", "pizza")
-                        ),
-                        List.of(
-                                new InlineKeyboardButton("Burger", "burger")
-                        )
-                )
+    public void inlineKeyboard(BotContext context) {
+        var inlineKeyboard = InlineKeyboard.of(
+                row(
+                        button("Pizza", "pizza"),
+                        button("Burger", "burger")
+                ),
+                button("Btn", "btn")
         );
+
         context.sendMessage("Inline Keyboard text", inlineKeyboard);
     }
 
     @Photo
-    public void allSendingPhotos(BotContext context){
+    public void allSendingPhotos(BotContext context) {
         System.out.println("-------------------------photo received");
         context.sendMessage("Photo received: " + context.originalPhoto().fileId());
     }

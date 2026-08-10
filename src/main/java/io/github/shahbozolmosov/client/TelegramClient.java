@@ -30,12 +30,14 @@ public final class TelegramClient {
     private final String botToken;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final UpdateCountValidator updateCountValidator;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
     private static final int MAX_STRING_LENGTH = 1_000_000;
     private static final int CONNECTION_TIMEOUT = 10; // 10 second
     private static final int GET_UPDATES_REQUEST_TIMEOUT = 40; // 40 second
+    private static final int MAX_UPDATES = 100;
 
     public TelegramClient(String botToken) {
         this.botToken = botToken;
@@ -54,6 +56,8 @@ public final class TelegramClient {
                 .build();
         this.objectMapper = JsonMapper.builder(jsonFactory)
                 .build();
+
+        this.updateCountValidator = new UpdateCountValidator(objectMapper, MAX_UPDATES);
     }
 
     public TelegramResponse<User> getMe() {
@@ -110,6 +114,11 @@ public final class TelegramClient {
             TypeReference<T> typeReference
     ) {
         String responseBody = execute(request);
+
+
+        if (typeReference.getType().getTypeName().contains("TelegramResponse<java.util.List<io.github.shahbozolmosov.model.Update>>")) {
+            updateCountValidator.validate(responseBody);
+        }
 
         T response = objectMapper.readValue(
                 responseBody,

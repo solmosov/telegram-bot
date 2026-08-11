@@ -1,14 +1,11 @@
 package io.github.shahbozolmosov.bot;
 
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.CallbackQueryUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
-import io.github.shahbozolmosov.model.TelegramResponse;
-import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.polling.Polling;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;

@@ -1,8 +1,5 @@
 package io.github.shahbozolmosov.keyboard.reply;
 
-import io.github.shahbozolmosov.keyboard.ReplyMarkup;
-import io.github.shahbozolmosov.keyboard.inline.InlineKeyboardMarkup;
-
 import java.util.ArrayList;
 import java.util.List;
 

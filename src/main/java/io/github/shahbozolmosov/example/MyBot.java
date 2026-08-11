@@ -3,10 +3,12 @@ package io.github.shahbozolmosov.example;
 import io.github.shahbozolmosov.annotation.*;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
+import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboardButton;
+import io.github.shahbozolmosov.keyboard.reply.RequestUsers;
 import io.github.shahbozolmosov.model.Contact;
 import io.github.shahbozolmosov.model.Location;
 
-import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonContact;
+import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.*;
 
 @BotHandler
 public class MyBot {
@@ -24,46 +26,16 @@ public class MyBot {
         context.message().sendHtml(html);
     }
 
-    @Message("location")
-    public void sendShareLocationBtn(BotContext context) {
+
+    @Message("request users")
+    public void requestUsers(BotContext context) {
         var keyboard = ReplyKeyboard.of(
-                ReplyKeyboard.buttonLocation("Share location")
+                buttonRequestUsers(
+                        "Select users",
+                        RequestUsers.user(12345, 7)
+                )
         );
 
-        context.message().sendText("Share your location", keyboard);
-    }
-
-    @LocationHandler("Share your location")
-    public void handlerLocation(BotContext context) {
-        Location location = context.replyKeyboard()
-                .location()
-                .orElseThrow(() -> {
-                    context.message().sendText("Required location");
-                    return new IllegalStateException("Required location");
-                });
-
-        context.message().sendText("Received your location: [%s, %s]".formatted(location.latitude(), location.longitude()));
-    }
-
-    @Message("contact")
-    public void sendShareContactBtn(BotContext context) {
-        var keyboard = ReplyKeyboard.of(
-                buttonContact("📞 Share contact")
-        );
-
-        context.message().sendText("Your your contact", keyboard);
-    }
-
-    @ContactHandler
-    public void contactHandler(BotContext context) {
-        Contact contact = context.replyKeyboard().contact();
-
-        var keyboard = ReplyKeyboard.removeKeyboard();
-
-        // Method 1
-//        context.message().sendText("Received your contact: " + contact.phoneNumber(), keyboard);
-
-        // Method 2
-          context.message().removeReplyKeyboard("Remove reply keyboard");
+        context.message().sendText("Please share users", keyboard);
     }
 }

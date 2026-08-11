@@ -21,7 +21,11 @@ public final class ReplyKeyboard {
     }
 
     public static ReplyKeyboardButton buttonContact(String text) {
-        return new ReplyKeyboardButton(text, false, true);
+        return  ReplyKeyboardButton.contact(text);
+    }
+
+    public static ReplyKeyboardButton buttonRequestUsers(String text, RequestUsers requestUsers){
+        return ReplyKeyboardButton.requestUsers(text, requestUsers);
     }
 
     public static ReplyKeyboardRow row(

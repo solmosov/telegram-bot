@@ -16,20 +16,20 @@ public final class ReplyKeyboard {
     }
 
     public static ReplyKeyboardRow row(
-        ReplyKeyboardButton... buttons
-    ){
+            ReplyKeyboardButton... buttons
+    ) {
         return new ReplyKeyboardRow(List.of(buttons));
     }
 
     public static ReplyKeyboardMarkup of(
             ReplyKeyboardElement... elements
-    ){
+    ) {
         List<List<ReplyKeyboardButton>> rows = new ArrayList<>();
 
-        for(ReplyKeyboardElement element : elements){
-            if(element instanceof ReplyKeyboardButton button){
+        for (ReplyKeyboardElement element : elements) {
+            if (element instanceof ReplyKeyboardButton button) {
                 rows.add(List.of(button));
-            }else if(element instanceof ReplyKeyboardRow(List<ReplyKeyboardButton> buttons)){
+            } else if (element instanceof ReplyKeyboardRow(List<ReplyKeyboardButton> buttons)) {
                 rows.add(buttons);
             }
         }

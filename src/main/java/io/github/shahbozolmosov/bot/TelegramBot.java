@@ -34,7 +34,8 @@ public final class TelegramBot {
 
         List<MessageTypeResolver> messageTypeResolvers = List.of(
                 new CommandMessageTypeResolver(),
-                new PhotoMessageTypeResolver()
+                new PhotoMessageTypeResolver(),
+                new LocationMessageTypeResolver()
         );
         FallbackMessageTypeResolver fallbackMessageTypeResolver = new TextMessageTypeResolver();
 

@@ -11,6 +11,7 @@ import io.github.shahbozolmosov.type.MessageType;
 import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
@@ -39,7 +40,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
         Message message = update.message();
 
         MessageType type = resolveType(message);
-        String key = message.text();
+        String key = resolveKey(type, message);
 
         List<Handler> handlers = registry.find(type, key);
 
@@ -58,5 +59,13 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
         }
 
         return fallbackMessageTypeResolver.resolve(message);
+    }
+
+    private String resolveKey(MessageType type, Message message) {
+        if (Objects.requireNonNull(type) == MessageType.LOCATION) {
+            return message.replyToMessage().text();
+        } else {
+            return message.text();
+        }
     }
 }

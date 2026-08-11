@@ -4,7 +4,10 @@ import io.github.shahbozolmosov.bot.TelegramBot;
 
 public class Main {
     public static void main(String[] args) {
-        TelegramBot bot = new TelegramBot("8821261401:AAFy2Tdl9ajQdsPswInQ29gpVjULitoVTe4");
+
+        String token = System.getenv("TELEGRAM_BOT_TOKEN");
+
+        TelegramBot bot = new TelegramBot(token);
 
         bot.start();
     }

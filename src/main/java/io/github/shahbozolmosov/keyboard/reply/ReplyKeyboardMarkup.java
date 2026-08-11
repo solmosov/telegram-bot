@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.keyboard.reply;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.shahbozolmosov.context.ReplyKeyboardContext;
 import io.github.shahbozolmosov.keyboard.ReplyMarkup;
 
 import java.util.List;
@@ -11,12 +12,24 @@ public record ReplyKeyboardMarkup(
         List<List<ReplyKeyboardButton>> keyboard,
 
         @JsonProperty("resize_keyboard")
-        boolean resizeKeyboard,
+        Boolean resizeKeyboard,
 
         @JsonProperty("one_time_keyboard")
-        boolean oneTimeKeyboard
+        Boolean oneTimeKeyboard,
+
+        @JsonProperty("remove_keyboard")
+        Boolean remove_keyboard
 ) implements ReplyMarkup {
     public ReplyKeyboardMarkup(List<List<ReplyKeyboardButton>> keyboard) {
-        this(keyboard, true, true);
+        this(keyboard, true, true, null);
+    }
+
+    public static ReplyKeyboardMarkup remove() {
+        return new ReplyKeyboardMarkup(
+                null,
+                null,
+                null,
+                true
+        );
     }
 }

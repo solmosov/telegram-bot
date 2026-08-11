@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.keyboard.ReplyMarkup;
+import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboardMarkup;
 import io.github.shahbozolmosov.model.From;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.ParseMode;
@@ -124,6 +125,7 @@ public final class MessageContext {
                 )
         );
     }
+
     // --------------------- Send Markdown ---------------------
     public TelegramResponse<Message> sendMarkdown(String text) {
         return telegramClient.sendMessage(
@@ -168,6 +170,7 @@ public final class MessageContext {
                 )
         );
     }
+
     // --------------------- Send Markdown V2 ---------------------
     public TelegramResponse<Message> sendMarkdownV2(String text) {
         return telegramClient.sendMessage(
@@ -213,5 +216,15 @@ public final class MessageContext {
         );
     }
 
+    // --------------------- Remove Reply Keyboard ---------------------
+    public TelegramResponse<Message> removeReplyKeyboard(String text) {
+        return telegramClient.sendMessage(
+                new SendMessageRequest(
+                        chatId(),
+                        text,
+                        ReplyKeyboardMarkup.remove()
+                )
+        );
+    }
 
 }

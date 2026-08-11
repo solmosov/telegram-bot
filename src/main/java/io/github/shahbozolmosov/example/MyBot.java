@@ -58,6 +58,12 @@ public class MyBot {
     public void contactHandler(BotContext context) {
         Contact contact = context.replyKeyboard().contact();
 
-        context.message().sendText("Received your contact: " + contact.phoneNumber());
+        var keyboard = ReplyKeyboard.removeKeyboard();
+
+        // Method 1
+//        context.message().sendText("Received your contact: " + contact.phoneNumber(), keyboard);
+
+        // Method 2
+          context.message().removeReplyKeyboard("Remove reply keyboard");
     }
 }

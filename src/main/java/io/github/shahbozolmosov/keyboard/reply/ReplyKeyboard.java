@@ -8,6 +8,10 @@ public final class ReplyKeyboard {
     private ReplyKeyboard() {
     }
 
+    public static ReplyKeyboardMarkup removeKeyboard() {
+        return ReplyKeyboardMarkup.remove();
+    }
+
     public static ReplyKeyboardButton button(String text) {
         return new ReplyKeyboardButton(text);
     }
@@ -50,6 +54,7 @@ public final class ReplyKeyboard {
 
         private boolean resizeKeyboard;
         private boolean oneTimeKeyboard;
+        private boolean removeKeyboard;
 
         private final List<List<ReplyKeyboardButton>> rows = new ArrayList<>();
 
@@ -60,6 +65,11 @@ public final class ReplyKeyboard {
 
         public Builder oneTimeKeyboard(boolean value) {
             this.oneTimeKeyboard = value;
+            return this;
+        }
+
+        public Builder removeKeyboard(boolean value) {
+            this.removeKeyboard = value;
             return this;
         }
 
@@ -78,7 +88,7 @@ public final class ReplyKeyboard {
         }
 
         public ReplyKeyboardMarkup build() {
-            return new ReplyKeyboardMarkup(rows, resizeKeyboard, oneTimeKeyboard);
+            return new ReplyKeyboardMarkup(rows, resizeKeyboard, oneTimeKeyboard, removeKeyboard);
         }
     }
 }

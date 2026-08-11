@@ -1,7 +1,7 @@
 package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.keyboard.inline.InlineKeyboardMarkup;
+import io.github.shahbozolmosov.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.model.From;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.ParseMode;
@@ -43,14 +43,14 @@ public final class MessageContext {
     }
 
     // --------------------- Send Message ---------------------
-    public TelegramResponse<Message> sendMessage(String text) {
+    public TelegramResponse<Message> sendText(String text) {
         return telegramClient.sendMessage(
                 this.chatId(),
                 text
         );
     }
 
-    public TelegramResponse<Message> sendMessage(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> sendText(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         this.chatId(),
@@ -61,7 +61,7 @@ public final class MessageContext {
     }
 
     // --------------------- Edit message ---------------------
-    public TelegramResponse<Message> editMessage(String text) {
+    public TelegramResponse<Message> editText(String text) {
         return telegramClient.editMessage(
                 chatId(),
                 messageId(),
@@ -69,7 +69,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editMessage(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> editText(String text, ReplyMarkup replyMarkup) {
         return telegramClient.editMessage(
                 new EditMessageRequest(
                         chatId(),
@@ -92,7 +92,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> sendHtml(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> sendHtml(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         chatId(),
@@ -114,7 +114,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editHtml(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> editHtml(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         chatId(),
@@ -136,7 +136,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> sendMarkdown(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> sendMarkdown(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         chatId(),
@@ -158,7 +158,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editMarkdown(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> editMarkdown(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         chatId(),
@@ -180,7 +180,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> sendMarkdownV2(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> sendMarkdownV2(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         chatId(),
@@ -202,7 +202,7 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editMarkdownV2(String text, InlineKeyboardMarkup replyMarkup) {
+    public TelegramResponse<Message> editMarkdownV2(String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
                 new SendMessageRequest(
                         chatId(),

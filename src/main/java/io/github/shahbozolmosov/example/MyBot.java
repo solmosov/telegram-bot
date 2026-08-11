@@ -56,4 +56,33 @@ public class MyBot {
 
         context.message().sendText("Hello reply keyboard", keyboard);
     }
+
+    @Message("reply k builder")
+    public void replyKeyboardWithBuilder(BotContext context) {
+        var keyboard = ReplyKeyboard.builder()
+                .resizeKeyboard(false)
+                .oneTimeKeyboard(false)
+                .of(
+                        ReplyKeyboard.button("Button 1"),
+                        ReplyKeyboard.row(
+                                ReplyKeyboard.button("Button 2"),
+                                ReplyKeyboard.button("Button 3")
+                        )
+                )
+                .build();
+
+        var html = """
+                <b>Hello reply keyboard with builder</b>
+              
+                <b>Params</b>
+                · resize_keyboard false
+                · one_time_keyboard false
+                
+                 
+                """;
+
+
+        context.message().sendHtml(html, keyboard);
+
+    }
 }

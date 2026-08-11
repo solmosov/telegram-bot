@@ -36,4 +36,44 @@ public final class ReplyKeyboard {
 
         return new ReplyKeyboardMarkup(rows);
     }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private boolean resizeKeyboard;
+        private boolean oneTimeKeyboard;
+
+        private final List<List<ReplyKeyboardButton>> rows = new ArrayList<>();
+
+        public Builder resizeKeyboard(boolean value) {
+            this.resizeKeyboard = value;
+            return this;
+        }
+
+        public Builder oneTimeKeyboard(boolean value) {
+            this.oneTimeKeyboard = value;
+            return this;
+        }
+
+        public Builder of(
+                ReplyKeyboardElement... elements
+        ) {
+            for (ReplyKeyboardElement element : elements) {
+                if (element instanceof ReplyKeyboardButton button) {
+                    rows.add(List.of(button));
+                } else if (element instanceof ReplyKeyboardRow(List<ReplyKeyboardButton> buttons)) {
+                    rows.add(buttons);
+                }
+            }
+
+            return this;
+        }
+
+        public ReplyKeyboardMarkup build() {
+            return new ReplyKeyboardMarkup(rows, resizeKeyboard, oneTimeKeyboard);
+        }
+    }
 }

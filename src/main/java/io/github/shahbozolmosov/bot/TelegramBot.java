@@ -44,11 +44,17 @@ public final class TelegramBot {
         this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
 
         List<AnnotationHandlerResolver> annotationHandlerResolvers = List.of(
+                // Message
                 new CommandAnnotationHandlerResolver(),
-                new MessageAnnotationHandlerResolver(),
                 new PhotoAnnotationHandlerResolver(),
-                new CallbackAnnotationHandlerResolver(),
                 new LocationHandlerAnnotationHandlerResolver(),
+
+                new MessageAnnotationHandlerResolver(),
+
+                // Callback
+                new CallbackAnnotationHandlerResolver(),
+
+                // Update
                 new UpdateAnnotationHandlerResolver()
         );
 

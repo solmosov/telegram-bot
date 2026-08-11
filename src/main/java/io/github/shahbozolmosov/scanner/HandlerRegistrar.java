@@ -56,14 +56,4 @@ public final class HandlerRegistrar {
             }
         }
     }
-
-    private boolean hasSupportingResolver(Method method) {
-        for (AnnotationHandlerResolver resolver : resolvers) {
-            if (resolver.supports(method)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

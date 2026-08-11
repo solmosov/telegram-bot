@@ -10,7 +10,10 @@ public record Message(
         From from,
         Chat chat,
         String text,
+
         List<PhotoSize> photo,
-        String caption
+        String caption,
+
+        Location location
 ) {
 }

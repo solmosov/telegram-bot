@@ -14,6 +14,9 @@ import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonReques
 @BotHandler
 public class MyBot {
 
+    private static final int SELECT_USERS = 1;
+    private static final int SELECT_PREMIUM_USERS = 2;
+
     @Command("/start")
     public void start(BotContext context) {
         String html = """
@@ -33,18 +36,35 @@ public class MyBot {
         var keyboard = ReplyKeyboard.of(
                 buttonRequestUsers(
                         "Select users",
-                        RequestUsers.user(12345, 7)
+                        RequestUsers.user(SELECT_USERS, 7)
+                ),
+                buttonRequestUsers(
+                        "Select premium users",
+                        RequestUsers.userPremium(SELECT_PREMIUM_USERS, 5)
                 )
         );
 
         context.message().sendText("Please share users", keyboard);
     }
 
-    @RequestUsersHandler("12345")
+    @RequestUsersHandler(SELECT_USERS)
     public void requestUsersHandler(BotContext context) {
         var users = context.replyKeyboard().usersSharedUsers();
 
         StringBuilder html = new StringBuilder("<b>Received Users</b>\n\n");
+
+        for (UsersShared.User user : users) {
+            html.append("· %s %s \n".formatted(user.firstName(), user.username()));
+        }
+
+        context.message().sendHtml(html.toString(), ReplyKeyboard.removeKeyboard());
+    }
+
+    @RequestUsersHandler(SELECT_PREMIUM_USERS)
+    public void requestUsersPremiumHandler(BotContext context) {
+        var users = context.replyKeyboard().usersSharedUsers();
+
+        StringBuilder html = new StringBuilder("<b>Received Premium Users</b>\n\n");
 
         for (UsersShared.User user : users) {
             html.append("· %s %s \n".formatted(user.firstName(), user.username()));

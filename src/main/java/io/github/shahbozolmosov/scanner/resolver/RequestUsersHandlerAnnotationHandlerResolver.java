@@ -18,9 +18,9 @@ public class RequestUsersHandlerAnnotationHandlerResolver implements AnnotationH
     public void register(Method method, Handler handler, Registry registry) {
         RequestUsersHandler requestUsersHandler = method.getAnnotation(RequestUsersHandler.class);
 
-        String key = requestUsersHandler.value().isEmpty()
+        String key = requestUsersHandler.value() == -1
                 ? null
-                : requestUsersHandler.value();
+                : String.valueOf(requestUsersHandler.value());
 
         HandlerMapping registration = new HandlerMapping(
                 MessageType.USERS_SHARED,

@@ -13,6 +13,7 @@ public final class BotContext {
     private final MessageContext messageContext;
     private final PhotoContext photoContext;
     private final CallbackQueryContext callbackQueryContext;
+    private final ReplyKeyboardContext replyKeyboardContext;
 
     public BotContext(
             TelegramClient telegramClient,
@@ -31,6 +32,8 @@ public final class BotContext {
         this.callbackQueryContext = update.callbackQuery() != null
                 ? new CallbackQueryContext(telegramClient, update.callbackQuery())
                 : null;
+
+        this.replyKeyboardContext = new ReplyKeyboardContext(messageContext);
     }
 
     // --------------------- Current Update ---------------------
@@ -43,6 +46,10 @@ public final class BotContext {
         return messageContext;
     }
 
+    // --------------------- Reply Keyboard Context ---------------------
+    public ReplyKeyboardContext replyKeyboard() {
+        return replyKeyboardContext;
+    }
 
     // --------------------- Photo Context ---------------------
     public PhotoContext photo() {

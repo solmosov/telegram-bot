@@ -31,7 +31,7 @@ public final class MessageContext {
         return message().messageId();
     }
 
-    public long chatId() {
+    public String chatId() {
         return message.chat().id();
     }
 

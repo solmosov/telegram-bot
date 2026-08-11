@@ -10,7 +10,7 @@ import io.github.shahbozolmosov.model.ParseMode;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record SendMessageRequest(
         @JsonProperty("chat_id")
-        long chatId,
+        String chatId,
 
         String text,
 
@@ -21,7 +21,7 @@ public record SendMessageRequest(
         ReplyMarkup replyMarkup
 ) {
     public SendMessageRequest(
-            long chatId,
+            String chatId,
             String text,
             ReplyMarkup replyMarkup
     ) {

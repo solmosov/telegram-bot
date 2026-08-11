@@ -98,7 +98,7 @@ public final class TelegramClient {
 
     // --------------------- Send Message ---------------------
     public TelegramResponse<Message> sendMessage(
-            long chatId,
+            String chatId,
             String text
     ) {
         return sendMessage(
@@ -129,7 +129,7 @@ public final class TelegramClient {
 
     // --------------------- Edit Message ---------------------
     public TelegramResponse<Message> editMessage(
-            long chatId,
+            String chatId,
             long messageId,
             String text
     ) {

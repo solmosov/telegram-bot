@@ -1,14 +1,15 @@
 package io.github.shahbozolmosov.example;
 
-import io.github.shahbozolmosov.annotation.*;
+import io.github.shahbozolmosov.annotation.BotHandler;
+import io.github.shahbozolmosov.annotation.Command;
+import io.github.shahbozolmosov.annotation.Message;
+import io.github.shahbozolmosov.annotation.RequestUsersHandler;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
-import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboardButton;
 import io.github.shahbozolmosov.keyboard.reply.RequestUsers;
-import io.github.shahbozolmosov.model.Contact;
-import io.github.shahbozolmosov.model.Location;
+import io.github.shahbozolmosov.model.UsersShared;
 
-import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.*;
+import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonRequestUsers;
 
 @BotHandler
 public class MyBot {
@@ -37,5 +38,18 @@ public class MyBot {
         );
 
         context.message().sendText("Please share users", keyboard);
+    }
+
+    @RequestUsersHandler("12345")
+    public void requestUsersHandler(BotContext context) {
+        var users = context.replyKeyboard().usersSharedUsers();
+
+        StringBuilder html = new StringBuilder("<b>Received Users</b>\n\n");
+
+        for (UsersShared.User user : users) {
+            html.append("· %s %s \n".formatted(user.firstName(), user.username()));
+        }
+
+        context.message().sendHtml(html.toString(), ReplyKeyboard.removeKeyboard());
     }
 }

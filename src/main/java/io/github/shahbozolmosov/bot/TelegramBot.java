@@ -33,7 +33,8 @@ public final class TelegramBot {
                 new CommandMessageTypeResolver(),
                 new PhotoMessageTypeResolver(),
                 new LocationMessageTypeResolver(),
-                new ContactMessageTypeResolver()
+                new ContactMessageTypeResolver(),
+                new RequestUsersMessageTypeResolver()
         );
         FallbackMessageTypeResolver fallbackMessageTypeResolver = new TextMessageTypeResolver();
 

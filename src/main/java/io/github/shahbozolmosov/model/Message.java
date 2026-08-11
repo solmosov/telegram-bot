@@ -20,6 +20,9 @@ public record Message(
 
         Location location,
 
-        Contact contact
+        Contact contact,
+
+        @JsonProperty("users_shared")
+        UsersShared usersShared
 ) {
 }

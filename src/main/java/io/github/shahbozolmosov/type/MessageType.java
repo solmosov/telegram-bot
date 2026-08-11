@@ -6,4 +6,5 @@ public enum MessageType {
     PHOTO,
     LOCATION,
     CONTACT,
+    USERS_SHARED
 }

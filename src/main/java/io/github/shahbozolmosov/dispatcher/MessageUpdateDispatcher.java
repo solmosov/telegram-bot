@@ -11,7 +11,6 @@ import io.github.shahbozolmosov.type.MessageType;
 import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
@@ -62,10 +61,10 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
     }
 
     private String resolveKey(MessageType type, Message message) {
-        if (Objects.requireNonNull(type) == MessageType.LOCATION) {
-            return message.replyToMessage().text();
-        } else {
-            return message.text();
-        }
+        return switch (type) {
+            case LOCATION -> message.replyToMessage().text();
+            case USERS_SHARED -> String.valueOf(message.usersShared().requestId());
+            default -> message.text();
+        };
     }
 }

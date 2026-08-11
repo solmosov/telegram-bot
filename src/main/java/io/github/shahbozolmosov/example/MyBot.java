@@ -73,16 +73,31 @@ public class MyBot {
 
         var html = """
                 <b>Hello reply keyboard with builder</b>
-              
+                
                 <b>Params</b>
                 · resize_keyboard false
                 · one_time_keyboard false
                 
-                 
+                
                 """;
 
 
         context.message().sendHtml(html, keyboard);
 
+    }
+
+    @Message("Button 1")
+    public void replyKeyboardButton1Handler(BotContext context) {
+        context.message().sendText("Received Button 1");
+    }
+
+    @Message("Button 2")
+    public void replyKeyboardButton2Handler(BotContext context) {
+        context.message().sendText("Received Button 2");
+    }
+
+    @Message
+    public void handleAnyMessages(BotContext context) {
+        context.message().sendText("Listen all messages");
     }
 }

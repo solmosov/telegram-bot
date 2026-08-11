@@ -50,6 +50,7 @@ public final class TelegramBot {
                 new PhotoAnnotationHandlerResolver(),
                 new LocationHandlerAnnotationHandlerResolver(),
                 new ContactHandlerAnnotationHandlerResolver(),
+                new RequestUsersHandlerAnnotationHandlerResolver(),
 
                 new MessageAnnotationHandlerResolver(),
 

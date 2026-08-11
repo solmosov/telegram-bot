@@ -15,6 +15,10 @@ public final class ReplyKeyboard {
         return new ReplyKeyboardButton(text);
     }
 
+    public static ReplyKeyboardButton buttonLocation(String text) {
+        return new ReplyKeyboardButton(text, true);
+    }
+
     public static ReplyKeyboardRow row(
             ReplyKeyboardButton... buttons
     ) {

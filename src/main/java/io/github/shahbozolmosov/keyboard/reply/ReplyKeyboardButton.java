@@ -8,13 +8,23 @@ public record ReplyKeyboardButton(
         String text,
 
         @JsonProperty("request_location")
-        boolean requestLocation
+        boolean requestLocation,
+
+        @JsonProperty("request_contact")
+        boolean requestContact
 ) implements ReplyKeyboardElement {
 
     public ReplyKeyboardButton(
             String text
     ) {
-        this(text, false);
+        this(text, false, false);
+    }
+
+    public ReplyKeyboardButton(
+            String text,
+            boolean requestLocation
+    ){
+        this(text, requestLocation, false);
     }
 
 }

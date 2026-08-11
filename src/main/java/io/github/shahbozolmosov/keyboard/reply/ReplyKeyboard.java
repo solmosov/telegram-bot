@@ -16,6 +16,10 @@ public final class ReplyKeyboard {
         return new ReplyKeyboardButton(text, true);
     }
 
+    public static ReplyKeyboardButton buttonContact(String text) {
+        return new ReplyKeyboardButton(text, false, true);
+    }
+
     public static ReplyKeyboardRow row(
             ReplyKeyboardButton... buttons
     ) {

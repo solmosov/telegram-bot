@@ -8,6 +8,8 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.model.Location;
 
+import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonContact;
+
 @BotHandler
 public class MyBot {
 
@@ -43,5 +45,14 @@ public class MyBot {
                 });
 
         context.message().sendText("Received your location: [%s, %s]".formatted(location.latitude(), location.longitude()));
+    }
+
+    @Message("contact")
+    public void sendShareContactBtn(BotContext context){
+        var keyboard = ReplyKeyboard.of(
+                buttonContact("📞 Share contact")
+        );
+
+        context.message().sendText("Your your contact", keyboard);
     }
 }

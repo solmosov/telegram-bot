@@ -33,11 +33,11 @@ public final class Dispatcher {
         }
     }
 
-    private void dispatchUpdateHandlers(BotContext context) {
+    private void dispatchUpdateHandlers(BotContext boyContext) {
         List<Handler> handlers = registry.getUpdateHandlers();
 
         for (Handler handler : handlers) {
-            handler.handle(context);
+            handler.handle(boyContext);
         }
     }
 }

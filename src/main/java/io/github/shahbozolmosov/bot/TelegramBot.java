@@ -48,6 +48,7 @@ public final class TelegramBot {
                 new MessageAnnotationHandlerResolver(),
                 new PhotoAnnotationHandlerResolver(),
                 new CallbackAnnotationHandlerResolver(),
+                new LocationHandlerAnnotationHandlerResolver(),
                 new UpdateAnnotationHandlerResolver()
         );
 

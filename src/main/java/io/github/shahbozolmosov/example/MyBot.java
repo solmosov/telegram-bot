@@ -2,9 +2,11 @@ package io.github.shahbozolmosov.example;
 
 import io.github.shahbozolmosov.annotation.BotHandler;
 import io.github.shahbozolmosov.annotation.Command;
+import io.github.shahbozolmosov.annotation.LocationHandler;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
+import io.github.shahbozolmosov.model.Location;
 
 @BotHandler
 public class MyBot {
@@ -29,5 +31,17 @@ public class MyBot {
         );
 
         context.message().sendText("Share your location", keyboard);
+    }
+
+    @LocationHandler("Share your location")
+    public void handlerLocation(BotContext context) {
+        Location location = context.replyKeyboard()
+                .location()
+                .orElseThrow(() -> {
+                    context.message().sendText("Required location");
+                    return new IllegalStateException("Required location");
+                });
+
+        context.message().sendText("Received your location: [%s, %s]".formatted(location.latitude(), location.longitude()));
     }
 }

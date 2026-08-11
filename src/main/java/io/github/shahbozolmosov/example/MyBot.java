@@ -1,11 +1,9 @@
 package io.github.shahbozolmosov.example;
 
-import io.github.shahbozolmosov.annotation.BotHandler;
-import io.github.shahbozolmosov.annotation.Command;
-import io.github.shahbozolmosov.annotation.LocationHandler;
-import io.github.shahbozolmosov.annotation.Message;
+import io.github.shahbozolmosov.annotation.*;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
+import io.github.shahbozolmosov.model.Contact;
 import io.github.shahbozolmosov.model.Location;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonContact;
@@ -48,11 +46,18 @@ public class MyBot {
     }
 
     @Message("contact")
-    public void sendShareContactBtn(BotContext context){
+    public void sendShareContactBtn(BotContext context) {
         var keyboard = ReplyKeyboard.of(
                 buttonContact("📞 Share contact")
         );
 
         context.message().sendText("Your your contact", keyboard);
+    }
+
+    @ContactHandler
+    public void contactHandler(BotContext context) {
+        Contact contact = context.replyKeyboard().contact();
+
+        context.message().sendText("Received your contact: " + contact.phoneNumber());
     }
 }

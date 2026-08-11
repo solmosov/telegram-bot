@@ -18,6 +18,8 @@ public record Message(
         @JsonProperty("reply_to_message")
         ReplyToMessage replyToMessage,
 
-        Location location
+        Location location,
+
+        Contact contact
 ) {
 }

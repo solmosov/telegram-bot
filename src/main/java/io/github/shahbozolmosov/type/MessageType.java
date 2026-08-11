@@ -4,5 +4,6 @@ public enum MessageType {
     TEXT,
     COMMAND,
     PHOTO,
-    LOCATION
+    LOCATION,
+    CONTACT,
 }

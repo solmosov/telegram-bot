@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.context;
 
+import io.github.shahbozolmosov.model.Contact;
 import io.github.shahbozolmosov.model.Location;
 import io.github.shahbozolmosov.model.Message;
 
@@ -26,5 +27,9 @@ public final class ReplyKeyboardContext {
 
     public Optional<Location> location() {
         return Optional.ofNullable(messageContext.message().location());
+    }
+
+    public Contact contact(){
+        return messageContext.message().contact();
     }
 }

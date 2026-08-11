@@ -5,6 +5,7 @@ import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
+import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboardButton;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboardMarkup;
 
@@ -39,24 +40,20 @@ public class MyBot {
                 )
         );
 
-        context.message().sendText("Hello", keyboard);
+        context.message().sendText("Hello inline keyboard", keyboard);
     }
 
 
     @Message("reply k")
     public void replyKeyboard(BotContext context) {
-        var keyboard = new ReplyKeyboardMarkup(
-                List.of(
-                        List.of(
-                                new ReplyKeyboardButton("Button 1")
-                        ),
-                        List.of(
-                                new ReplyKeyboardButton("Button 1"),
-                                new ReplyKeyboardButton("Button 1")
-                        )
+        var keyboard = ReplyKeyboard.of(
+                ReplyKeyboard.button("Button 1"),
+                ReplyKeyboard.row(
+                        ReplyKeyboard.button("Button 2"),
+                        ReplyKeyboard.button("Button 3")
                 )
         );
 
-        context.message().sendText("Hello", keyboard);
+        context.message().sendText("Hello reply keyboard", keyboard);
     }
 }

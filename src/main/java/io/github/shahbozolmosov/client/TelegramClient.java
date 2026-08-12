@@ -9,7 +9,6 @@ import io.github.shahbozolmosov.model.User;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
-import io.github.shahbozolmosov.request.media.SendMediaRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
@@ -217,7 +216,6 @@ public final class TelegramClient {
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
 
-        System.out.println("-------------- >>>>>>>>> 📁jsonBody: " + jsonBody);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")

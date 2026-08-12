@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.model.CallbackQuery;
+import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 
 public final class CallbackQueryContext {
@@ -15,6 +16,14 @@ public final class CallbackQueryContext {
     ) {
         this.telegramClient = telegramClient;
         this.callbackQuery = callbackQuery;
+    }
+
+    public CallbackQuery callbackQuery() {
+        return callbackQuery;
+    }
+
+    public Message message() {
+        return callbackQuery.message();
     }
 
     public TelegramResponse<Boolean> answerCallbackQuery() {

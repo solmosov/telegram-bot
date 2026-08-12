@@ -12,10 +12,6 @@ import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 @BotHandler
 public class MyBot {
 
-    private static final int SELECT_USERS = 1;
-    private static final int SELECT_PREMIUM_USERS = 2;
-//    private static final byte[] MOCK_PDF =;
-
     @Command("/start")
     public void start(BotContext context) {
         String html = """

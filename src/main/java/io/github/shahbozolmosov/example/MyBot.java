@@ -4,6 +4,7 @@ import io.github.shahbozolmosov.annotation.BotHandler;
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.media.Video;
 import io.github.shahbozolmosov.model.InputFIle;
@@ -36,7 +37,7 @@ public class MyBot {
         context.message().sendHtml(html, keyboard);
     }
 
-    @Message("My video")
+    @Message("My Video")
     public void myVideo(BotContext context) {
         var video = Video
                 .video("https://loremipsum.video/vt/powerpoint-1.mp4")
@@ -47,7 +48,15 @@ public class MyBot {
                         <i> 1920x1080 @ 30 fps, and 30s long.</i>
                         """);
 
-        context.message().sendVideo(video);
+        var keyboard = InlineKeyboard.of(
+                InlineKeyboard.row(
+                        InlineKeyboard.button("Button 1", "button1"),
+                        InlineKeyboard.button("Button 2", "button2")
+                ),
+                InlineKeyboard.button("Button 3", "button3")
+        );
+
+        context.message().sendVideo(video, keyboard);
     }
 
     @Message("My Local Video")
@@ -57,7 +66,16 @@ public class MyBot {
                 .hasSpoiler(true)
                 .caption("Mock video");
 
-        context.message().sendVideo(video);
+        var keyboard = InlineKeyboard.of(
+                InlineKeyboard.row(
+                        InlineKeyboard.button("Button 1", "button1"),
+                        InlineKeyboard.button("Button 2", "button2"),
+                        InlineKeyboard.button("Button 3", "button3")
+                ),
+                InlineKeyboard.button("Button 4", "button4")
+        );
+
+        context.message().sendVideo(video, keyboard);
 
     }
 

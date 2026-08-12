@@ -269,10 +269,34 @@ public final class MessageContext {
     }
 
     public TelegramResponse<Message> sendVideo(
+            SendVideoRequest.Builder builder,
+            ReplyMarkup replyMarkup
+    ) {
+        SendVideoRequest requestBody = builder
+                .chatId(chatId())
+                .replyMarkup(replyMarkup)
+                .build();
+
+        return telegramClient.sendVideo(requestBody);
+    }
+
+    public TelegramResponse<Message> sendVideo(
             SendVideoUploadRequest.Builder builder
     ) {
         SendVideoUploadRequest requestBody = builder
                 .chatId(chatId())
+                .build();
+
+        return telegramClient.sendVideo(requestBody);
+    }
+
+    public TelegramResponse<Message> sendVideo(
+            SendVideoUploadRequest.Builder builder,
+            ReplyMarkup replyMarkup
+    ) {
+        SendVideoUploadRequest requestBody = builder
+                .chatId(chatId())
+                .replyMarkup(replyMarkup)
                 .build();
 
         return telegramClient.sendVideo(requestBody);

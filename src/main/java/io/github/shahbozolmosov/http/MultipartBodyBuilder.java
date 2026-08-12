@@ -50,7 +50,7 @@ public final class MultipartBodyBuilder {
             out.write(("--" + boundary + "--" + LINE).getBytes(StandardCharsets.UTF_8));
             return new MultipartBody(boundary, out.toByteArray());
         } catch (IOException | IllegalAccessException ex) {
-            throw new RuntimeException("Multipart body yaratishda xatolik: " + requestBody.getClass(), ex);
+            throw new RuntimeException("Error creating the multipart body: " + requestBody.getClass(), ex);
         }
     }
 
@@ -84,7 +84,7 @@ public final class MultipartBodyBuilder {
 
     private void writeFilePart(ByteArrayOutputStream out, String boundary, String name, InputFIle file) throws IOException {
         out.write(("--" + boundary + LINE).getBytes(StandardCharsets.UTF_8));
-        out.write(("Content-Disposition: form-data; name=\"" + name + "\"; \"" + file.getFileName() + "\"" + LINE).getBytes(StandardCharsets.UTF_8));
+        out.write(("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + file.getFileName() + "\"" + LINE).getBytes(StandardCharsets.UTF_8));
         out.write(("Content-Type: " + file.getMimeType() + LINE + LINE).getBytes(StandardCharsets.UTF_8));
         out.write(file.getData());
         out.write(LINE.getBytes(StandardCharsets.UTF_8));

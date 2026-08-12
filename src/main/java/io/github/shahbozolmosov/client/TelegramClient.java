@@ -12,6 +12,7 @@ import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
+import io.github.shahbozolmosov.request.media.SendPhotoRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
@@ -250,6 +251,29 @@ public final class TelegramClient {
 
         return execute(request, new TypeReference<TelegramResponse<Message>>() {
         });
+    }
+
+    // --------------------- Send Photo ---------------------
+    public TelegramResponse<Message> sendPhoto(
+            SendPhotoRequest requestBody
+    ){
+        String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        System.out.println("caption ------> ");
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
     }
 
     /* ---------------------------------------------

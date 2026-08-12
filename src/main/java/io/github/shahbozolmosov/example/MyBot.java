@@ -9,6 +9,7 @@ import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.media.Document;
 import io.github.shahbozolmosov.model.InputFIle;
 import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
+import io.github.shahbozolmosov.request.media.SendPhotoRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,58 +34,21 @@ public class MyBot {
                 .formatted(context.message().from().firstName());
 
         var keyboard = ReplyKeyboard.of(
-                button("📦 My Orders"),
-                button("📦 My Orders Uploadable")
+                button("My Photo")
         );
 
         context.message().sendHtml(html, keyboard);
     }
 
-    @Message("📦 My Orders")
-    public void myOrders(BotContext context) {
+    @Message("My Photo")
+    public void myPhoto(BotContext context) {
+        var photo = SendPhotoRequest.builder()
+                .photo("https://placehold.co/600x400.png")
+                .caption("Photo 600x400")
+                .hasSpoiler(true);
 
-        var document = Document
-                .url("https://leman.com/wp-content/uploads/2024/03/placeholder-pdf.pdf")
-                .caption("Hello caption")
-                .protectContent(true);
 
-        var keyboard = InlineKeyboard.of(
-                InlineKeyboard.button("Button", "button1")
-        );
-
-        context.message().sendDocument(document, keyboard);
+        context.message().sendPhoto(photo);
     }
 
-    @Message("📦 My Orders Uploadable")
-    public void myOrdersUploadablePdf(BotContext context) {
-
-        var html = """
-                <b> Hello </b>
-                
-                - item 1
-                - item 2
-                - item 3
-                """;
-
-        var document = Document
-                .file(getMockPdfFile(), "orders.pdf")
-                //.file(getMockPdfFile(), "orders.pdf", "application/pdf")
-                .html(html);
-
-        context.message().sendDocument(document);
-    }
-
-    private byte[] getMockPdfFile() {
-        byte[] pdfBytes;
-        try (InputStream is = getClass().getResourceAsStream("/files/orders.pdf")) {
-            if (is == null) {
-                throw new IllegalStateException("PDF is not found: /files/orders.pdf");
-            }
-            pdfBytes = is.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return pdfBytes;
-    }
 }

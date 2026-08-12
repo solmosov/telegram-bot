@@ -7,6 +7,11 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.media.Document;
+import io.github.shahbozolmosov.model.InputFIle;
+import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 
@@ -15,6 +20,7 @@ public class MyBot {
 
     private static final int SELECT_USERS = 1;
     private static final int SELECT_PREMIUM_USERS = 2;
+//    private static final byte[] MOCK_PDF =;
 
     @Command("/start")
     public void start(BotContext context) {
@@ -27,14 +33,15 @@ public class MyBot {
                 .formatted(context.message().from().firstName());
 
         var keyboard = ReplyKeyboard.of(
-                button("📦 My Orders")
+                button("📦 My Orders"),
+                button("📦 My Orders Uploadable")
         );
 
         context.message().sendHtml(html, keyboard);
     }
 
     @Message("📦 My Orders")
-    public void myOrders(BotContext context){
+    public void myOrders(BotContext context) {
 
         var document = Document
                 .url("https://leman.com/wp-content/uploads/2024/03/placeholder-pdf.pdf")
@@ -47,5 +54,30 @@ public class MyBot {
                 );
 
         context.message().sendDocument(document);
+    }
+
+    @Message("📦 My Orders Uploadable")
+    public void myOrdersUploadablePdf(BotContext context) {
+        var document = SendDocumentUploadRequest.builder()
+                .document(
+                        new InputFIle(getMockPdfFile(), "orders.pdf", "application/pdf")
+                );
+
+
+        context.message().sendDocument(document);
+    }
+
+    private byte[] getMockPdfFile() {
+        byte[] pdfBytes;
+        try (InputStream is = getClass().getResourceAsStream("/files/orders.pdf")) {
+            if (is == null) {
+                throw new IllegalStateException("PDF is not found: /files/orders.pdf");
+            }
+            pdfBytes = is.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return pdfBytes;
     }
 }

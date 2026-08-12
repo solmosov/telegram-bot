@@ -10,6 +10,7 @@ import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
+import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
 
 public final class MessageContext {
 
@@ -220,6 +221,12 @@ public final class MessageContext {
     // --------------------- Send Document ---------------------
     public TelegramResponse<Message> sendDocument(SendDocumentRequest.Builder builder) {
         SendDocumentRequest requestBody = builder.chatId(chatId()).build();
+        return telegramClient.sendDocument(requestBody);
+    }
+
+    public TelegramResponse<Message> sendDocument(SendDocumentUploadRequest.Builder builder) {
+        SendDocumentUploadRequest requestBody = builder.chatId(chatId()).build();
+
         return telegramClient.sendDocument(requestBody);
     }
 

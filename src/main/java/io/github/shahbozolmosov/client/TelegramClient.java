@@ -2,6 +2,8 @@ package io.github.shahbozolmosov.client;
 
 import io.github.shahbozolmosov.exception.TelegramApiException;
 import io.github.shahbozolmosov.exception.TelegramClientException;
+import io.github.shahbozolmosov.http.MultipartBody;
+import io.github.shahbozolmosov.http.MultipartBodyBuilder;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
@@ -9,6 +11,7 @@ import io.github.shahbozolmosov.model.User;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
+import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
@@ -33,6 +36,7 @@ public final class TelegramClient {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final UpdateCountValidator updateCountValidator;
+    private final MultipartBodyBuilder multipartBodyBuilder;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
@@ -60,6 +64,8 @@ public final class TelegramClient {
                 .build();
 
         this.updateCountValidator = new UpdateCountValidator(objectMapper, MAX_UPDATES);
+
+        this.multipartBodyBuilder = new MultipartBodyBuilder(objectMapper);
     }
 
     public TelegramResponse<User> getMe() {
@@ -227,6 +233,23 @@ public final class TelegramClient {
                 new TypeReference<TelegramResponse<Message>>() {
                 }
         );
+    }
+
+    public TelegramResponse<Message> sendDocument(
+            SendDocumentUploadRequest requestBody
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
+
+        MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", multipartBody.contentType())
+                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .build();
+
+        return execute(request, new TypeReference<TelegramResponse<Message>>() {
+        });
     }
 
     /* ---------------------------------------------

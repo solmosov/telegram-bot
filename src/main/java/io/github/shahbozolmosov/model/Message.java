@@ -13,6 +13,7 @@ public record Message(
         String text,
 
         List<PhotoSize> photo,
+        Document document,
         String caption,
 
         @JsonProperty("reply_to_message")

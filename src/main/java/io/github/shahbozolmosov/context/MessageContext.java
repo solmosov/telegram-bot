@@ -9,6 +9,7 @@ import io.github.shahbozolmosov.model.ParseMode;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
+import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 
 public final class MessageContext {
 
@@ -214,6 +215,12 @@ public final class MessageContext {
                         replyMarkup
                 )
         );
+    }
+
+    // --------------------- Send Document ---------------------
+    public TelegramResponse<Message> sendDocument(SendDocumentRequest.Builder builder) {
+        SendDocumentRequest requestBody = builder.chatId(chatId()).build();
+        return telegramClient.sendDocument(requestBody);
     }
 
     // --------------------- Remove Reply Keyboard ---------------------

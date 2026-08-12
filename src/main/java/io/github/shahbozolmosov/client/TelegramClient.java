@@ -8,17 +8,17 @@ import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.model.User;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
+import io.github.shahbozolmosov.request.media.SendDocumentRequest;
+import io.github.shahbozolmosov.request.media.SendMediaRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
-import javax.xml.stream.events.Characters;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -209,6 +209,31 @@ public final class TelegramClient {
         );
     }
 
+    // --------------------- Send Document ---------------------
+    public TelegramResponse<Message> sendDocument(
+            SendDocumentRequest requestBody
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        System.out.println("-------------- >>>>>>>>> 📁jsonBody: " + jsonBody);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    /* ---------------------------------------------
+                       HELPERS
+    -------------------------------------------- */
     private <T> T execute(
             HttpRequest request,
             TypeReference<T> typeReference

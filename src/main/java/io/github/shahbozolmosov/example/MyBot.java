@@ -8,7 +8,9 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.RequestUsers;
 import io.github.shahbozolmosov.model.UsersShared;
+import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 
+import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonRequestUsers;
 
 @BotHandler
@@ -27,49 +29,18 @@ public class MyBot {
                 """
                 .formatted(context.message().from().firstName());
 
-        context.message().sendHtml(html);
-    }
-
-
-    @Message("request users")
-    public void requestUsers(BotContext context) {
         var keyboard = ReplyKeyboard.of(
-                buttonRequestUsers(
-                        "Select users",
-                        RequestUsers.user(SELECT_USERS, 7)
-                ),
-                buttonRequestUsers(
-                        "Select premium users",
-                        RequestUsers.userPremium(SELECT_PREMIUM_USERS, 5)
-                )
+                button("📦 My Orders")
         );
 
-        context.message().sendText("Please share users", keyboard);
+        context.message().sendHtml(html, keyboard);
     }
 
-    @RequestUsersHandler(SELECT_USERS)
-    public void requestUsersHandler(BotContext context) {
-        var users = context.replyKeyboard().usersSharedUsers();
+    @Message("📦 My Orders")
+    public void myOrders(BotContext context){
 
-        StringBuilder html = new StringBuilder("<b>Received Users</b>\n\n");
+        var document = SendDocumentRequest.builder().document("https://leman.com/wp-content/uploads/2024/03/placeholder-pdf.pdf");
 
-        for (UsersShared.User user : users) {
-            html.append("· %s %s \n".formatted(user.firstName(), user.username()));
-        }
-
-        context.message().sendHtml(html.toString(), ReplyKeyboard.removeKeyboard());
-    }
-
-    @RequestUsersHandler(SELECT_PREMIUM_USERS)
-    public void requestUsersPremiumHandler(BotContext context) {
-        var users = context.replyKeyboard().usersSharedUsers();
-
-        StringBuilder html = new StringBuilder("<b>Received Premium Users</b>\n\n");
-
-        for (UsersShared.User user : users) {
-            html.append("· %s %s \n".formatted(user.firstName(), user.username()));
-        }
-
-        context.message().sendHtml(html.toString(), ReplyKeyboard.removeKeyboard());
+        context.message().sendDocument(document);
     }
 }

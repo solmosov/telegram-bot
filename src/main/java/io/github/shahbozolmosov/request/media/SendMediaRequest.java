@@ -18,6 +18,7 @@ public abstract class SendMediaRequest {
     @JsonProperty("message_thread_id")
     protected final Integer messageThreadId;
 
+    @JsonProperty("caption")
     protected final String caption;
 
     @JsonProperty("parse_mode")

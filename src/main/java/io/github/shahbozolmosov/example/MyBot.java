@@ -3,17 +3,12 @@ package io.github.shahbozolmosov.example;
 import io.github.shahbozolmosov.annotation.BotHandler;
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
-import io.github.shahbozolmosov.annotation.RequestUsersHandler;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
-import io.github.shahbozolmosov.keyboard.reply.RequestUsers;
 import io.github.shahbozolmosov.media.Document;
-import io.github.shahbozolmosov.model.UsersShared;
-import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
-import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.buttonRequestUsers;
 
 @BotHandler
 public class MyBot {

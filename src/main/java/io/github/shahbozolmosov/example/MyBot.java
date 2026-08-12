@@ -5,7 +5,7 @@ import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
-import io.github.shahbozolmosov.media.Photo;
+import io.github.shahbozolmosov.request.media.SendVideoRequest;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 
@@ -29,14 +29,18 @@ public class MyBot {
         context.message().sendHtml(html, keyboard);
     }
 
-    @Message("My Photo")
-    public void myPhoto(BotContext context) {
-        var photo = Photo
-                .photo("https://placehold.co/600x400.png")
-                .caption("Photo 600x400")
-                .hasSpoiler(true);
+    @Message("My video")
+    public void myVideo(BotContext context) {
+        var video = SendVideoRequest.builder()
+                .video("https://loremipsum.video/vt/powerpoint-1.mp4")
+                .hasSpoiler(true)
+                .html("""
+                        <b> Lorem ipsum video </b>
 
-        context.message().sendPhoto(photo);
+                        <i> 1920x1080 @ 30 fps, and 30s long.</i>
+                        """);
+
+        context.message().sendVideo(video);
     }
 
 }

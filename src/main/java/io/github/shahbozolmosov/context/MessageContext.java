@@ -12,6 +12,7 @@ import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
 import io.github.shahbozolmosov.request.media.SendPhotoRequest;
+import io.github.shahbozolmosov.request.media.SendVideoRequest;
 
 public final class MessageContext {
 
@@ -257,6 +258,17 @@ public final class MessageContext {
                 .chatId(chatId())
                 .build();
         return telegramClient.sendPhoto(requestBody);
+    }
+
+    // --------------------- Send Video ---------------------
+    public TelegramResponse<Message> sendVideo(
+            SendVideoRequest.Builder builder
+    ) {
+        SendVideoRequest requestBody = builder
+                .chatId(chatId())
+                .build();
+
+        return telegramClient.sendVideo(requestBody);
     }
 
     // --------------------- Remove Reply Keyboard ---------------------

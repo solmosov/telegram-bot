@@ -13,6 +13,7 @@ import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
 import io.github.shahbozolmosov.request.media.SendPhotoRequest;
+import io.github.shahbozolmosov.request.media.SendVideoRequest;
 import tools.jackson.core.StreamReadConstraints;
 import tools.jackson.core.json.JsonFactory;
 import tools.jackson.core.type.TypeReference;
@@ -256,7 +257,7 @@ public final class TelegramClient {
     // --------------------- Send Photo ---------------------
     public TelegramResponse<Message> sendPhoto(
             SendPhotoRequest requestBody
-    ){
+    ) {
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
@@ -268,6 +269,28 @@ public final class TelegramClient {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    // --------------------- Send Video ---------------------
+    public TelegramResponse<Message> sendVideo(
+            SendVideoRequest requestBody
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
 
         return execute(
                 request,

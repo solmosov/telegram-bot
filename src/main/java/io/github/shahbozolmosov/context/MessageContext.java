@@ -257,6 +257,17 @@ public final class MessageContext {
         return telegramClient.sendPhoto(requestBody);
     }
 
+    public TelegramResponse<Message> sendPhoto(
+            SendPhotoRequest.Builder builder,
+            ReplyMarkup replyMarkup
+    ) {
+        SendPhotoRequest requestBody = builder
+                .chatId(chatId())
+                .replyMarkup(replyMarkup)
+                .build();
+        return telegramClient.sendPhoto(requestBody);
+    }
+
     // --------------------- Send Video ---------------------
     public TelegramResponse<Message> sendVideo(
             SendVideoRequest.Builder builder

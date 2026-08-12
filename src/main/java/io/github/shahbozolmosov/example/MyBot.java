@@ -5,7 +5,12 @@ import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
+import io.github.shahbozolmosov.model.InputFIle;
 import io.github.shahbozolmosov.request.media.SendVideoRequest;
+import io.github.shahbozolmosov.request.media.SendVideoUploadRequest;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 
@@ -23,7 +28,8 @@ public class MyBot {
                 .formatted(context.message().from().firstName());
 
         var keyboard = ReplyKeyboard.of(
-                button("My Photo")
+                button("My Video"),
+                button("My Local Video")
         );
 
         context.message().sendHtml(html, keyboard);
@@ -36,11 +42,36 @@ public class MyBot {
                 .hasSpoiler(true)
                 .html("""
                         <b> Lorem ipsum video </b>
-
+                        
                         <i> 1920x1080 @ 30 fps, and 30s long.</i>
                         """);
 
         context.message().sendVideo(video);
+    }
+
+    @Message("My Local Video")
+    public void myLocalVideo(BotContext context) {
+        var video = SendVideoUploadRequest.builder()
+                .video(new InputFIle(getMockFile("/files/video.mp4"), "1080p video", "application/mp4"))
+                .hasSpoiler(true)
+                .caption("Mock video");
+
+        context.message().sendVideo(video);
+
+    }
+
+    private byte[] getMockFile(String path) {
+        byte[] pdfBytes;
+        try (InputStream is = getClass().getResourceAsStream(path)) {
+            if (is == null) {
+                throw new IllegalStateException("PDF is not found: " + path);
+            }
+            pdfBytes = is.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return pdfBytes;
     }
 
 }

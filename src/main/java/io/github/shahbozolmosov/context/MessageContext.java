@@ -9,10 +9,7 @@ import io.github.shahbozolmosov.model.ParseMode;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
-import io.github.shahbozolmosov.request.media.SendDocumentRequest;
-import io.github.shahbozolmosov.request.media.SendDocumentUploadRequest;
-import io.github.shahbozolmosov.request.media.SendPhotoRequest;
-import io.github.shahbozolmosov.request.media.SendVideoRequest;
+import io.github.shahbozolmosov.request.media.*;
 
 public final class MessageContext {
 
@@ -265,6 +262,16 @@ public final class MessageContext {
             SendVideoRequest.Builder builder
     ) {
         SendVideoRequest requestBody = builder
+                .chatId(chatId())
+                .build();
+
+        return telegramClient.sendVideo(requestBody);
+    }
+
+    public TelegramResponse<Message> sendVideo(
+            SendVideoUploadRequest.Builder builder
+    ) {
+        SendVideoUploadRequest requestBody = builder
                 .chatId(chatId())
                 .build();
 

@@ -5,8 +5,10 @@ import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.annotation.RequestUsersHandler;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.RequestUsers;
+import io.github.shahbozolmosov.media.Document;
 import io.github.shahbozolmosov.model.UsersShared;
 import io.github.shahbozolmosov.request.media.SendDocumentRequest;
 
@@ -39,7 +41,15 @@ public class MyBot {
     @Message("📦 My Orders")
     public void myOrders(BotContext context){
 
-        var document = SendDocumentRequest.builder().document("https://leman.com/wp-content/uploads/2024/03/placeholder-pdf.pdf");
+        var document = Document
+                .url("https://leman.com/wp-content/uploads/2024/03/placeholder-pdf.pdf")
+                .caption("Hello caption")
+                .protectContent(true)
+                .replyMarkup(
+                        InlineKeyboard.of(
+                                InlineKeyboard.button("Button", "button1")
+                        )
+                );
 
         context.message().sendDocument(document);
     }

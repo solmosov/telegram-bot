@@ -46,14 +46,13 @@ public class MyBot {
         var document = Document
                 .url("https://leman.com/wp-content/uploads/2024/03/placeholder-pdf.pdf")
                 .caption("Hello caption")
-                .protectContent(true)
-                .replyMarkup(
-                        InlineKeyboard.of(
-                                InlineKeyboard.button("Button", "button1")
-                        )
-                );
+                .protectContent(true);
 
-        context.message().sendDocument(document);
+        var keyboard = InlineKeyboard.of(
+                InlineKeyboard.button("Button", "button1")
+        );
+
+        context.message().sendDocument(document, keyboard);
     }
 
     @Message("📦 My Orders Uploadable")
@@ -63,7 +62,6 @@ public class MyBot {
                 .file(getMockPdfFile(), "orders.pdf")
                 //.file(getMockPdfFile(), "orders.pdf", "application/pdf")
                 .caption("Location PDF file");
-
 
         context.message().sendDocument(document);
     }

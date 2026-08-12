@@ -230,6 +230,24 @@ public final class MessageContext {
         return telegramClient.sendDocument(requestBody);
     }
 
+    public TelegramResponse<Message> sendDocument(SendDocumentRequest.Builder builder, ReplyMarkup replyMarkup) {
+        SendDocumentRequest requestBody = builder
+                .chatId(chatId())
+                .replyMarkup(replyMarkup)
+                .build();
+
+        return telegramClient.sendDocument(requestBody);
+    }
+
+    public TelegramResponse<Message> sendDocument(SendDocumentUploadRequest.Builder builder, ReplyMarkup replyMarkup) {
+        SendDocumentUploadRequest requestBody = builder
+                .chatId(chatId())
+                .replyMarkup(replyMarkup)
+                .build();
+
+        return telegramClient.sendDocument(requestBody);
+    }
+
     // --------------------- Remove Reply Keyboard ---------------------
     public TelegramResponse<Message> removeReplyKeyboard(String text) {
         return telegramClient.sendMessage(

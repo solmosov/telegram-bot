@@ -128,6 +128,25 @@ public abstract class SendMediaRequest {
             return self();
         }
 
+        /*----------------Helper methods-------------------------*/
+        public T html(String html) {
+            this.caption = html;
+            this.parseMode = ParseMode.HTML;
+            return self();
+        }
+
+        public T markdown(String markdown) {
+            this.caption = markdown;
+            this.parseMode = ParseMode.MARKDOWN;
+            return self();
+        }
+
+        public T markdownV2(String markdownV2) {
+            this.caption = markdownV2;
+            this.parseMode = ParseMode.MARKDOWN_V2;
+            return self();
+        }
+
         public abstract SendMediaRequest build();
     }
 }

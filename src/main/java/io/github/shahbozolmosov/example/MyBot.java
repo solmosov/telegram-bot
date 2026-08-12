@@ -58,10 +58,18 @@ public class MyBot {
     @Message("📦 My Orders Uploadable")
     public void myOrdersUploadablePdf(BotContext context) {
 
+        var html = """
+                <b> Hello </b>
+                
+                - item 1
+                - item 2
+                - item 3
+                """;
+
         var document = Document
                 .file(getMockPdfFile(), "orders.pdf")
                 //.file(getMockPdfFile(), "orders.pdf", "application/pdf")
-                .caption("Location PDF file");
+                .html(html);
 
         context.message().sendDocument(document);
     }

@@ -5,6 +5,7 @@ import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
+import io.github.shahbozolmosov.media.Video;
 import io.github.shahbozolmosov.model.InputFIle;
 import io.github.shahbozolmosov.request.media.SendVideoRequest;
 import io.github.shahbozolmosov.request.media.SendVideoUploadRequest;
@@ -37,7 +38,7 @@ public class MyBot {
 
     @Message("My video")
     public void myVideo(BotContext context) {
-        var video = SendVideoRequest.builder()
+        var video = Video
                 .video("https://loremipsum.video/vt/powerpoint-1.mp4")
                 .hasSpoiler(true)
                 .html("""
@@ -51,8 +52,8 @@ public class MyBot {
 
     @Message("My Local Video")
     public void myLocalVideo(BotContext context) {
-        var video = SendVideoUploadRequest.builder()
-                .video(new InputFIle(getMockFile("/files/video.mp4"), "1080p video", "application/mp4"))
+        var video = Video
+                .video(getMockFile("/files/video.mp4"), "1080p video", "application/mp4")
                 .hasSpoiler(true)
                 .caption("Mock video");
 

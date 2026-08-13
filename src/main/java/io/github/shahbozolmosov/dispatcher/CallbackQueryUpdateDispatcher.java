@@ -6,7 +6,7 @@ import io.github.shahbozolmosov.model.CallbackQuery;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
-import io.github.shahbozolmosov.type.UpdateType;
+import io.github.shahbozolmosov.model.UpdateType;
 
 import java.util.List;
 

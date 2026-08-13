@@ -7,8 +7,8 @@ import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.type.MessageType;
-import io.github.shahbozolmosov.type.UpdateType;
+import io.github.shahbozolmosov.model.MessageType;
+import io.github.shahbozolmosov.model.UpdateType;
 
 import java.util.List;
 import java.util.Optional;

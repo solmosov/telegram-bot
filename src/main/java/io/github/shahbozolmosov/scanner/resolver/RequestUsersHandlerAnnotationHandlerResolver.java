@@ -4,7 +4,7 @@ import io.github.shahbozolmosov.annotation.RequestUsersHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.HandlerMapping;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.type.MessageType;
+import io.github.shahbozolmosov.model.MessageType;
 
 import java.lang.reflect.Method;
 

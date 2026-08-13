@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.type;
+package io.github.shahbozolmosov.model;
 
 public enum UpdateType {
     MESSAGE,

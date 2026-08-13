@@ -41,7 +41,7 @@ public final class TelegramClient {
     private static final int MAX_NESTING_DEPTH = 100;
     private static final int MAX_STRING_LENGTH = 1_000_000;
     private static final int CONNECTION_TIMEOUT = 10; // 10 second
-    private static final int GET_UPDATES_REQUEST_TIMEOUT = 40; // 40 second
+    private static final int TELEGRAM_API_TIMEOUT = 30; // 30 second
     private static final int MAX_UPDATES = 100;
 
     public TelegramClient(String botToken) {
@@ -83,11 +83,11 @@ public final class TelegramClient {
     }
 
     public TelegramResponse<List<Update>> getUpdates(long offset) {
-        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout=30";
+        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout="+TELEGRAM_API_TIMEOUT;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(GET_UPDATES_REQUEST_TIMEOUT))
+                .timeout(Duration.ofSeconds(TELEGRAM_API_TIMEOUT+10))
                 .GET()
                 .build();
 
@@ -119,7 +119,6 @@ public final class TelegramClient {
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
-        System.out.println("[TelegramClient] jsonBody: " + jsonBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -261,8 +260,6 @@ public final class TelegramClient {
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
-
-        System.out.println("caption ------> ");
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

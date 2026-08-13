@@ -1,6 +1,4 @@
-package io.github.shahbozolmosov.media;
-
-import io.github.shahbozolmosov.request.media.SendPhotoRequest;
+package io.github.shahbozolmosov.request.media;
 
 public final class Photo {
 

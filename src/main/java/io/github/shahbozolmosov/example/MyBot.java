@@ -1,7 +1,7 @@
 package io.github.shahbozolmosov.example;
 
 import io.github.shahbozolmosov.annotation.BotHandler;
-import io.github.shahbozolmosov.annotation.Command;
+import io.github.shahbozolmosov.annotation.CommandHandler;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 
@@ -10,7 +10,7 @@ import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 @BotHandler
 public class MyBot {
 
-    @Command("/start")
+    @CommandHandler("/start")
     public void start(BotContext context) {
         String html = """
                 <b>Welcome, %s! 👋</b>

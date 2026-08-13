@@ -91,12 +91,15 @@ public final class TelegramClient {
                 .GET()
                 .build();
 
-
-        return execute(
+        var responseBody = execute(
                 request,
                 new TypeReference<TelegramResponse<List<Update>>>() {
                 }
         );
+
+        updateCountValidator.validate(responseBody.result());
+
+        return responseBody;
     }
 
 
@@ -326,11 +329,6 @@ public final class TelegramClient {
     ) {
         String responseBody = execute(request);
 
-
-        if (typeReference.getType().getTypeName().contains("TelegramResponse<java.util.List<io.github.shahbozolmosov.model.Update>>")) {
-            updateCountValidator.validate(responseBody);
-        }
-
         T response = objectMapper.readValue(
                 responseBody,
                 typeReference
@@ -362,23 +360,10 @@ public final class TelegramClient {
                 );
             }
 
-            String responseBody = new String(
+            return new String(
                     body,
                     StandardCharsets.UTF_8
             );
-
-//            if (response.statusCode() != 200) {
-//                System.err.println(
-//                        "[TelegramClient] Telegram API error: "
-//                                + responseBody
-//                );
-//
-//                throw new IOException(
-//                        "Telegram API returned HTTP status: " + response.statusCode()
-//                );
-//            }
-
-            return responseBody;
         } catch (IOException ex) {
             throw new TelegramClientException(
                     "Failed to communicate with Telegram API",

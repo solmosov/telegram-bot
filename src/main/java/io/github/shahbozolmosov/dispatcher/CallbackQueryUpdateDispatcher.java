@@ -1,10 +1,13 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.callback.CallbackParamResolver;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.CallbackQuery;
 import io.github.shahbozolmosov.model.Update;
+import io.github.shahbozolmosov.registry.CallbackRegistry;
 import io.github.shahbozolmosov.registry.Registry;
+import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 import io.github.shahbozolmosov.type.UpdateType;
 
 import java.util.Arrays;
@@ -27,21 +30,17 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
     public void dispatch(Update update, BotContext botContext) {
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        String data = callbackQuery.data();
-
-        String[] parts = data.split(":");
-
-        String prefix = parts[0];
-
-        String[] params = Arrays.copyOfRange(parts, 1, parts.length);
+        String key = callbackQuery.data();
 
         // BotContext
-        botContext.setCallbackParams(params);
+//        botContext.setCallbackParams(params);
 
-        List<Handler> handlers = registry.findCallbackQuery(prefix);
+        List<CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
 
-        for (Handler handler : handlers) {
-            handler.handle(botContext);
+        for (CallbackHandlerGroup group : handlerGroups) {
+            var params = CallbackParamResolver.params(group.callbackPattern(), key);
+            botContext.setCallbackParams(params);
+            group.handler().handle(botContext);
         }
     }
 }

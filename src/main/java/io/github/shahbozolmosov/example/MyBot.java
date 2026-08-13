@@ -1,18 +1,12 @@
 package io.github.shahbozolmosov.example;
 
 import io.github.shahbozolmosov.annotation.BotHandler;
+import io.github.shahbozolmosov.annotation.CallbackQuery;
 import io.github.shahbozolmosov.annotation.Command;
 import io.github.shahbozolmosov.annotation.Message;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
-import io.github.shahbozolmosov.media.Video;
-import io.github.shahbozolmosov.model.InputFIle;
-import io.github.shahbozolmosov.request.media.SendVideoRequest;
-import io.github.shahbozolmosov.request.media.SendVideoUploadRequest;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 
@@ -30,67 +24,49 @@ public class MyBot {
                 .formatted(context.message().from().firstName());
 
         var keyboard = ReplyKeyboard.of(
-                button("My Video"),
-                button("My Local Video")
+                button("Orders")
         );
 
         context.message().sendHtml(html, keyboard);
     }
 
-    @Message("My Video")
-    public void myVideo(BotContext context) {
-        var video = Video
-                .video("https://loremipsum.video/vt/powerpoint-1.mp4")
-                .hasSpoiler(true)
-                .html("""
-                        <b> Lorem ipsum video </b>
-                        
-                        <i> 1920x1080 @ 30 fps, and 30s long.</i>
-                        """);
+    @Message("Orders")
+    public void orders(BotContext context) {
 
         var keyboard = InlineKeyboard.of(
                 InlineKeyboard.row(
-                        InlineKeyboard.button("Button 1", "button1"),
-                        InlineKeyboard.button("Button 2", "button2")
-                ),
-                InlineKeyboard.button("Button 3", "button3")
+                        InlineKeyboard.button("1", "orders:page:1:sort:desc"),
+                        InlineKeyboard.button("2", "orders:page:2:sort:desc"),
+                        InlineKeyboard.button("3", "orders:page:3:sort:desc"),
+                        InlineKeyboard.button("...", "orders:page:10:sort:desc")
+                )
         );
 
-        context.message().sendVideo(video, keyboard);
+        context.message().sendText("Page 1/10 \n\n", keyboard);
     }
 
-    @Message("My Local Video")
-    public void myLocalVideo(BotContext context) {
-        var video = Video
-                .video(getMockFile("/files/video.mp4"), "1080p video", "application/mp4")
-                .hasSpoiler(true)
-                .caption("Mock video");
 
-        var keyboard = InlineKeyboard.of(
-                InlineKeyboard.row(
-                        InlineKeyboard.button("Button 1", "button1"),
-                        InlineKeyboard.button("Button 2", "button2"),
-                        InlineKeyboard.button("Button 3", "button3")
-                ),
-                InlineKeyboard.button("Button 4", "button4")
-        );
+    @CallbackQuery("orders:page:1:sort:desc")
+    public void page1(BotContext context) {
+        var html = """
+                Page 1
+                
+                <pre>%s</pre>
+                """.formatted(context.callbackQuery().data());
 
-        context.message().sendVideo(video, keyboard);
-
+        context.message().sendHtml("Static page 1");
     }
 
-    private byte[] getMockFile(String path) {
-        byte[] pdfBytes;
-        try (InputStream is = getClass().getResourceAsStream(path)) {
-            if (is == null) {
-                throw new IllegalStateException("PDF is not found: " + path);
-            }
-            pdfBytes = is.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @CallbackQuery("orders:page:{page}:sort:{sort}")
+    public void dynamic(BotContext context) {
 
-        return pdfBytes;
+        var params = context.callbackParams();
+
+        context.message().sendHtml("""
+                    <b>Dynamic</b>
+                
+                   - Page = %s
+                   - Sort = %s 
+                """.formatted(params.get("page"), params.get("sort")));
     }
-
 }

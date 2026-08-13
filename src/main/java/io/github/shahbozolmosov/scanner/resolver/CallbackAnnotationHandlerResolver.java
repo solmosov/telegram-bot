@@ -1,6 +1,7 @@
 package io.github.shahbozolmosov.scanner.resolver;
 
 import io.github.shahbozolmosov.annotation.CallbackQuery;
+import io.github.shahbozolmosov.callback.CallbackParamResolver;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
 

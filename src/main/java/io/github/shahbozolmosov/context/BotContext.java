@@ -3,11 +3,14 @@ package io.github.shahbozolmosov.context;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.model.*;
 
+import java.util.Map;
+import java.util.Objects;
+
 public final class BotContext {
 
     private final TelegramClient telegramClient;
     private final Update update;
-    private String[] callbackParams;
+    private Map<String, Object> callbackParams;
 
 
     private final MessageContext messageContext;
@@ -23,7 +26,8 @@ public final class BotContext {
         this.update = update;
         this.messageContext = update.message() != null
                 ? new MessageContext(telegramClient, update.message())
-                : null;
+                : update.callbackQuery().message() != null ? new MessageContext(telegramClient, update.callbackQuery().message())
+                  : null;
 
         this.photoContext = update.message() != null
                 ? new PhotoContext(update.message())
@@ -64,11 +68,11 @@ public final class BotContext {
 
 
     // --------------------- Callback Params ---------------------
-    public void setCallbackParams(String[] callbackParams) {
+    public void setCallbackParams(Map<String, Object> callbackParams) {
         this.callbackParams = callbackParams;
     }
 
-    public String[] callbackParams() {
+    public Map<String, Object> callbackParams() {
         return callbackParams;
     }
 }

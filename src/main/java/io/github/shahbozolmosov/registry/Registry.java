@@ -1,10 +1,10 @@
 package io.github.shahbozolmosov.registry;
 
 import io.github.shahbozolmosov.handler.Handler;
+import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 import io.github.shahbozolmosov.type.MessageType;
 
 import java.util.List;
-import java.util.Map;
 
 public final class Registry {
 
@@ -37,7 +37,7 @@ public final class Registry {
         callbackRegistry.register(key, handler);
     }
 
-    public List<Handler> findCallbackQuery(String key) {
+    public List<CallbackHandlerGroup> findCallbackQuery(String key) {
         return callbackRegistry.find(key);
     }
 

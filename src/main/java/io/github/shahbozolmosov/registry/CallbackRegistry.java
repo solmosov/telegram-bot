@@ -1,6 +1,8 @@
 package io.github.shahbozolmosov.registry;
 
+import io.github.shahbozolmosov.callback.CallbackParamResolver;
 import io.github.shahbozolmosov.handler.Handler;
+import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,27 +10,37 @@ import java.util.List;
 import java.util.Map;
 
 public final class CallbackRegistry {
-    private final Map<String, List<Handler>> handlers = new HashMap<>();
+    private final Map<String, List<CallbackHandlerGroup>> handlers = new HashMap<>();
 
     public void register(
             String key,
             Handler handler
     ) {
-        handlers.computeIfAbsent(key, k -> new ArrayList<>())
-                .add(handler);
+        String mapKey = CallbackParamResolver.callbackKey(key);
+        handlers.computeIfAbsent(mapKey, k -> new ArrayList<>())
+                .add(new CallbackHandlerGroup(key, handler));
     }
 
-    public List<Handler> find(String key) {
-        List<Handler> result = new ArrayList<>();
+    public List<CallbackHandlerGroup> find(String key) {
+        String mapKey = CallbackParamResolver.updateKey(key);
 
-        List<Handler> exactHandlers = handlers.get(key);
+
+        List<CallbackHandlerGroup> result = new ArrayList<>();
+
+        List<CallbackHandlerGroup> exactHandlers = handlers.get(key);
 
         if (exactHandlers != null) {
             result.addAll(exactHandlers);
+        } else {
+            List<CallbackHandlerGroup> paramHandlers = handlers.get(mapKey);
+            if (paramHandlers != null) {
+                result.addAll(paramHandlers);
+            }
         }
 
+
         if (key != null) {
-            List<Handler> globalHandlers = handlers.get(null);
+            List<CallbackHandlerGroup> globalHandlers = handlers.get(null);
 
             if (globalHandlers != null) {
                 result.addAll(globalHandlers);

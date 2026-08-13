@@ -1,9 +1,7 @@
-package io.github.shahbozolmosov.callback;
+package io.github.shahbozolmosov.dispatcher.resolver;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CallbackParamResolver {
     private CallbackParamResolver() {

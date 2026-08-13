@@ -1,6 +1,6 @@
 package io.github.shahbozolmosov.registry;
 
-import io.github.shahbozolmosov.callback.CallbackParamResolver;
+import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 

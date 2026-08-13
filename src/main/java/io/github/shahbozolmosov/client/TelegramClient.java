@@ -367,16 +367,16 @@ public final class TelegramClient {
                     StandardCharsets.UTF_8
             );
 
-            if (response.statusCode() != 200) {
-                System.err.println(
-                        "[TelegramClient] Telegram API error: "
-                                + responseBody
-                );
-
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
+//            if (response.statusCode() != 200) {
+//                System.err.println(
+//                        "[TelegramClient] Telegram API error: "
+//                                + responseBody
+//                );
+//
+//                throw new IOException(
+//                        "Telegram API returned HTTP status: " + response.statusCode()
+//                );
+//            }
 
             return responseBody;
         } catch (IOException ex) {

@@ -10,6 +10,7 @@ import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
 import io.github.shahbozolmosov.type.MessageType;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public final class HandlerRegistrar {
                     Handler handler = context -> {
                         try {
                             method.invoke(instance, context);
+                        } catch (InvocationTargetException ex) {
+                            Throwable cause = ex.getCause();
+                            System.err.println("Handler execution failed for update: " + cause);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }

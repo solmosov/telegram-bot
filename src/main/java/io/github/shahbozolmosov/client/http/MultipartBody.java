@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.http;
+package io.github.shahbozolmosov.client.http;
 
 public final class MultipartBody {
 

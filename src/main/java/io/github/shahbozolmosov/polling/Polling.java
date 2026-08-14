@@ -8,15 +8,12 @@ import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class Polling {
 
     private final TelegramClient client;
     private final Dispatcher dispatcher;
-    private final ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+    private final ChatSequentialExecutor chatExecutor = new ChatSequentialExecutor();
 
     private volatile boolean running = true;
     private long offset;
@@ -51,7 +48,9 @@ public class Polling {
         for (Update update : response.result()) {
             offset = update.updateId() + 1;
 
-            executorService.submit(() -> {
+            long chatId = extractChatId(update);
+
+            chatExecutor.submit(chatId, () -> {
                 try {
                     BotContext context = new BotContext(client, update);
                     dispatcher.dispatch(update, context);
@@ -64,23 +63,25 @@ public class Polling {
         }
     }
 
+    private long extractChatId(Update update) {
+        if (update.message() != null) {
+            return update.message().chat().id();
+        }
+
+        if (update.callbackQuery() != null) {
+            return update.callbackQuery().message().chat().id();
+        }
+
+        return update.updateId();
+    }
+
     public void stop() {
         running = false;
         shutdown();
     }
 
     private void shutdown() {
-        executorService.shutdown();
-
-        try {
-            if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
-                System.err.println("[Telegram Bot] Task did not finish within 30s, forcing shutdown");
-                executorService.shutdownNow();
-            }
-        } catch (InterruptedException ex) {
-            executorService.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+        chatExecutor.shutdown();
     }
 
 }

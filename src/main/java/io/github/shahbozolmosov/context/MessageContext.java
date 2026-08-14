@@ -33,7 +33,7 @@ public final class MessageContext {
     }
 
     public String chatId() {
-        return message.chat().id();
+        return String.valueOf(message.chat().id());
     }
 
     public From from() {

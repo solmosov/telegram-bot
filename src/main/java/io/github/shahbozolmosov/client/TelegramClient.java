@@ -36,6 +36,7 @@ public final class TelegramClient {
     private final ObjectMapper objectMapper;
     private final UpdateCountValidator updateCountValidator;
     private final MultipartBodyBuilder multipartBodyBuilder;
+    private final RateLimiter rateLimiter;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
@@ -50,6 +51,7 @@ public final class TelegramClient {
                 .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
                 .build();
 
+        this.rateLimiter = new RateLimiter(30);
 
         // JACKSON
         StreamReadConstraints constraints = StreamReadConstraints.builder()
@@ -83,11 +85,11 @@ public final class TelegramClient {
     }
 
     public TelegramResponse<List<Update>> getUpdates(long offset) {
-        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout="+TELEGRAM_API_TIMEOUT;
+        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout=" + TELEGRAM_API_TIMEOUT;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(TELEGRAM_API_TIMEOUT+10))
+                .timeout(Duration.ofSeconds(TELEGRAM_API_TIMEOUT + 10))
                 .GET()
                 .build();
 
@@ -116,6 +118,14 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendMessage(
             SendMessageRequest requestBody
     ) {
+
+        try {
+            rateLimiter.acquire(Long.parseLong(requestBody.chatId()));
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new TelegramClientException("Interrupted while waiting for limiter", ex);
+        }
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);

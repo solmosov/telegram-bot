@@ -8,6 +8,7 @@ import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.model.User;
+import io.github.shahbozolmosov.request.DeleteMessageRequest;
 import io.github.shahbozolmosov.request.EditMessageRequest;
 import io.github.shahbozolmosov.request.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.*;
@@ -170,6 +171,27 @@ public final class TelegramClient {
         return execute(
                 request,
                 new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    // --------------------- Delete Message ---------------------
+    public TelegramResponse<Boolean> deleteMessage(
+            DeleteMessageRequest requestBody
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/deleteMessage";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Boolean>>() {
                 }
         );
     }

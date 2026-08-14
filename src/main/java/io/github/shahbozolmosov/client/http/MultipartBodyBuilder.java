@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.http;
+package io.github.shahbozolmosov.client.http;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

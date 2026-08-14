@@ -1,16 +1,13 @@
 package io.github.shahbozolmosov.dispatcher;
 
-import io.github.shahbozolmosov.callback.CallbackParamResolver;
+import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.context.BotContext;
-import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.CallbackQuery;
 import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.registry.CallbackRegistry;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
-import io.github.shahbozolmosov.type.UpdateType;
+import io.github.shahbozolmosov.model.UpdateType;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {

@@ -1,8 +1,6 @@
-package io.github.shahbozolmosov.media;
+package io.github.shahbozolmosov.request.media;
 
 import io.github.shahbozolmosov.model.InputFIle;
-import io.github.shahbozolmosov.request.media.SendVideoRequest;
-import io.github.shahbozolmosov.request.media.SendVideoUploadRequest;
 
 public final class Video {
 

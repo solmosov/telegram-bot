@@ -1,15 +1,11 @@
 package io.github.shahbozolmosov.scanner;
 
 import io.github.shahbozolmosov.annotation.BotHandler;
-import io.github.shahbozolmosov.annotation.Command;
-import io.github.shahbozolmosov.annotation.Message;
-import io.github.shahbozolmosov.annotation.Updates;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registry.HandlerMapping;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
-import io.github.shahbozolmosov.type.MessageType;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -46,6 +42,9 @@ public final class HandlerRegistrar {
                     Handler handler = context -> {
                         try {
                             method.invoke(instance, context);
+                        } catch (InvocationTargetException ex) {
+                            Throwable cause = ex.getCause();
+                            System.err.println("Handler execution failed for update: " + cause);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }

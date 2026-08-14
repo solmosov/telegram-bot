@@ -1,9 +1,7 @@
-package io.github.shahbozolmosov.callback;
+package io.github.shahbozolmosov.dispatcher.resolver;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class CallbackParamResolver {
     private CallbackParamResolver() {
@@ -71,11 +69,31 @@ public class CallbackParamResolver {
             String dataPart = dataParts[i];
 
             if (patternPart.startsWith("{") && patternPart.endsWith("}")) {
-                String paramName = patternPart.substring(1, patternPart.length() - 1);
-                result.put(paramName, dataPart);
+                String[] paramParts = patternPart.substring(1, patternPart.length() - 1)
+                        .split("\\|");
+                String paramName = paramParts[0];
+                String paramType = paramParts.length > 1 ? paramParts[1] : null;
+
+                Object paramValue = parseValueByType(dataPart, paramType);
+
+                result.put(paramName, paramValue);
             }
         }
 
         return result;
+    }
+
+    private static Object parseValueByType(String dataPart, String paramType) {
+        if (paramType == null) return dataPart;
+
+        return switch (paramType) {
+            case "boolean" -> Boolean.valueOf(dataPart);
+            case "short" -> Short.valueOf(dataPart);
+            case "int" -> Integer.valueOf(dataPart);
+            case "long" -> Long.valueOf(dataPart);
+            case "double" -> Double.valueOf(dataPart);
+            case "flout" -> Float.valueOf(dataPart);
+            default -> String.valueOf(dataPart);
+        };
     }
 }

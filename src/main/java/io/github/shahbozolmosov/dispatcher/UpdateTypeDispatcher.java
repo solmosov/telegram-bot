@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.dispatcher;
 
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.type.UpdateType;
+import io.github.shahbozolmosov.model.UpdateType;
 
 public interface UpdateTypeDispatcher {
 

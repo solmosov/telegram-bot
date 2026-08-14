@@ -1,11 +1,9 @@
 package io.github.shahbozolmosov.example;
 
 import io.github.shahbozolmosov.annotation.BotHandler;
-import io.github.shahbozolmosov.annotation.CallbackQuery;
-import io.github.shahbozolmosov.annotation.Command;
-import io.github.shahbozolmosov.annotation.Message;
+import io.github.shahbozolmosov.annotation.CommandHandler;
+import io.github.shahbozolmosov.annotation.MessageHandler;
 import io.github.shahbozolmosov.context.BotContext;
-import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
@@ -13,7 +11,7 @@ import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 @BotHandler
 public class MyBot {
 
-    @Command("/start")
+    @CommandHandler("/start")
     public void start(BotContext context) {
         String html = """
                 <b>Welcome, %s! 👋</b>
@@ -30,43 +28,26 @@ public class MyBot {
         context.message().sendHtml(html, keyboard);
     }
 
-    @Message("Orders")
-    public void orders(BotContext context) {
+    @MessageHandler("hello")
+    public void hello(BotContext context) {
 
-        var keyboard = InlineKeyboard.of(
-                InlineKeyboard.row(
-                        InlineKeyboard.button("1", "orders:page:1:sort:desc"),
-                        InlineKeyboard.button("2", "orders:page:2:sort:desc"),
-                        InlineKeyboard.button("3", "orders:page:3:sort:desc"),
-                        InlineKeyboard.button("...", "orders:page:10:sort:desc")
-                )
-        );
+        for (int i = 1; i <= 10; i++) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                System.out.println("Interrupted exception" + ex.getMessage());
+            }
 
-        context.message().sendText("Page 1/10 \n\n", keyboard);
+            if (i == 3) {
+                System.out.println("Business process completed");
+            }
+        }
+
+        context.message().sendText("Hello " + context.message().from().firstName());
     }
 
-
-    @CallbackQuery("orders:page:1:sort:desc")
-    public void page1(BotContext context) {
-        var html = """
-                Page 1
-                
-                <pre>%s</pre>
-                """.formatted(context.callbackQuery().data());
-
-        context.message().sendHtml("Static page 1");
-    }
-
-    @CallbackQuery("orders:page:{page}:sort:{sort}")
-    public void dynamic(BotContext context) {
-
-        var params = context.callbackParams();
-
-        context.message().sendHtml("""
-                    <b>Dynamic</b>
-                
-                   - Page = %s
-                   - Sort = %s 
-                """.formatted(params.get("page"), params.get("sort")));
+    @MessageHandler("hello2")
+    public void hello2(BotContext context){
+        context.message().sendText("Hello 2 " + context.message().from().firstName());
     }
 }

@@ -2,8 +2,8 @@ package io.github.shahbozolmosov.client;
 
 import io.github.shahbozolmosov.exception.TelegramApiException;
 import io.github.shahbozolmosov.exception.TelegramClientException;
-import io.github.shahbozolmosov.http.MultipartBody;
-import io.github.shahbozolmosov.http.MultipartBodyBuilder;
+import io.github.shahbozolmosov.client.http.MultipartBody;
+import io.github.shahbozolmosov.client.http.MultipartBodyBuilder;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
@@ -36,12 +36,13 @@ public final class TelegramClient {
     private final ObjectMapper objectMapper;
     private final UpdateCountValidator updateCountValidator;
     private final MultipartBodyBuilder multipartBodyBuilder;
+    private final RateLimiter rateLimiter;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
     private static final int MAX_STRING_LENGTH = 1_000_000;
     private static final int CONNECTION_TIMEOUT = 10; // 10 second
-    private static final int GET_UPDATES_REQUEST_TIMEOUT = 40; // 40 second
+    private static final int TELEGRAM_API_TIMEOUT = 30; // 30 second
     private static final int MAX_UPDATES = 100;
 
     public TelegramClient(String botToken) {
@@ -50,6 +51,7 @@ public final class TelegramClient {
                 .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
                 .build();
 
+        this.rateLimiter = new RateLimiter(30);
 
         // JACKSON
         StreamReadConstraints constraints = StreamReadConstraints.builder()
@@ -83,20 +85,23 @@ public final class TelegramClient {
     }
 
     public TelegramResponse<List<Update>> getUpdates(long offset) {
-        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout=30";
+        String url = API_BASE_URL + "/bot" + botToken + "/getUpdates?offset=" + offset + "&timeout=" + TELEGRAM_API_TIMEOUT;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .timeout(Duration.ofSeconds(GET_UPDATES_REQUEST_TIMEOUT))
+                .timeout(Duration.ofSeconds(TELEGRAM_API_TIMEOUT + 10))
                 .GET()
                 .build();
 
-
-        return execute(
+        var responseBody = execute(
                 request,
                 new TypeReference<TelegramResponse<List<Update>>>() {
                 }
         );
+
+        updateCountValidator.validate(responseBody.result());
+
+        return responseBody;
     }
 
 
@@ -113,10 +118,17 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendMessage(
             SendMessageRequest requestBody
     ) {
+
+        try {
+            rateLimiter.acquire(Long.parseLong(requestBody.chatId()));
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new TelegramClientException("Interrupted while waiting for limiter", ex);
+        }
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
-        System.out.println("[TelegramClient] jsonBody: " + jsonBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -259,8 +271,6 @@ public final class TelegramClient {
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
 
-        System.out.println("caption ------> ");
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
@@ -326,11 +336,6 @@ public final class TelegramClient {
     ) {
         String responseBody = execute(request);
 
-
-        if (typeReference.getType().getTypeName().contains("TelegramResponse<java.util.List<io.github.shahbozolmosov.model.Update>>")) {
-            updateCountValidator.validate(responseBody);
-        }
-
         T response = objectMapper.readValue(
                 responseBody,
                 typeReference
@@ -362,23 +367,10 @@ public final class TelegramClient {
                 );
             }
 
-            String responseBody = new String(
+            return new String(
                     body,
                     StandardCharsets.UTF_8
             );
-
-            if (response.statusCode() != 200) {
-                System.err.println(
-                        "[TelegramClient] Telegram API error: "
-                                + responseBody
-                );
-
-                throw new IOException(
-                        "Telegram API returned HTTP status: " + response.statusCode()
-                );
-            }
-
-            return responseBody;
         } catch (IOException ex) {
             throw new TelegramClientException(
                     "Failed to communicate with Telegram API",

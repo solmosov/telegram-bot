@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record Document(
+public record DocumentInfo(
         @JsonProperty("file_name")
         String fileName,
 

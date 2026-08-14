@@ -80,6 +80,10 @@ public final class TelegramBot {
                 telegramClient,
                 dispatcher
         );
+
+
+        Runtime.getRuntime().addShutdownHook(new Thread(polling::stop));
+
         polling.start();
     }
 }

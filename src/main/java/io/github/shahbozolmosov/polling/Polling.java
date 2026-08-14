@@ -6,7 +6,6 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.TelegramClientException;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
-import tools.jackson.databind.ser.jdk.IterableSerializer;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;

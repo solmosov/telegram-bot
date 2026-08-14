@@ -78,15 +78,15 @@ public final class MessageContext {
     }
 
     // --------------------- Edit message ---------------------
-    public TelegramResponse<Message> editText(String text) {
+    public TelegramResponse<Message> editText(String text, long messageId) {
         return editText(
+                messageId,
                 chatId(),
-                messageId(),
                 text
         );
     }
 
-    public TelegramResponse<Message> editText(String chatId, long messageId, String text) {
+    public TelegramResponse<Message> editText(long messageId, String chatId, String text) {
         return telegramClient.editMessage(
                 chatId,
                 messageId,
@@ -94,10 +94,10 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editText(String text, ReplyMarkup replyMarkup) {
+    public TelegramResponse<Message> editText(long messageId, String text, ReplyMarkup replyMarkup) {
         return editText(
                 chatId(),
-                messageId(),
+                messageId,
                 text,
                 replyMarkup
         );
@@ -152,22 +152,41 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editHtml(String text) {
-        return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
+    public TelegramResponse<Message> editHtml(long messageId, String html) {
+        return editHtml(
+                chatId(),
+                messageId,
+                html
+        );
+    }
+
+    public TelegramResponse<Message> editHtml(String chatId, long messageId, String html) {
+        return telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId,
+                        messageId,
+                        html,
                         ParseMode.HTML,
                         null
                 )
         );
     }
 
-    public TelegramResponse<Message> editHtml(String text, ReplyMarkup replyMarkup) {
-        return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
+    public TelegramResponse<Message> editHtml(long messageId, String html, ReplyMarkup replyMarkup) {
+        return editHtml(
+                chatId(),
+                messageId,
+                html,
+                replyMarkup
+        );
+    }
+
+    public TelegramResponse<Message> editHtml(String chatId, long messageId, String html, ReplyMarkup replyMarkup) {
+        return telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId,
+                        messageId,
+                        html,
                         ParseMode.HTML,
                         replyMarkup
                 )
@@ -212,22 +231,41 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editMarkdown(String text) {
-        return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
+    public TelegramResponse<Message> editMarkdown(long messageId, String value) {
+        return editMarkdown(
+                chatId(),
+                messageId,
+                value
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdown(String chatId, long messageId, String value) {
+        return telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId,
+                        messageId,
+                        value,
                         ParseMode.MARKDOWN,
                         null
                 )
         );
     }
 
-    public TelegramResponse<Message> editMarkdown(String text, ReplyMarkup replyMarkup) {
-        return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
+    public TelegramResponse<Message> editMarkdown(long messageId, String value, ReplyMarkup replyMarkup) {
+        return editMarkdown(
+                chatId(),
+                messageId,
+                value,
+                replyMarkup
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdown(String chatId, long messageId, String value, ReplyMarkup replyMarkup) {
+        return telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId,
+                        messageId,
+                        value,
                         ParseMode.MARKDOWN,
                         replyMarkup
                 )
@@ -272,22 +310,42 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> editMarkdownV2(String text) {
-        return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
+    public TelegramResponse<Message> editMarkdownV2(long messageId, String value) {
+        return editMarkdownV2(
+                chatId(),
+                messageId,
+                value
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdownV2(String chatId, long messageId, String value) {
+        return telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId,
+                        messageId,
+                        value,
                         ParseMode.MARKDOWN_V2,
                         null
                 )
         );
     }
 
-    public TelegramResponse<Message> editMarkdownV2(String text, ReplyMarkup replyMarkup) {
-        return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
+
+    public TelegramResponse<Message> editMarkdownV2(long messageId, String value, ReplyMarkup replyMarkup) {
+        return editMarkdownV2(
+                chatId(),
+                messageId,
+                value,
+                replyMarkup
+        );
+    }
+
+    public TelegramResponse<Message> editMarkdownV2(String chatId, long messageId, String value, ReplyMarkup replyMarkup) {
+        return telegramClient.editMessage(
+                new EditMessageRequest(
+                        chatId,
+                        messageId,
+                        value,
                         ParseMode.MARKDOWN_V2,
                         replyMarkup
                 )

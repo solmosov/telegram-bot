@@ -260,6 +260,9 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendDocument(
             SendDocumentRequest requestBody
     ) {
+
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
@@ -280,6 +283,8 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendDocument(
             SendDocumentUploadRequest requestBody
     ) {
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
         MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);
@@ -298,6 +303,8 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendPhoto(
             SendPhotoRequest requestBody
     ) {
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
@@ -319,6 +326,8 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoRequest requestBody
     ) {
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
@@ -340,6 +349,8 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoUploadRequest requestBody
     ) {
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 
         MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);

@@ -42,6 +42,10 @@ public abstract class SendMediaRequest {
     @JsonProperty("reply_markup")
     protected final ReplyMarkup replyMarkup;
 
+    public String chatId() {
+        return chatId;
+    }
+
     protected SendMediaRequest(Builder<?> builder) {
         this.chatId = builder.chatId;
         this.businessConnectionId = builder.businessConnectionId;

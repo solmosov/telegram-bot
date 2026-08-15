@@ -38,6 +38,7 @@ public final class TelegramClient {
     private final UpdateCountValidator updateCountValidator;
     private final MultipartBodyBuilder multipartBodyBuilder;
     private final RateLimiter rateLimiter;
+    private final RateLimiter globalRateLimitter;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
@@ -53,6 +54,8 @@ public final class TelegramClient {
                 .build();
 
         this.rateLimiter = new RateLimiter(30);
+        this.globalRateLimitter = new RateLimiter(30);
+
 
         // JACKSON
         StreamReadConstraints constraints = StreamReadConstraints.builder()
@@ -120,12 +123,7 @@ public final class TelegramClient {
             SendMessageRequest requestBody
     ) {
 
-        try {
-            rateLimiter.acquire(Long.parseLong(requestBody.chatId()));
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new TelegramClientException("Interrupted while waiting for limiter", ex);
-        }
+        acquirePermit(requestBody.chatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
@@ -158,6 +156,9 @@ public final class TelegramClient {
     public TelegramResponse<Message> editMessage(
             EditMessageRequest requestBody
     ) {
+
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
@@ -179,6 +180,8 @@ public final class TelegramClient {
     public TelegramResponse<Boolean> deleteMessage(
             DeleteMessageRequest requestBody
     ) {
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/deleteMessage";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
@@ -200,6 +203,9 @@ public final class TelegramClient {
     public TelegramResponse<Boolean> answerCallbackQuery(
             String callbackQueryId
     ) {
+
+        acquirePermitGlobal();
+
         String url = API_BASE_URL + "/bot" + botToken + "/answerCallbackQuery";
 
         String jsonBody = objectMapper.writeValueAsString(
@@ -225,6 +231,9 @@ public final class TelegramClient {
             String callbackQueryId,
             String text
     ) {
+
+        acquirePermitGlobal();
+
         String url = API_BASE_URL + "/bot" + botToken + "/answerCallbackQuery";
 
         String jsonBody = objectMapper.writeValueAsString(
@@ -403,6 +412,24 @@ public final class TelegramClient {
                     "Telegram API request was interrupted",
                     ex
             );
+        }
+    }
+
+    private void acquirePermit(String chatId) {
+        try {
+            rateLimiter.acquire(Long.parseLong(chatId));
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new TelegramClientException("Interrupted while waiting for limiter", ex);
+        }
+    }
+
+    private void acquirePermitGlobal() {
+        try {
+            globalRateLimitter.acquire(0L);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new TelegramClientException("Interrupted while waiting for limiter", ex);
         }
     }
 }

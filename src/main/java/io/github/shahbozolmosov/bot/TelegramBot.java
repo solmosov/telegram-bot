@@ -26,6 +26,7 @@ public final class TelegramBot {
     private Thread pollingThread;
 
     private final long shutdownTimeoutMillis;
+    private final ExecutionMode executionMode;
 
     public TelegramBot(String botToken) {
         this(botToken, TelegramBotConfig.defaults());
@@ -33,6 +34,7 @@ public final class TelegramBot {
 
     public TelegramBot(String botToken, TelegramBotConfig config) {
         this.shutdownTimeoutMillis = config.getShutdownTimeoutMillis();
+        this.executionMode = config.getExecutionMode();
 
         this.telegramClient = new TelegramClient(botToken);
         this.registry = new Registry();
@@ -87,7 +89,8 @@ public final class TelegramBot {
         // Polling
         polling = new Polling(
                 telegramClient,
-                dispatcher
+                dispatcher,
+                executionMode
         );
 
         pollingThread = new Thread(() -> {

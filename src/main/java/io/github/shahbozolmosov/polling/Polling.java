@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.polling;
 
+import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
@@ -13,17 +14,22 @@ public class Polling {
 
     private final TelegramClient client;
     private final Dispatcher dispatcher;
-    private final ChatSequentialExecutor chatExecutor = new ChatSequentialExecutor();
+    private final UpdateExecutor updateExecutor;
 
     private volatile boolean running = true;
     private long offset;
 
     public Polling(
             TelegramClient client,
-            Dispatcher dispatcher
+            Dispatcher dispatcher,
+            ExecutionMode executionMode
     ) {
         this.client = client;
         this.dispatcher = dispatcher;
+        this.updateExecutor = switch (executionMode) {
+            case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
+            case VIRTUAL_THREAD -> new VirtualThreadUpdateExecutor();
+        };
     }
 
     public void start() {
@@ -52,9 +58,10 @@ public class Polling {
         for (Update update : response.result()) {
             offset = update.updateId() + 1;
 
+
             long chatId = extractChatId(update);
 
-            chatExecutor.submit(chatId, () -> {
+            updateExecutor.submit(chatId, () -> {
                 try {
                     BotContext context = new BotContext(client, update);
                     dispatcher.dispatch(update, context);
@@ -85,7 +92,7 @@ public class Polling {
 
     public void shutdown() {
         System.out.println("[Telegram Bot] Polling Shutting down...");
-        chatExecutor.shutdown();
+        updateExecutor.shutdown();
         System.out.println("[Telegram Bot] Polling Shutdown completed");
     }
 

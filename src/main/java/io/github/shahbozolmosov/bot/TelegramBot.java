@@ -78,7 +78,7 @@ public final class TelegramBot {
         handlerRegistrar.register(packageName);
 
         // Polling
-        Polling polling = new Polling(
+        polling = new Polling(
                 telegramClient,
                 dispatcher
         );

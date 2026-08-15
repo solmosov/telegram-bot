@@ -38,7 +38,7 @@ public final class TelegramClient {
     private final UpdateCountValidator updateCountValidator;
     private final MultipartBodyBuilder multipartBodyBuilder;
     private final RateLimiter rateLimiter;
-    private final RateLimiter globalRateLimitter;
+    private final RateLimiter globalRateLimiter;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
     private static final int MAX_NESTING_DEPTH = 100;
@@ -54,7 +54,7 @@ public final class TelegramClient {
                 .build();
 
         this.rateLimiter = new RateLimiter(30);
-        this.globalRateLimitter = new RateLimiter(30);
+        this.globalRateLimiter = new RateLimiter(30);
 
 
         // JACKSON
@@ -361,6 +361,11 @@ public final class TelegramClient {
     /* ---------------------------------------------
                        HELPERS
     -------------------------------------------- */
+    public void shutdown(){
+        this.rateLimiter.shutdown();
+        this.globalRateLimiter.shutdown();
+    }
+
     private <T> T execute(
             HttpRequest request,
             TypeReference<T> typeReference
@@ -426,7 +431,7 @@ public final class TelegramClient {
 
     private void acquirePermitGlobal() {
         try {
-            globalRateLimitter.acquire(0L);
+            globalRateLimiter.acquire(0L);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new TelegramClientException("Interrupted while waiting for limiter", ex);

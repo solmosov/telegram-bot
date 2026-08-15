@@ -22,6 +22,8 @@ public final class TelegramBot {
     private final Registry registry;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
+    private Polling polling;
+    private Thread pollingThread;
 
 
     public TelegramBot(String botToken) {
@@ -81,9 +83,45 @@ public final class TelegramBot {
                 dispatcher
         );
 
+        pollingThread = new Thread(() -> {
+            try {
+                polling.start();
+            } finally {
+                polling.shutdown();
+            }
+        });
 
-        Runtime.getRuntime().addShutdownHook(new Thread(polling::stop));
+        pollingThread.start();
 
-        polling.start();
+        Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
+
+        System.out.println("[Telegram Bot] Started successfully");
+    }
+
+    public void stopBot() {
+        System.out.println("[Telegram Bot] Shutdown signal received");
+
+        if (polling != null) {
+            polling.stop();
+        }
+
+        if (pollingThread != null) {
+            try {
+                pollingThread.interrupt();
+
+                pollingThread.join(15_000);
+
+                if (!pollingThread.isAlive()) {
+                    System.err.println("[Telegram Bot] Polling thread did not terminate gracefully");
+                }
+            } catch (InterruptedException ex) {
+                pollingThread.interrupt();
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        telegramClient.shutdown();
+
+        System.out.println("[Telegram Bot] Bot stopped");
     }
 }

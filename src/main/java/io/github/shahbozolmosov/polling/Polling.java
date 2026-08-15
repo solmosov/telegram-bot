@@ -27,18 +27,22 @@ public class Polling {
     }
 
     public void start() {
-        while (running && !Thread.currentThread().isInterrupted()) {
-            try {
-                poll();
-            } catch (TelegramClientException ex) {
-                System.err.println("[Telegram Bot] Polling error: " + ex.getMessage());
-
+        try {
+            while (running && !Thread.currentThread().isInterrupted()) {
                 try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException interrupted) {
-                    Thread.currentThread().interrupt();
+                    poll();
+                } catch (TelegramClientException ex) {
+                    System.err.println("[Telegram Bot] Polling error: " + ex.getMessage());
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException interrupted) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
+        } finally {
+            shutdown();
         }
     }
 
@@ -77,11 +81,12 @@ public class Polling {
 
     public void stop() {
         running = false;
-        shutdown();
     }
 
-    private void shutdown() {
+    public void shutdown() {
+        System.out.println("[Telegram Bot] Polling Shutting down...");
         chatExecutor.shutdown();
+        System.out.println("[Telegram Bot] Polling Shutdown completed");
     }
 
 }

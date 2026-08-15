@@ -30,6 +30,19 @@ public class RateLimiter {
         chatSemaphore.acquire();
     }
 
+    public void shutdown() {
+        refillScheduler.shutdown();
+        try {
+            if (!refillScheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                refillScheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            refillScheduler.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
+
     private void refillGlobal() {
         int missing = globalCapacity - globalPermits.availablePermits();
         if (missing > 0) {
@@ -46,7 +59,4 @@ public class RateLimiter {
         });
     }
 
-    private void shutdown() {
-        refillScheduler.shutdown();
-    }
 }

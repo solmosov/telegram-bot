@@ -111,8 +111,10 @@ public final class TelegramBot {
 
                 pollingThread.join(15_000);
 
-                if (!pollingThread.isAlive()) {
+                if (pollingThread.isAlive()) {
                     System.err.println("[Telegram Bot] Polling thread did not terminate gracefully");
+                } else {
+                    System.out.println("[Telegram Bot] Polling thread terminated successfully");
                 }
             } catch (InterruptedException ex) {
                 pollingThread.interrupt();

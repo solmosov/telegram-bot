@@ -63,9 +63,10 @@ public class Polling {
 
             updateExecutor.submit(chatId, () -> {
                 try {
+                    System.out.println("[Telegram Bot] Processing update: " + update.updateId());
+
                     BotContext context = new BotContext(client, update);
                     dispatcher.dispatch(update, context);
-                    System.out.println("[Telegram Bot] Processing update: " + update.updateId());
                 } catch (Exception ex) {
                     System.err.println("[Telegram Bot] Handler error for update "
                             + update.updateId() + ": " + ex.getMessage());

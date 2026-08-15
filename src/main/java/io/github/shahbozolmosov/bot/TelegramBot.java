@@ -25,8 +25,15 @@ public final class TelegramBot {
     private Polling polling;
     private Thread pollingThread;
 
+    private final long shutdownTimeoutMillis;
 
     public TelegramBot(String botToken) {
+        this(botToken, TelegramBotConfig.defaults());
+    }
+
+    public TelegramBot(String botToken, TelegramBotConfig config) {
+        this.shutdownTimeoutMillis = config.getShutdownTimeoutMillis();
+
         this.telegramClient = new TelegramClient(botToken);
         this.registry = new Registry();
 
@@ -109,8 +116,9 @@ public final class TelegramBot {
             try {
                 pollingThread.interrupt();
 
-                pollingThread.join(15_000);
+                pollingThread.join(shutdownTimeoutMillis);
 
+                System.out.println("shutdown timeout ms" + shutdownTimeoutMillis);
                 if (pollingThread.isAlive()) {
                     System.err.println("[Telegram Bot] Polling thread did not terminate gracefully");
                 } else {

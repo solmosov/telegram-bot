@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.registry;
 
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.MessageType;
-import io.github.shahbozolmosov.registry.registration.HandlerMapping;
+import io.github.shahbozolmosov.registry.registration.MessageHandlerRegistration;
 import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
 import io.github.shahbozolmosov.registry.store.MessageHandlerStore;
 import io.github.shahbozolmosov.registry.store.UpdateHandlerStore;
@@ -23,7 +23,7 @@ public final class Registry {
 
 
     // Message
-    public void register(HandlerMapping registration) {
+    public void register(MessageHandlerRegistration registration) {
         messageRegistry.register(registration);
     }
 

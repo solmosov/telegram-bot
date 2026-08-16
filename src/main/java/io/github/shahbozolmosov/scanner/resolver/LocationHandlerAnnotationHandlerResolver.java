@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.scanner.resolver;
 
 import io.github.shahbozolmosov.annotation.LocationHandler;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registry.registration.HandlerMapping;
+import io.github.shahbozolmosov.registry.registration.MessageHandlerRegistration;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.model.MessageType;
 
@@ -19,7 +19,7 @@ public class LocationHandlerAnnotationHandlerResolver implements AnnotationHandl
 
         LocationHandler location = method.getAnnotation(LocationHandler.class);
 
-        HandlerMapping registration = new HandlerMapping(
+        MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.LOCATION,
                 location.value(),
                 handler

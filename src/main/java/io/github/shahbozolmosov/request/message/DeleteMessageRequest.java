@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.request;
+package io.github.shahbozolmosov.request.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -7,9 +7,9 @@ import io.github.shahbozolmosov.model.From;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.ParseMode;
 import io.github.shahbozolmosov.model.TelegramResponse;
-import io.github.shahbozolmosov.request.DeleteMessageRequest;
-import io.github.shahbozolmosov.request.EditMessageRequest;
-import io.github.shahbozolmosov.request.SendMessageRequest;
+import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
+import io.github.shahbozolmosov.request.message.EditMessageRequest;
+import io.github.shahbozolmosov.request.message.SendMessageRequest;
 import io.github.shahbozolmosov.request.media.*;
 
 public final class MessageContext {

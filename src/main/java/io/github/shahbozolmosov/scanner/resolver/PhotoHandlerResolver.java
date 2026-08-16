@@ -1,15 +1,14 @@
-package io.github.shahbozolmosov.scanner.resolver.imp;
+package io.github.shahbozolmosov.scanner.resolver;
 
 import io.github.shahbozolmosov.annotation.PhotoHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.registration.MessageHandlerRegistration;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.model.MessageType;
-import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
 
 import java.lang.reflect.Method;
 
-public class PhotoAnnotationHandlerResolver implements AnnotationHandlerResolver {
+public class PhotoHandlerResolver implements HandlerAnnotationResolver {
     @Override
     public boolean supports(Method method) {
         return method.isAnnotationPresent(PhotoHandler.class);

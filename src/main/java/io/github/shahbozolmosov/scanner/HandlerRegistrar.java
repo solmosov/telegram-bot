@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.scanner;
 import io.github.shahbozolmosov.annotation.BotHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
+import io.github.shahbozolmosov.scanner.resolver.HandlerAnnotationResolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,13 +13,13 @@ public final class HandlerRegistrar {
     private final ClassScanner scanner;
     private final ClassInstanceFactory factory;
     private final Registry registry;
-    private final List<AnnotationHandlerResolver> resolvers;
+    private final List<HandlerAnnotationResolver> resolvers;
 
     public HandlerRegistrar(
             ClassScanner scanner,
             ClassInstanceFactory factory,
             Registry registry,
-            List<AnnotationHandlerResolver> resolvers
+            List<HandlerAnnotationResolver> resolvers
     ) {
         this.scanner = scanner;
         this.factory = factory;
@@ -34,7 +34,7 @@ public final class HandlerRegistrar {
             Object instance = factory.create(clazz);
 
             for (Method method : clazz.getDeclaredMethods()) {
-                for (AnnotationHandlerResolver resolver : resolvers) {
+                for (HandlerAnnotationResolver resolver : resolvers) {
                     if (!resolver.supports(method)) {
                         continue;
                     }

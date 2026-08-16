@@ -1,14 +1,13 @@
-package io.github.shahbozolmosov.scanner.resolver.imp;
+package io.github.shahbozolmosov.scanner.resolver;
 
 import io.github.shahbozolmosov.annotation.CallbackQueryHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.registry.registration.CallbackHandlerRegistration;
-import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
 
 import java.lang.reflect.Method;
 
-public class CallbackAnnotationHandlerResolver implements AnnotationHandlerResolver {
+public class CallbackHanlderResolver implements HandlerAnnotationResolver {
     @Override
     public boolean supports(Method method) {
         return method.isAnnotationPresent(CallbackQueryHandler.class);

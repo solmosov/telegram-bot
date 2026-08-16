@@ -12,7 +12,6 @@ import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
 import io.github.shahbozolmosov.scanner.resolver.*;
-import io.github.shahbozolmosov.scanner.resolver.imp.*;
 import io.github.shahbozolmosov.source.polling.PollingUpdateSource;
 import io.github.shahbozolmosov.source.UpdateSource;
 
@@ -59,21 +58,21 @@ public final class TelegramBot {
         this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
 
         // Annotation Resolvers
-        List<AnnotationHandlerResolver> annotationHandlerResolvers = List.of(
+        List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
                 // Message
-                new CommandAnnotationHandlerResolver(),
-                new PhotoAnnotationHandlerResolver(),
-                new LocationHandlerAnnotationHandlerResolver(),
-                new ContactHandlerAnnotationHandlerResolver(),
-                new RequestUsersHandlerAnnotationHandlerResolver(),
+                new CommandHandlerResolver(),
+                new PhotoHandlerResolver(),
+                new LocationHandlerResolver(),
+                new ContactHandlerResolver(),
+                new RequestUsersHandlerResolver(),
 
-                new MessageAnnotationHandlerResolver(),
+                new MessageAnnotationResolver(),
 
                 // Callback
-                new CallbackAnnotationHandlerResolver(),
+                new CallbackHanlderResolver(),
 
                 // Update
-                new UpdateAnnotationHandlerResolver()
+                new UpdateHandlerResolver()
         );
 
         this.handlerRegistrar = new HandlerRegistrar(

@@ -6,9 +6,9 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.TelegramClientException;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.polling.SingleThreadUpdateExecutor;
-import io.github.shahbozolmosov.polling.UpdateExecutor;
-import io.github.shahbozolmosov.polling.VirtualThreadUpdateExecutor;
+import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
+import io.github.shahbozolmosov.executor.UpdateExecutor;
+import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
 
 import java.util.List;
 

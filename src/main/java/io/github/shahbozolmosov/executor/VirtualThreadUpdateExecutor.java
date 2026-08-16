@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.polling;
+package io.github.shahbozolmosov.executor;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;

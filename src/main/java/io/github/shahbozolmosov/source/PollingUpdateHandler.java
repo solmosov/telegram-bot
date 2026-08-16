@@ -4,7 +4,7 @@ import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.polling.UpdateExecutor;
+import io.github.shahbozolmosov.executor.UpdateExecutor;
 
 public class PollingUpdateHandler {
 

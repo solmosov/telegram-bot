@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.polling;
+package io.github.shahbozolmosov.executor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

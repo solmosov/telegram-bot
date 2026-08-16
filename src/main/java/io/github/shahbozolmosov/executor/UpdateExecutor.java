@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.polling;
+package io.github.shahbozolmosov.executor;
 
 public interface UpdateExecutor {
 

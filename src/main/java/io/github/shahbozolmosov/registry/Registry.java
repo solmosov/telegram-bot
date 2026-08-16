@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.registry;
 
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.MessageType;
+import io.github.shahbozolmosov.registry.registration.CallbackHandlerRegistration;
 import io.github.shahbozolmosov.registry.registration.MessageHandlerRegistration;
 import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
 import io.github.shahbozolmosov.registry.store.MessageHandlerStore;
@@ -36,8 +37,8 @@ public final class Registry {
 
 
     // Callback
-    public void registerCallbackQuery(String key, Handler handler) {
-        callbackRegistry.register(key, handler);
+    public void registerCallbackQuery(CallbackHandlerRegistration registration) {
+        callbackRegistry.register(registration);
     }
 
     public List<CallbackHandlerStore.CallbackHandlerGroup> findCallbackQuery(String key) {

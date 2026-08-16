@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.registry.store;
 
 import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.handler.Handler;
+import io.github.shahbozolmosov.registry.registration.CallbackHandlerRegistration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,12 +13,11 @@ public final class CallbackHandlerStore {
     private final Map<String, List<CallbackHandlerGroup>> handlers = new HashMap<>();
 
     public void register(
-            String key,
-            Handler handler
+            CallbackHandlerRegistration registration
     ) {
-        String mapKey = CallbackParamResolver.callbackKey(key);
+        String mapKey = CallbackParamResolver.callbackKey(registration.key());
         handlers.computeIfAbsent(mapKey, k -> new ArrayList<>())
-                .add(new CallbackHandlerGroup(key, handler));
+                .add(new CallbackHandlerGroup(registration.key(), registration.handler()));
     }
 
     public List<CallbackHandlerGroup> find(String key) {

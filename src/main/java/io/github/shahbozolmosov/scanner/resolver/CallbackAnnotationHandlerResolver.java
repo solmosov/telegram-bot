@@ -3,6 +3,7 @@ package io.github.shahbozolmosov.scanner.resolver;
 import io.github.shahbozolmosov.annotation.CallbackQueryHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
+import io.github.shahbozolmosov.registry.registration.CallbackHandlerRegistration;
 
 import java.lang.reflect.Method;
 
@@ -20,6 +21,11 @@ public class CallbackAnnotationHandlerResolver implements AnnotationHandlerResol
                 ? null
                 : callbackQuery.value();
 
-        registry.registerCallbackQuery(key, handler);
+        CallbackHandlerRegistration registration = new CallbackHandlerRegistration(
+                key,
+                handler
+        );
+
+        registry.registerCallbackQuery(registration);
     }
 }

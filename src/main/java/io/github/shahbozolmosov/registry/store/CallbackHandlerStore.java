@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.registry;
+package io.github.shahbozolmosov.registry.store;
 
 import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.handler.Handler;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class CallbackRegistry {
+public final class CallbackHandlerStore {
     private final Map<String, List<CallbackHandlerGroup>> handlers = new HashMap<>();
 
     public void register(

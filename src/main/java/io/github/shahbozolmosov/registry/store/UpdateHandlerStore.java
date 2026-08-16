@@ -1,11 +1,11 @@
-package io.github.shahbozolmosov.registry;
+package io.github.shahbozolmosov.registry.store;
 
 import io.github.shahbozolmosov.handler.Handler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UpdateRegistry {
+public final class UpdateHandlerStore {
     private final List<Handler> updateHandlers = new ArrayList<>();
 
     public void register(Handler handler) {

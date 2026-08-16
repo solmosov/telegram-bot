@@ -1,14 +1,15 @@
-package io.github.shahbozolmosov.registry;
+package io.github.shahbozolmosov.registry.store;
 
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.MessageType;
+import io.github.shahbozolmosov.registry.HandlerMapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class MessageRegistry {
+public final class MessageHandlerStore {
 
     private final Map<MessageType, Map<String, List<Handler>>> handlers = new HashMap<>();
 

@@ -3,19 +3,22 @@ package io.github.shahbozolmosov.registry;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 import io.github.shahbozolmosov.model.MessageType;
+import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
+import io.github.shahbozolmosov.registry.store.MessageHandlerStore;
+import io.github.shahbozolmosov.registry.store.UpdateHandlerStore;
 
 import java.util.List;
 
 public final class Registry {
 
-    private final MessageRegistry messageRegistry;
-    private final CallbackRegistry callbackRegistry;
-    private final UpdateRegistry updateRegistry;
+    private final MessageHandlerStore messageRegistry;
+    private final CallbackHandlerStore callbackRegistry;
+    private final UpdateHandlerStore updateRegistry;
 
     public Registry() {
-        this.messageRegistry = new MessageRegistry();
-        this.callbackRegistry = new CallbackRegistry();
-        this.updateRegistry = new UpdateRegistry();
+        this.messageRegistry = new MessageHandlerStore();
+        this.callbackRegistry = new CallbackHandlerStore();
+        this.updateRegistry = new UpdateHandlerStore();
     }
 
 

@@ -2,7 +2,6 @@ package io.github.shahbozolmosov.registry.store;
 
 import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,5 +47,12 @@ public final class CallbackHandlerStore {
         }
 
         return result;
+    }
+
+
+    public static record CallbackHandlerGroup(
+            String callbackPattern,
+            Handler handler
+    ) {
     }
 }

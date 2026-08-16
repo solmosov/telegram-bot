@@ -5,8 +5,8 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.model.CallbackQuery;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 import io.github.shahbozolmosov.model.UpdateType;
+import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
 
 import java.util.List;
 
@@ -32,9 +32,9 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
         // BotContext
 //        botContext.setCallbackParams(params);
 
-        List<CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
+        List<CallbackHandlerStore.CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
 
-        for (CallbackHandlerGroup group : handlerGroups) {
+        for (CallbackHandlerStore.CallbackHandlerGroup group : handlerGroups) {
             var params = CallbackParamResolver.params(group.callbackPattern(), key);
             botContext.setCallbackParams(params);
             group.handler().handle(botContext);

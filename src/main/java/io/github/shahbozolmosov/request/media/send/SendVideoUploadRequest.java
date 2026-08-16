@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.request.media;
+package io.github.shahbozolmosov.request.media.send;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.shahbozolmosov.model.InputFIle;

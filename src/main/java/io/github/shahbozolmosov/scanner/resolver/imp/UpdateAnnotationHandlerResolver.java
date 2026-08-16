@@ -1,9 +1,10 @@
-package io.github.shahbozolmosov.scanner.resolver;
+package io.github.shahbozolmosov.scanner.resolver.imp;
 
 import io.github.shahbozolmosov.annotation.UpdatesHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.registry.registration.UpdateHandlerRegistration;
+import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
 
 import java.lang.reflect.Method;
 

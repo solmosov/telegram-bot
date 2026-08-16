@@ -1,29 +1,30 @@
-package io.github.shahbozolmosov.scanner.resolver;
+package io.github.shahbozolmosov.scanner.resolver.imp;
 
-import io.github.shahbozolmosov.annotation.MessageHandler;
+import io.github.shahbozolmosov.annotation.RequestUsersHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.registration.MessageHandlerRegistration;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.model.MessageType;
+import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
 
 import java.lang.reflect.Method;
 
-public class MessageAnnotationHandlerResolver implements AnnotationHandlerResolver {
+public class RequestUsersHandlerAnnotationHandlerResolver implements AnnotationHandlerResolver {
     @Override
     public boolean supports(Method method) {
-        return method.isAnnotationPresent(MessageHandler.class);
+        return method.isAnnotationPresent(RequestUsersHandler.class);
     }
 
     @Override
     public void register(Method method, Handler handler, Registry registry) {
-        MessageHandler message = method.getAnnotation(MessageHandler.class);
+        RequestUsersHandler requestUsersHandler = method.getAnnotation(RequestUsersHandler.class);
 
-        String key = message.value().isEmpty()
+        String key = requestUsersHandler.value() == -1
                 ? null
-                : message.value();
+                : String.valueOf(requestUsersHandler.value());
 
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
-                MessageType.TEXT,
+                MessageType.USERS_SHARED,
                 key,
                 handler
         );

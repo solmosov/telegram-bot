@@ -4,6 +4,7 @@ import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.MessageType;
 import io.github.shahbozolmosov.registry.registration.CallbackHandlerRegistration;
 import io.github.shahbozolmosov.registry.registration.MessageHandlerRegistration;
+import io.github.shahbozolmosov.registry.registration.UpdateHandlerRegistration;
 import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
 import io.github.shahbozolmosov.registry.store.MessageHandlerStore;
 import io.github.shahbozolmosov.registry.store.UpdateHandlerStore;
@@ -46,8 +47,8 @@ public final class Registry {
     }
 
     // Update
-    public void registerUpdateHandler(Handler handler) {
-        updateRegistry.register(handler);
+    public void registerUpdateHandler(UpdateHandlerRegistration registration) {
+        updateRegistry.register(registration);
 
     }
 

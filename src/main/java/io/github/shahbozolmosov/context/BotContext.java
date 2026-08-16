@@ -1,14 +1,12 @@
 package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.model.*;
+import io.github.shahbozolmosov.model.Update;
 
 import java.util.Map;
-import java.util.Objects;
 
 public final class BotContext {
 
-    private final TelegramClient telegramClient;
     private final Update update;
     private Map<String, Object> callbackParams;
 
@@ -22,7 +20,6 @@ public final class BotContext {
             TelegramClient telegramClient,
             Update update
     ) {
-        this.telegramClient = telegramClient;
         this.update = update;
         this.messageContext = update.message() != null
                 ? new MessageContext(telegramClient, update.message())

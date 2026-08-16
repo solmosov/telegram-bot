@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.source;
+package io.github.shahbozolmosov.source.polling;
 
 import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.client.TelegramClient;
@@ -9,6 +9,7 @@ import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
+import io.github.shahbozolmosov.source.UpdateSource;
 
 import java.util.List;
 

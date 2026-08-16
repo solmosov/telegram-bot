@@ -12,7 +12,7 @@ import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
 import io.github.shahbozolmosov.scanner.resolver.*;
-import io.github.shahbozolmosov.source.PollingUpdateSource;
+import io.github.shahbozolmosov.source.polling.PollingUpdateSource;
 import io.github.shahbozolmosov.source.UpdateSource;
 
 import java.util.List;

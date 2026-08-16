@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.source;
+package io.github.shahbozolmosov.source.polling;
 
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;

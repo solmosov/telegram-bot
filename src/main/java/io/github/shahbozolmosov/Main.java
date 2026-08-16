@@ -11,7 +11,7 @@ public class Main {
 
         TelegramBotConfig config = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
-                .executionMode(ExecutionMode.VIRTUAL_THREAD)
+                .executionMode(ExecutionMode.MULTI_VIRTUAL_THREAD)
                 .build();
 
         TelegramBot bot = new TelegramBot(token, config);

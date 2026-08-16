@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.scanner.resolver;
 
 import io.github.shahbozolmosov.annotation.PhotoHandler;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registry.HandlerMapping;
+import io.github.shahbozolmosov.registry.registration.HandlerMapping;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.model.MessageType;
 

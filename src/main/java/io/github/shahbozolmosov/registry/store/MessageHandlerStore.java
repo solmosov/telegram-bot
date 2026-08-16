@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.registry.store;
 
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.MessageType;
-import io.github.shahbozolmosov.registry.HandlerMapping;
+import io.github.shahbozolmosov.registry.registration.HandlerMapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.registry;
 
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.MessageType;
+import io.github.shahbozolmosov.registry.registration.HandlerMapping;
 import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
 import io.github.shahbozolmosov.registry.store.MessageHandlerStore;
 import io.github.shahbozolmosov.registry.store.UpdateHandlerStore;

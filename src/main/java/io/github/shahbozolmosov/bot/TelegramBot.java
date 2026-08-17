@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
+import io.github.shahbozolmosov.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
@@ -14,6 +15,8 @@ import io.github.shahbozolmosov.scanner.HandlerRegistrar;
 import io.github.shahbozolmosov.scanner.resolver.*;
 import io.github.shahbozolmosov.source.polling.PollingUpdateSource;
 import io.github.shahbozolmosov.source.UpdateSource;
+import io.github.shahbozolmosov.source.webhook.WebhookUpdateSource;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ public final class TelegramBot {
     private final Registry registry;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
+    private final JsonMapper jsonMapper;
     private UpdateSource updateSource;
 
 
@@ -35,7 +39,10 @@ public final class TelegramBot {
     public TelegramBot(String botToken, TelegramBotConfig config) {
         this.executionMode = config.getExecutionMode();
 
-        this.telegramClient = new TelegramClient(botToken);
+        // Object Mapper
+        this.jsonMapper = ObjectMapperFactory.create();
+
+        this.telegramClient = new TelegramClient(botToken, jsonMapper);
         this.registry = new Registry();
 
 
@@ -96,6 +103,18 @@ public final class TelegramBot {
                 );
                 System.out.println("[Telegram Bot] Using POLLING mode");
                 break;
+            case WEBHOOK:
+                this.updateSource = new WebhookUpdateSource(
+                        telegramClient,
+                        dispatcher,
+                        executionMode,
+                        jsonMapper,
+                        config.getWebhookHost(),
+                        config.getWebhookPort(),
+                        config.getWebhookPath(),
+                        config.getWebhookUrl()
+                        // TODO: add webhook secret
+                );
         }
     }
 

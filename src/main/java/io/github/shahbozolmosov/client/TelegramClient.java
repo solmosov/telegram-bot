@@ -4,10 +4,7 @@ import io.github.shahbozolmosov.client.http.MultipartBody;
 import io.github.shahbozolmosov.client.http.MultipartBodyBuilder;
 import io.github.shahbozolmosov.exception.TelegramApiException;
 import io.github.shahbozolmosov.exception.TelegramClientException;
-import io.github.shahbozolmosov.model.Message;
-import io.github.shahbozolmosov.model.TelegramResponse;
-import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.model.User;
+import io.github.shahbozolmosov.model.*;
 import io.github.shahbozolmosov.request.media.send.*;
 import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
 import io.github.shahbozolmosov.request.message.EditMessageRequest;
@@ -117,6 +114,40 @@ public final class TelegramClient {
                 .build();
 
         return execute(request,
+                new TypeReference<TelegramResponse<Boolean>>() {
+                }
+        );
+    }
+
+
+    public TelegramResponse<WebhookInfo> getWebhookInfo() {
+        String url = API_BASE_URL + "/bot" + botToken + "/getWebhookInfo";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<WebhookInfo>>() {
+                }
+        );
+    }
+
+    public TelegramResponse<Boolean> deleteWebhook() {
+        String url = API_BASE_URL + "/bot" + botToken + "/deleteWebhook";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/jsons")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+
+        return execute(
+                request,
                 new TypeReference<TelegramResponse<Boolean>>() {
                 }
         );

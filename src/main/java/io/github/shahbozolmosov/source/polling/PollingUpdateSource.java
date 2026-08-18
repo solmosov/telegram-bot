@@ -43,6 +43,8 @@ public class PollingUpdateSource implements UpdateSource {
 
     @Override
     public void start() {
+        checkWebhookExists();
+
         pollingThread = new Thread(() -> {
             try {
                 while (running && !Thread.currentThread().isInterrupted()) {
@@ -67,6 +69,22 @@ public class PollingUpdateSource implements UpdateSource {
         pollingThread.start();
         System.out.println("[Telegram Bot] Telegram polling started");
         System.out.println("[Telegram Bot] Execution mode: " + this.executionMode.name());
+    }
+
+    private void checkWebhookExists() {
+        var response = client.getWebhookInfo();
+
+        if (!response.result().url().isEmpty()) {
+            var deleteResponse = client.deleteWebhook();
+            boolean webhookRemoved = deleteResponse.ok() && deleteResponse.result();
+            if (webhookRemoved) {
+                System.out.println("[Telegram Bot] The Telegram bot webhook successfully removed for POLLING MODE");
+            }else {
+                throw new IllegalStateException(
+                        "[Telegram Bot] Failed to remove the Telegram bot webhook for POLLING MODE \n. Please remove the webhook URL manually."
+                );
+            }
+        }
     }
 
     private void poll() {

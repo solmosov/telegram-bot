@@ -14,6 +14,7 @@ public class WebhookUpdateSource implements UpdateSource {
     private final TelegramClient client;
     private final UpdateExecutor updateExecutor;
     private final WebhookServer server;
+    private final ExecutionMode executionMode;
 
     private final String url;
 
@@ -30,6 +31,7 @@ public class WebhookUpdateSource implements UpdateSource {
     ) {
         this.client = client;
         this.url = url;
+        this.executionMode = executionMode;
 
         this.updateExecutor = switch (executionMode) {
             case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
@@ -49,10 +51,20 @@ public class WebhookUpdateSource implements UpdateSource {
 
     @Override
     public void start() {
-        var response = client.setWebhook(url);
-        System.out.println("setWebhook response: " + response);
+        setWebhook(url);
 
         server.start();
+        System.out.println("[Telegram Bot] Telegram webhook started");
+        System.out.println("[Telegram Bot] Telegram Execution mode: " + this.executionMode.name());
+    }
+
+    private void setWebhook(String url) {
+        var response = client.setWebhook(url);
+        if(response.ok()){
+            System.out.println("[Telegram Bot] setWebhook response: " + response);
+        }else {
+            System.err.println("[Telegram Bot] setWebhook response: " + response);
+        }
     }
 
     @Override
@@ -62,8 +74,10 @@ public class WebhookUpdateSource implements UpdateSource {
 
     @Override
     public void shutdown() {
+        System.out.println("[Telegram Bot] Webhook Shutting down...");
         server.shutdown();
         updateExecutor.shutdown();
+        System.out.println("[Telegram Bot] Webhook Shutdown completed");
     }
 
     @Override

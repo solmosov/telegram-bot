@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) {
 
         String token = System.getenv("TELEGRAM_BOT_TOKEN");
+        String webhookUrl = System.getenv("WEBHOOK_URL");
 
         TelegramBotConfig config = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
@@ -16,7 +17,7 @@ public class Main {
                 .executionMode(ExecutionMode.SINGLE_THREAD)
                 .webhookPort(8080)
                 .webhookPath("/webhook/telegram")
-                .webhookUrl("https://miscellaneous-fingers-levels-responsibilities.trycloudflare.com/webhook/telegram")
+                .webhookUrl(webhookUrl) // https://example.com/webhook/telegram
                 .build();
 
         TelegramBot bot = new TelegramBot(token, config);

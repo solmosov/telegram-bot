@@ -76,7 +76,7 @@ public final class TelegramBot {
                 new MessageAnnotationResolver(),
 
                 // Callback
-                new CallbackHanlderResolver(),
+                new CallbackHandlerResolver(),
 
                 // Update
                 new UpdateHandlerResolver()

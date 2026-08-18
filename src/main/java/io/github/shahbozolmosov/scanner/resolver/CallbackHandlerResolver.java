@@ -7,7 +7,7 @@ import io.github.shahbozolmosov.registry.registration.CallbackHandlerRegistratio
 
 import java.lang.reflect.Method;
 
-public class CallbackHanlderResolver implements HandlerAnnotationResolver {
+public class CallbackHandlerResolver implements HandlerAnnotationResolver {
     @Override
     public boolean supports(Method method) {
         return method.isAnnotationPresent(CallbackQueryHandler.class);

@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.scanner;
 
+import io.github.shahbozolmosov.annotation.BotAuthorize;
 import io.github.shahbozolmosov.annotation.BotHandler;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
@@ -39,16 +40,21 @@ public final class HandlerRegistrar {
                         continue;
                     }
 
-                    Handler handler = context -> {
-                        try {
-                            method.invoke(instance, context);
-                        } catch (InvocationTargetException ex) {
-                            Throwable cause = ex.getCause();
-                            System.err.println("Handler execution failed for update: " + cause);
-                        } catch (Exception ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    };
+                    BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
+
+                    Handler handler = new Handler(
+                            context -> {
+                                try {
+                                    method.invoke(instance, context);
+                                } catch (InvocationTargetException ex) {
+                                    Throwable cause = ex.getCause();
+                                    System.err.println("Handler execution failed for update: " + cause);
+                                } catch (Exception ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            },
+                            authorization
+                    );
 
                     resolver.register(method, handler, registry);
                 }

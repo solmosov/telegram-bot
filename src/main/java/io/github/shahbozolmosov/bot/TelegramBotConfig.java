@@ -164,10 +164,6 @@ public class TelegramBotConfig {
                             "webhookPort must be valid (1-65535), got: " + webhookPort
                     );
                 }
-            }else if(updatesMode == UpdatesMode.POLLING){
-                if(webhookPath != null){
-
-                }
             }
         }
     }

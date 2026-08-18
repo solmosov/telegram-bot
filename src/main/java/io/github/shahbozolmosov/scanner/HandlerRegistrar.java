@@ -40,25 +40,29 @@ public final class HandlerRegistrar {
                         continue;
                     }
 
-                    BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
-
-                    Handler handler = new Handler(
-                            context -> {
-                                try {
-                                    method.invoke(instance, context);
-                                } catch (InvocationTargetException ex) {
-                                    Throwable cause = ex.getCause();
-                                    System.err.println("Handler execution failed for update: " + cause);
-                                } catch (Exception ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            },
-                            authorization
-                    );
+                    Handler handler = getHandler(method, instance);
 
                     resolver.register(method, handler, registry);
                 }
             }
         }
+    }
+
+    private static Handler getHandler(Method method, Object instance) {
+        BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
+
+        return new Handler(
+                context -> {
+                    try {
+                        method.invoke(instance, context);
+                    } catch (InvocationTargetException ex) {
+                        Throwable cause = ex.getCause();
+                        System.err.println("Handler execution failed for update: " + cause);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                },
+                authorization
+        );
     }
 }

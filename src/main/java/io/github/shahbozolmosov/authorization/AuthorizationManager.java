@@ -15,7 +15,21 @@ public class AuthorizationManager {
     public AuthorizationDecision authorize(
             BotContext context,
             Handler handler
-    ){
-        return null;
+    ) {
+        BotAuthorize authorization = handler.authorization();
+
+        if (authorization == null) {
+            return AuthorizationDecision.granted();
+        }
+
+        AuthorizationPrincipal principal = provider.authenticate(context);
+
+        for (String role : authorization.value()) {
+            if (!principal.hasRole(role)) {
+                return AuthorizationDecision.denied();
+            }
+        }
+
+        return AuthorizationDecision.granted();
     }
 }

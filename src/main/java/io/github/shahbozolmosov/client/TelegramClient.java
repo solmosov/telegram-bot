@@ -9,6 +9,7 @@ import io.github.shahbozolmosov.request.media.send.*;
 import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
 import io.github.shahbozolmosov.request.message.EditMessageRequest;
 import io.github.shahbozolmosov.request.message.SendMessageRequest;
+import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -427,19 +428,26 @@ public final class TelegramClient {
     ) {
         String responseBody = execute(request);
 
-        T response = objectMapper.readValue(
-                responseBody,
-                typeReference
-        );
+        try {
+            T response = objectMapper.readValue(
+                    responseBody,
+                    typeReference
+            );
 
-        if (response instanceof TelegramResponse<?> telegramResponse && !telegramResponse.ok()) {
-            throw new TelegramApiException(
-                    telegramResponse.errorCode(),
-                    telegramResponse.description()
+            if (response instanceof TelegramResponse<?> telegramResponse && !telegramResponse.ok()) {
+                throw new TelegramApiException(
+                        telegramResponse.errorCode(),
+                        telegramResponse.description()
+                );
+            }
+
+            return response;
+        } catch (JacksonException ex) {
+            throw new TelegramClientException(
+                    "Failed to parse Telegram API response.",
+                    ex
             );
         }
-
-        return response;
     }
 
     private String execute(HttpRequest request) {

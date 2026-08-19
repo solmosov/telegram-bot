@@ -32,7 +32,7 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
         System.err.println(
                 "[Telegram Bot] Handler error for update "
                         + " | errorCode=" + ex.getErrorCode()
-                        + " | message=" + ex.getMessage()
+                        + " | message=" + sanitize(ex.getMessage())
         );
     }
 
@@ -41,7 +41,7 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
         System.err.println(
                 "[Telegram Bot] Telegram client error"
                         + " | updateId=" + update.updateId()
-                        + " | message=" + update.message()
+                        + " | message=" + sanitize(ex.getMessage())
         );
     }
 
@@ -50,18 +50,46 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
         System.err.println(
                 "[Telegram Bot] Access denied"
                         + " | updatedId=" + update.updateId()
-                        + " | message=" + ex.getMessage()
+                        + " | message=" + sanitize(ex.getMessage())
         );
     }
 
-    private void handleUnexpectedException(Exception exception, Update update) {
+    private void handleUnexpectedException(Exception ex, Update update) {
         System.err.println(
                 "[Telegram Bot] Unexpected error"
                         + " | updateId=" + update.updateId()
-                        + " | message=" + exception.getMessage()
+                        + " | message=" + sanitize(ex.getMessage())
         );
 
-        exception.printStackTrace();
+        ex.printStackTrace();
     }
 
+    private static String sanitize(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder(value.length());
+
+        for (int i = 0; i < value.length(); i++) {
+            char ch = value.charAt(i);
+
+            switch (ch) {
+                case '\n' -> result.append("\\n");
+                case '\r' -> result.append("\\r");
+                case '\t' -> result.append("\\t");
+                case '\u001B' -> result.append("\\u001B");
+
+                default -> {
+                    if (Character.isISOControl(ch)) {
+                        result.append(String.format("\\u%04X", (int) ch));
+                    } else {
+                        result.append(ch);
+                    }
+                }
+            }
+        }
+
+        return result.toString();
+    }
 }

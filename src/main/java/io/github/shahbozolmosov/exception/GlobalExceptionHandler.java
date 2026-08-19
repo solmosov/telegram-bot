@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.exception;
+package io.github.shahbozolmosov.exception.handler;
 
 import io.github.shahbozolmosov.model.Update;
 

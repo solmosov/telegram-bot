@@ -1,6 +1,8 @@
 package io.github.shahbozolmosov.exception.client;
 
-public class TelegramClientException extends RuntimeException {
+import io.github.shahbozolmosov.exception.TelegramBotException;
+
+public class TelegramClientException extends TelegramBotException {
 
     public TelegramClientException(String message) {
         super(message);

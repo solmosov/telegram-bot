@@ -468,6 +468,8 @@ public final class TelegramClient {
                     ex
             );
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+
             throw new TelegramClientException(
                     "Telegram API request was interrupted",
                     ex

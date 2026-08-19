@@ -4,6 +4,7 @@ import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.bot.TelegramBot;
 import io.github.shahbozolmosov.bot.TelegramBotConfig;
 import io.github.shahbozolmosov.bot.UpdatesMode;
+import io.github.shahbozolmosov.example.authorization.MyAuthorizationProvider;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,6 +19,7 @@ public class Main {
 //                .webhookPort(8080)
 //                .webhookPath("/webhook/telegram")
 //                .webhookUrl(webhookUrl) // https://example.com/webhook/telegram
+                .authorizationProvider(new MyAuthorizationProvider())
                 .build();
 
         TelegramBot bot = new TelegramBot(token, config);

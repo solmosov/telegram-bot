@@ -16,15 +16,25 @@ public class AuthorizationManager {
             BotContext context,
             Handler handler
     ) {
-        BotAuthorize authorization = handler.authorization();
+        BotAuthorize botAuthorize = handler.authorization();
 
-        if (authorization == null) {
+        if (botAuthorize == null) {
             return AuthorizationDecision.granted();
+        }
+
+        if (provider == null) {
+            throw new IllegalArgumentException(
+                    "AuthorizationProvider is required for handlers using @BotHandler"
+            );
         }
 
         AuthorizationPrincipal principal = provider.authenticate(context);
 
-        for (String role : authorization.value()) {
+        if (principal == null) {
+            return AuthorizationDecision.denied();
+        }
+
+        for (String role : botAuthorize.value()) {
             if (!principal.hasRole(role)) {
                 return AuthorizationDecision.denied();
             }

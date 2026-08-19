@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.bot;
 
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.CallbackQueryUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
@@ -45,6 +46,8 @@ public final class TelegramBot {
         this.telegramClient = new TelegramClient(botToken, jsonMapper);
         this.registry = new Registry();
 
+        // Authorization Manager
+        final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());
 
         // Message Type Resolvers
         List<MessageTypeResolver> messageTypeResolvers = List.of(
@@ -58,12 +61,11 @@ public final class TelegramBot {
 
         // Update dispatchers
         List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
-                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver),
-                new CallbackQueryUpdateDispatcher(registry)
+                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver, authorizationManager),
+                new CallbackQueryUpdateDispatcher(registry, authorizationManager)
         );
 
-        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
-
+        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers, authorizationManager);
         // Annotation Resolvers
         List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
                 // Message

@@ -1,5 +1,7 @@
 package io.github.shahbozolmosov.bot;
 
+import io.github.shahbozolmosov.authorization.AuthorizationProvider;
+
 public class TelegramBotConfig {
     private final long shutdownTimeoutMillis;
     private final UpdatesMode updatesMode;
@@ -12,6 +14,9 @@ public class TelegramBotConfig {
     private final String webhookUrl;
     private final String webhookSecret;
 
+    // Authorization
+    private AuthorizationProvider authorizationProvider;
+
     private TelegramBotConfig(
             long shutdownTimeoutMillis,
             ExecutionMode executionMode,
@@ -21,7 +26,9 @@ public class TelegramBotConfig {
             int webhookPort,
             String webhookPath,
             String webhookUrl,
-            String webhookSecret
+            String webhookSecret,
+
+            AuthorizationProvider authorizationProvider
     ) {
         this.shutdownTimeoutMillis = shutdownTimeoutMillis;
         this.executionMode = executionMode;
@@ -32,6 +39,8 @@ public class TelegramBotConfig {
         this.webhookUrl = webhookUrl;
         this.webhookPort = webhookPort;
         this.webhookSecret = webhookSecret;
+
+        this.authorizationProvider = authorizationProvider;
     }
 
     public static TelegramBotConfig defaults() {
@@ -77,6 +86,11 @@ public class TelegramBotConfig {
     }
 
 
+    // Authorization
+    public AuthorizationProvider getAuthorizationProvider() {
+        return authorizationProvider;
+    }
+
     public static class Builder {
         private long shutdownTimeoutMillis = 5_000;
         private ExecutionMode executionMode = ExecutionMode.SINGLE_THREAD;
@@ -87,6 +101,9 @@ public class TelegramBotConfig {
         private String webhookPath;
         private String webhookUrl;
         private String webhookSecret = null;
+
+        // Authorization
+        private AuthorizationProvider authorizationProvider;
 
         public Builder shutdownTimeout(long millis) {
             this.shutdownTimeoutMillis = millis;
@@ -129,6 +146,11 @@ public class TelegramBotConfig {
             return this;
         }
 
+        public Builder authorizationProvider(AuthorizationProvider authorizationProvider){
+            this.authorizationProvider = authorizationProvider;
+            return this;
+        }
+
         public TelegramBotConfig build() {
             validateConfiguration();
 
@@ -141,7 +163,9 @@ public class TelegramBotConfig {
                     webhookPort,
                     webhookPath,
                     webhookUrl,
-                    webhookSecret
+                    webhookSecret,
+
+                    authorizationProvider
             );
         }
 

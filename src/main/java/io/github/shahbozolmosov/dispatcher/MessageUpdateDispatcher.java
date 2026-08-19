@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.resolver.FallbackMessageTypeResolver;
 import io.github.shahbozolmosov.dispatcher.resolver.MessageTypeResolver;
@@ -18,15 +19,18 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
     private final Registry registry;
     private final List<MessageTypeResolver> resolvers;
     private final FallbackMessageTypeResolver fallbackMessageTypeResolver;
+    private final AuthorizationManager authorizationManager;
 
     public MessageUpdateDispatcher(
             Registry registry,
             List<MessageTypeResolver> resolvers,
-            FallbackMessageTypeResolver fallbackResolver
+            FallbackMessageTypeResolver fallbackResolver,
+            AuthorizationManager authorizationManager
     ) {
         this.registry = registry;
         this.resolvers = resolvers;
         this.fallbackMessageTypeResolver = fallbackResolver;
+        this.authorizationManager = authorizationManager;
     }
 
     @Override
@@ -44,6 +48,9 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
         List<Handler> handlers = registry.find(type, key);
 
         for (Handler handler : handlers) {
+            if (!authorizationManager.authorize(botContext, handler).isGranted()) {
+                continue;
+            }
             handler.handle(botContext);
         }
     }

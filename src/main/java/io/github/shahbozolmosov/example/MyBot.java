@@ -30,8 +30,14 @@ public class MyBot {
     }
 
     @BotAuthorize("ADMIN")
-    @MessageHandler("hello")
-    public void handleHello(BotContext context) {
-        context.message().sendText("Hello " + context.message().from().firstName());
+    @MessageHandler("admin")
+    public void admin(BotContext context) {
+        context.message().sendText("Hello Admin " + context.message().from().firstName());
+    }
+
+    @BotAuthorize("COURIER")
+    @MessageHandler("courier")
+    public void courier(BotContext context) {
+        context.message().sendText("Hello Courier " + context.message().from().firstName());
     }
 }

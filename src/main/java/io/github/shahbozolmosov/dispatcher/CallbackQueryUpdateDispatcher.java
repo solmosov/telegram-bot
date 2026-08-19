@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.model.CallbackQuery;
@@ -13,9 +14,14 @@ import java.util.List;
 public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
 
     private final Registry registry;
+    private final AuthorizationManager authorizationManager;
 
-    public CallbackQueryUpdateDispatcher(Registry registry) {
+    public CallbackQueryUpdateDispatcher(
+            Registry registry,
+            AuthorizationManager authorizationManager
+    ) {
         this.registry = registry;
+        this.authorizationManager = authorizationManager;
     }
 
     @Override
@@ -29,12 +35,13 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
 
         String key = callbackQuery.data();
 
-        // BotContext
-//        botContext.setCallbackParams(params);
-
         List<CallbackHandlerStore.CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
 
         for (CallbackHandlerStore.CallbackHandlerGroup group : handlerGroups) {
+            if(!authorizationManager.authorize(botContext, group.handler()).isGranted()){
+                continue;
+            }
+
             var params = CallbackParamResolver.params(group.callbackPattern(), key);
             botContext.setCallbackParams(params);
             group.handler().handle(botContext);

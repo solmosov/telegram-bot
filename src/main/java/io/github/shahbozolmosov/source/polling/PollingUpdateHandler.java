@@ -36,8 +36,6 @@ public class PollingUpdateHandler {
                 BotContext context = new BotContext(client, update);
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {
-//                System.err.println("[Telegram Bot] Handler error for update "
-//                        + update.updateId() + ": " + ex.getMessage());
                 globalExceptionHandler.handle(ex, update);
             }
         });

@@ -4,5 +4,5 @@ import io.github.shahbozolmosov.model.Update;
 
 public interface GlobalExceptionHandler {
 
-    void handle(Throwable exception, Update update);
+    void handle(Exception exception, Update update);
 }

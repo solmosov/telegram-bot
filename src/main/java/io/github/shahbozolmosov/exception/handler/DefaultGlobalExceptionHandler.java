@@ -5,7 +5,7 @@ import io.github.shahbozolmosov.model.Update;
 
 public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
     @Override
-    public void handle(Throwable exception, Update update) {
+    public void handle(Exception exception, Update update) {
         System.err.println("[Telegram Bot] Handler error for update "
                 + update.updateId() + ": " + exception.getMessage());
 

@@ -3,6 +3,7 @@ package io.github.shahbozolmosov.source.polling;
 import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.exception.TelegramClientException;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
@@ -28,7 +29,8 @@ public class PollingUpdateSource implements UpdateSource {
     public PollingUpdateSource(
             TelegramClient client,
             Dispatcher dispatcher,
-            ExecutionMode executionMode
+            ExecutionMode executionMode,
+            GlobalExceptionHandler globalExceptionHandler
     ) {
         this.client = client;
         this.dispatcher = dispatcher;
@@ -38,7 +40,7 @@ public class PollingUpdateSource implements UpdateSource {
             case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
             case MULTI_VIRTUAL_THREAD -> new VirtualThreadUpdateExecutor();
         };
-        this.updateHandler = new PollingUpdateHandler(client, dispatcher, updateExecutor);
+        this.updateHandler = new PollingUpdateHandler(client, dispatcher, updateExecutor, globalExceptionHandler);
     }
 
     @Override

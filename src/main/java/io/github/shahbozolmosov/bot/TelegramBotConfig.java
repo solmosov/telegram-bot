@@ -1,6 +1,8 @@
 package io.github.shahbozolmosov.bot;
 
 import io.github.shahbozolmosov.authorization.AuthorizationProvider;
+import io.github.shahbozolmosov.exception.DefaultGlobalExceptionHandler;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 
 public class TelegramBotConfig {
     private final long shutdownTimeoutMillis;
@@ -15,7 +17,10 @@ public class TelegramBotConfig {
     private final String webhookSecret;
 
     // Authorization
-    private AuthorizationProvider authorizationProvider;
+    private final AuthorizationProvider authorizationProvider;
+
+    // Exception
+    private final GlobalExceptionHandler globalExceptionHandler;
 
     private TelegramBotConfig(
             long shutdownTimeoutMillis,
@@ -28,7 +33,9 @@ public class TelegramBotConfig {
             String webhookUrl,
             String webhookSecret,
 
-            AuthorizationProvider authorizationProvider
+            AuthorizationProvider authorizationProvider,
+
+            GlobalExceptionHandler globalExceptionHandler
     ) {
         this.shutdownTimeoutMillis = shutdownTimeoutMillis;
         this.executionMode = executionMode;
@@ -41,6 +48,8 @@ public class TelegramBotConfig {
         this.webhookSecret = webhookSecret;
 
         this.authorizationProvider = authorizationProvider;
+
+        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     public static TelegramBotConfig defaults() {
@@ -91,6 +100,11 @@ public class TelegramBotConfig {
         return authorizationProvider;
     }
 
+    // Exception
+    public GlobalExceptionHandler getGlobalExceptionHandler(){
+        return globalExceptionHandler;
+    }
+
     public static class Builder {
         private long shutdownTimeoutMillis = 5_000;
         private ExecutionMode executionMode = ExecutionMode.SINGLE_THREAD;
@@ -104,6 +118,9 @@ public class TelegramBotConfig {
 
         // Authorization
         private AuthorizationProvider authorizationProvider;
+
+        // Exception
+        private GlobalExceptionHandler globalExceptionHandler = new DefaultGlobalExceptionHandler();
 
         public Builder shutdownTimeout(long millis) {
             this.shutdownTimeoutMillis = millis;
@@ -146,8 +163,15 @@ public class TelegramBotConfig {
             return this;
         }
 
+        // Authorization
         public Builder authorizationProvider(AuthorizationProvider authorizationProvider){
             this.authorizationProvider = authorizationProvider;
+            return this;
+        }
+
+        // Exception
+        public Builder globalExceptionHandler(GlobalExceptionHandler globalExceptionHandler){
+            this.globalExceptionHandler = globalExceptionHandler;
             return this;
         }
 
@@ -165,7 +189,9 @@ public class TelegramBotConfig {
                     webhookUrl,
                     webhookSecret,
 
-                    authorizationProvider
+                    authorizationProvider,
+
+                    globalExceptionHandler
             );
         }
 

@@ -3,6 +3,7 @@ package io.github.shahbozolmosov.source.polling;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 
@@ -11,15 +12,18 @@ public class PollingUpdateHandler {
     private final TelegramClient client;
     private final Dispatcher dispatcher;
     private final UpdateExecutor updateExecutor;
+    private final GlobalExceptionHandler globalExceptionHandler;
 
     public PollingUpdateHandler(
             TelegramClient client,
             Dispatcher dispatcher,
-            UpdateExecutor updateExecutor
+            UpdateExecutor updateExecutor,
+            GlobalExceptionHandler globalExceptionHandler
     ) {
         this.client = client;
         this.dispatcher = dispatcher;
         this.updateExecutor = updateExecutor;
+        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     public void handle(Update update) {
@@ -32,8 +36,9 @@ public class PollingUpdateHandler {
                 BotContext context = new BotContext(client, update);
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {
-                System.err.println("[Telegram Bot] Handler error for update "
-                        + update.updateId() + ": " + ex.getMessage());
+//                System.err.println("[Telegram Bot] Handler error for update "
+//                        + update.updateId() + ": " + ex.getMessage());
+                globalExceptionHandler.handle(ex);
             }
         });
     }

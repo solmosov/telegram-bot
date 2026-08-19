@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;
@@ -101,7 +102,8 @@ public final class TelegramBot {
                 this.updateSource = new PollingUpdateSource(
                         telegramClient,
                         dispatcher,
-                        executionMode
+                        executionMode,
+                        config.getGlobalExceptionHandler()
                 );
                 System.out.println("[Telegram Bot] Using POLLING mode");
                 break;
@@ -114,8 +116,10 @@ public final class TelegramBot {
                         config.getWebhookHost(),
                         config.getWebhookPort(),
                         config.getWebhookPath(),
-                        config.getWebhookUrl()
+                        config.getWebhookUrl(),
                         // TODO: add webhook secret
+
+                        config.getGlobalExceptionHandler()
                 );
         }
     }

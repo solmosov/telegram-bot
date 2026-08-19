@@ -3,6 +3,7 @@ package io.github.shahbozolmosov.source.webhook;
 import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
@@ -27,7 +28,9 @@ public class WebhookUpdateSource implements UpdateSource {
             String host,
             int port,
             String path,
-            String url
+            String url,
+
+            GlobalExceptionHandler globalExceptionHandler
     ) {
         this.client = client;
         this.url = url;
@@ -45,7 +48,9 @@ public class WebhookUpdateSource implements UpdateSource {
                 updateExecutor,
                 dispatcher,
                 jsonMapper,
-                client
+                client,
+
+                globalExceptionHandler
         );
     }
 

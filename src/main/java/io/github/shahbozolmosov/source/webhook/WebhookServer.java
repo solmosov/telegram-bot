@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpServer;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.model.Update;
 import tools.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ public class WebhookServer {
     private final UpdateExecutor updateExecutor;
     private final Dispatcher dispatcher;
     private final TelegramClient telegramClient;
+    private final GlobalExceptionHandler globalExceptionHandler;
 
     private HttpServer server;
 
@@ -37,13 +39,17 @@ public class WebhookServer {
             UpdateExecutor updateExecutor,
             Dispatcher dispatcher,
             JsonMapper jsonMapper,
-            TelegramClient telegramClient
+            TelegramClient telegramClient,
+
+            GlobalExceptionHandler globalExceptionHandler
     ) {
         this.host = host;
         this.port = port;
         this.path = path;
         this.updateExecutor = updateExecutor;
         this.dispatcher = dispatcher;
+
+        this.globalExceptionHandler = globalExceptionHandler;
 
         this.objectMapper = jsonMapper;
 
@@ -91,8 +97,9 @@ public class WebhookServer {
 
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {
-                System.err.println("[Telegram Bot] Handler error for update "
-                        + update.updateId() + ": " + ex.getMessage());
+//                System.err.println("[Telegram Bot] Handler error for update "
+//                        + update.updateId() + ": " + ex.getMessage());
+                globalExceptionHandler.handle(ex);
             }
         });
 

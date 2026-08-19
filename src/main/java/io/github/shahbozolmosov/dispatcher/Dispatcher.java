@@ -1,7 +1,9 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationDecision;
 import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.exception.AccessDeniedException;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
@@ -41,8 +43,9 @@ public final class Dispatcher {
         List<Handler> handlers = registry.getUpdateHandlers();
 
         for (Handler handler : handlers) {
-            if (!authorizationManager.authorize(botContext, handler).isGranted()) {
-                continue;
+            AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);
+            if (!decision.isGranted()) {
+                throw new AccessDeniedException();
             }
             handler.handle(botContext);
         }

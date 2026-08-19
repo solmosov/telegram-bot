@@ -1,9 +1,11 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationDecision;
 import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.resolver.FallbackMessageTypeResolver;
 import io.github.shahbozolmosov.dispatcher.resolver.MessageTypeResolver;
+import io.github.shahbozolmosov.exception.AccessDeniedException;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Message;
 import io.github.shahbozolmosov.model.Update;
@@ -48,8 +50,9 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
         List<Handler> handlers = registry.find(type, key);
 
         for (Handler handler : handlers) {
-            if (!authorizationManager.authorize(botContext, handler).isGranted()) {
-                continue;
+            AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);
+            if (!decision.isGranted()) {
+                throw new AccessDeniedException();
             }
             handler.handle(botContext);
         }

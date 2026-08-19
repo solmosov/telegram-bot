@@ -1,8 +1,10 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationDecision;
 import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.exception.AccessDeniedException;
 import io.github.shahbozolmosov.model.CallbackQuery;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
@@ -38,8 +40,9 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
         List<CallbackHandlerStore.CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
 
         for (CallbackHandlerStore.CallbackHandlerGroup group : handlerGroups) {
-            if(!authorizationManager.authorize(botContext, group.handler()).isGranted()){
-                continue;
+            AuthorizationDecision decision = authorizationManager.authorize(botContext, group.handler());
+            if (!decision.isGranted()) {
+                throw new AccessDeniedException();
             }
 
             var params = CallbackParamResolver.params(group.callbackPattern(), key);

@@ -97,9 +97,7 @@ public class WebhookServer {
 
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {
-//                System.err.println("[Telegram Bot] Handler error for update "
-//                        + update.updateId() + ": " + ex.getMessage());
-                globalExceptionHandler.handle(ex);
+                globalExceptionHandler.handle(ex, update);
             }
         });
 

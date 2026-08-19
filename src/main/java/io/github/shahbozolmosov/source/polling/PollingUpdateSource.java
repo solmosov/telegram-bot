@@ -4,7 +4,7 @@ import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
-import io.github.shahbozolmosov.exception.TelegramClientException;
+import io.github.shahbozolmosov.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;

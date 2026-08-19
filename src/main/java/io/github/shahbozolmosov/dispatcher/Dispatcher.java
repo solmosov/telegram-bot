@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.dispatcher;
 import io.github.shahbozolmosov.authorization.AuthorizationDecision;
 import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.context.BotContext;
-import io.github.shahbozolmosov.exception.AccessDeniedException;
+import io.github.shahbozolmosov.exception.authorization.AccessDeniedException;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;

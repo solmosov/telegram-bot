@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.exception;
+package io.github.shahbozolmosov.exception.authorization;
 
 public class AccessDeniedException extends RuntimeException {
     public AccessDeniedException() {

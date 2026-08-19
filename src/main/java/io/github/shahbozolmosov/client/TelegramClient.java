@@ -2,8 +2,8 @@ package io.github.shahbozolmosov.client;
 
 import io.github.shahbozolmosov.client.http.MultipartBody;
 import io.github.shahbozolmosov.client.http.MultipartBodyBuilder;
-import io.github.shahbozolmosov.exception.TelegramApiException;
-import io.github.shahbozolmosov.exception.TelegramClientException;
+import io.github.shahbozolmosov.exception.api.TelegramApiException;
+import io.github.shahbozolmosov.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.model.*;
 import io.github.shahbozolmosov.request.media.send.*;
 import io.github.shahbozolmosov.request.message.DeleteMessageRequest;

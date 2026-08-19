@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.exception;
+package io.github.shahbozolmosov.exception.api;
 
 public class TelegramApiException extends RuntimeException {
     private final Integer errorCode;

@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.exception;
+package io.github.shahbozolmosov.exception.client;
 
 public class TelegramClientException extends RuntimeException {
 

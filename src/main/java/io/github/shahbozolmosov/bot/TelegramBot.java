@@ -7,7 +7,6 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
-import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;

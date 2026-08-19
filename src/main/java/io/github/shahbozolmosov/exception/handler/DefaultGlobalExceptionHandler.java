@@ -1,5 +1,6 @@
-package io.github.shahbozolmosov.exception;
+package io.github.shahbozolmosov.exception.handler;
 
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.model.Update;
 
 public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {

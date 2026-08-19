@@ -1,9 +1,7 @@
 package io.github.shahbozolmosov.client;
 
-import io.github.shahbozolmosov.exception.TelegramClientException;
+import io.github.shahbozolmosov.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.model.Update;
-import tools.jackson.core.JsonParser;
-import tools.jackson.core.JsonToken;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;

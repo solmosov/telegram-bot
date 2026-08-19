@@ -1,6 +1,6 @@
 package io.github.shahbozolmosov.client;
 
-import io.github.shahbozolmosov.exception.TelegramClientException;
+import io.github.shahbozolmosov.exception.client.TelegramClientException;
 
 import java.io.ByteArrayOutputStream;
 import java.net.http.HttpResponse;

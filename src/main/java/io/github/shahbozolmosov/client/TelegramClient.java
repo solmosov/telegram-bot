@@ -1,19 +1,14 @@
 package io.github.shahbozolmosov.client;
 
-import io.github.shahbozolmosov.exception.TelegramApiException;
-import io.github.shahbozolmosov.exception.TelegramClientException;
 import io.github.shahbozolmosov.client.http.MultipartBody;
 import io.github.shahbozolmosov.client.http.MultipartBodyBuilder;
-import io.github.shahbozolmosov.model.Message;
-import io.github.shahbozolmosov.model.TelegramResponse;
-import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.model.User;
-import io.github.shahbozolmosov.request.DeleteMessageRequest;
-import io.github.shahbozolmosov.request.EditMessageRequest;
-import io.github.shahbozolmosov.request.SendMessageRequest;
-import io.github.shahbozolmosov.request.media.*;
-import tools.jackson.core.StreamReadConstraints;
-import tools.jackson.core.json.JsonFactory;
+import io.github.shahbozolmosov.exception.TelegramApiException;
+import io.github.shahbozolmosov.exception.TelegramClientException;
+import io.github.shahbozolmosov.model.*;
+import io.github.shahbozolmosov.request.media.send.*;
+import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
+import io.github.shahbozolmosov.request.message.EditMessageRequest;
+import io.github.shahbozolmosov.request.message.SendMessageRequest;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -41,13 +36,11 @@ public final class TelegramClient {
     private final RateLimiter globalRateLimiter;
 
     private static final long MAX_RESPONSE_SIZE = 10 * 1024 * 1024; // 10 mb
-    private static final int MAX_NESTING_DEPTH = 100;
-    private static final int MAX_STRING_LENGTH = 1_000_000;
     private static final int CONNECTION_TIMEOUT = 10; // 10 second
     private static final int TELEGRAM_API_TIMEOUT = 30; // 30 second
     private static final int MAX_UPDATES = 100;
 
-    public TelegramClient(String botToken) {
+    public TelegramClient(String botToken, JsonMapper jsonMapper) {
         this.botToken = botToken;
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
@@ -57,16 +50,8 @@ public final class TelegramClient {
         this.globalRateLimiter = new RateLimiter(30);
 
 
-        // JACKSON
-        StreamReadConstraints constraints = StreamReadConstraints.builder()
-                .maxNestingDepth(MAX_NESTING_DEPTH)
-                .maxStringLength(MAX_STRING_LENGTH)
-                .build();
-        JsonFactory jsonFactory = JsonFactory.builder()
-                .streamReadConstraints(constraints)
-                .build();
-        this.objectMapper = JsonMapper.builder(jsonFactory)
-                .build();
+        // Json Mapper
+        this.objectMapper = jsonMapper;
 
         this.updateCountValidator = new UpdateCountValidator(objectMapper, MAX_UPDATES);
 
@@ -108,6 +93,65 @@ public final class TelegramClient {
         return responseBody;
     }
 
+
+    // --------------------- Send Webhook ---------------------
+    public TelegramResponse<Boolean> setWebhook(String webhookUrl) {
+
+        String url = API_BASE_URL + "/bot" + botToken + "/setWebhook";
+
+        String jsonBody = objectMapper.writeValueAsString(Map.of(
+                "url", webhookUrl
+
+                // TODO add to secret
+        ));
+
+        System.out.println(jsonBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(request,
+                new TypeReference<TelegramResponse<Boolean>>() {
+                }
+        );
+    }
+
+
+    public TelegramResponse<WebhookInfo> getWebhookInfo() {
+        String url = API_BASE_URL + "/bot" + botToken + "/getWebhookInfo";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<WebhookInfo>>() {
+                }
+        );
+    }
+
+    public TelegramResponse<Boolean> deleteWebhook() {
+        String url = API_BASE_URL + "/bot" + botToken + "/deleteWebhook";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/jsons")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Boolean>>() {
+                }
+        );
+    }
 
     // --------------------- Send Message ---------------------
     public TelegramResponse<Message> sendMessage(
@@ -372,7 +416,7 @@ public final class TelegramClient {
     /* ---------------------------------------------
                        HELPERS
     -------------------------------------------- */
-    public void shutdown(){
+    public void shutdown() {
         this.rateLimiter.shutdown();
         this.globalRateLimiter.shutdown();
     }

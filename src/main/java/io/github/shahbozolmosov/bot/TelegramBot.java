@@ -1,18 +1,24 @@
 package io.github.shahbozolmosov.bot;
 
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.CallbackQueryUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
-import io.github.shahbozolmosov.polling.Polling;
+import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
+import io.github.shahbozolmosov.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
 import io.github.shahbozolmosov.scanner.resolver.*;
+import io.github.shahbozolmosov.source.polling.PollingUpdateSource;
+import io.github.shahbozolmosov.source.UpdateSource;
+import io.github.shahbozolmosov.source.webhook.WebhookUpdateSource;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -22,10 +28,10 @@ public final class TelegramBot {
     private final Registry registry;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
-    private Polling polling;
-    private Thread pollingThread;
+    private final JsonMapper jsonMapper;
+    private UpdateSource updateSource;
 
-    private final long shutdownTimeoutMillis;
+
     private final ExecutionMode executionMode;
 
     public TelegramBot(String botToken) {
@@ -33,13 +39,18 @@ public final class TelegramBot {
     }
 
     public TelegramBot(String botToken, TelegramBotConfig config) {
-        this.shutdownTimeoutMillis = config.getShutdownTimeoutMillis();
         this.executionMode = config.getExecutionMode();
 
-        this.telegramClient = new TelegramClient(botToken);
+        // Object Mapper
+        this.jsonMapper = ObjectMapperFactory.create();
+
+        this.telegramClient = new TelegramClient(botToken, jsonMapper);
         this.registry = new Registry();
 
+        // Authorization Manager
+        final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());
 
+        // Message Type Resolvers
         List<MessageTypeResolver> messageTypeResolvers = List.of(
                 new CommandMessageTypeResolver(),
                 new PhotoMessageTypeResolver(),
@@ -49,28 +60,29 @@ public final class TelegramBot {
         );
         FallbackMessageTypeResolver fallbackMessageTypeResolver = new TextMessageTypeResolver();
 
+        // Update dispatchers
         List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
-                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver),
-                new CallbackQueryUpdateDispatcher(registry)
+                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver, authorizationManager),
+                new CallbackQueryUpdateDispatcher(registry, authorizationManager)
         );
 
-        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
-
-        List<AnnotationHandlerResolver> annotationHandlerResolvers = List.of(
+        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers, authorizationManager);
+        // Annotation Resolvers
+        List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
                 // Message
-                new CommandAnnotationHandlerResolver(),
-                new PhotoAnnotationHandlerResolver(),
-                new LocationHandlerAnnotationHandlerResolver(),
-                new ContactHandlerAnnotationHandlerResolver(),
-                new RequestUsersHandlerAnnotationHandlerResolver(),
+                new CommandHandlerResolver(),
+                new PhotoHandlerResolver(),
+                new LocationHandlerResolver(),
+                new ContactHandlerResolver(),
+                new RequestUsersHandlerResolver(),
 
-                new MessageAnnotationHandlerResolver(),
+                new MessageAnnotationResolver(),
 
                 // Callback
-                new CallbackAnnotationHandlerResolver(),
+                new CallbackHandlerResolver(),
 
                 // Update
-                new UpdateAnnotationHandlerResolver()
+                new UpdateHandlerResolver()
         );
 
         this.handlerRegistrar = new HandlerRegistrar(
@@ -79,6 +91,37 @@ public final class TelegramBot {
                 registry,
                 annotationHandlerResolvers
         );
+
+        // Initialize UpdateSource based on config
+        initializeUpdateSource(config);
+    }
+
+    private void initializeUpdateSource(TelegramBotConfig config) {
+        switch (config.getUpdatesMode()) {
+            case POLLING:
+                this.updateSource = new PollingUpdateSource(
+                        telegramClient,
+                        dispatcher,
+                        executionMode,
+                        config.getGlobalExceptionHandler()
+                );
+                System.out.println("[Telegram Bot] Using POLLING mode");
+                break;
+            case WEBHOOK:
+                this.updateSource = new WebhookUpdateSource(
+                        telegramClient,
+                        dispatcher,
+                        executionMode,
+                        jsonMapper,
+                        config.getWebhookHost(),
+                        config.getWebhookPort(),
+                        config.getWebhookPath(),
+                        config.getWebhookUrl(),
+                        // TODO: add webhook secret
+
+                        config.getGlobalExceptionHandler()
+                );
+        }
     }
 
     public void start() {
@@ -86,22 +129,7 @@ public final class TelegramBot {
 
         handlerRegistrar.register(packageName);
 
-        // Polling
-        polling = new Polling(
-                telegramClient,
-                dispatcher,
-                executionMode
-        );
-
-        pollingThread = new Thread(() -> {
-            try {
-                polling.start();
-            } finally {
-                polling.shutdown();
-            }
-        });
-
-        pollingThread.start();
+        updateSource.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
 
@@ -111,26 +139,18 @@ public final class TelegramBot {
     public void stopBot() {
         System.out.println("[Telegram Bot] Shutdown signal received");
 
-        if (polling != null) {
-            polling.stop();
+        if (updateSource != null) {
+            updateSource.stop();
         }
 
-        if (pollingThread != null) {
-            try {
-                pollingThread.interrupt();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
 
-                pollingThread.join(shutdownTimeoutMillis);
-
-                System.out.println("shutdown timeout ms" + shutdownTimeoutMillis);
-                if (pollingThread.isAlive()) {
-                    System.err.println("[Telegram Bot] Polling thread did not terminate gracefully");
-                } else {
-                    System.out.println("[Telegram Bot] Polling thread terminated successfully");
-                }
-            } catch (InterruptedException ex) {
-                pollingThread.interrupt();
-                Thread.currentThread().interrupt();
-            }
+        if (updateSource != null) {
+            updateSource.shutdown();
         }
 
         telegramClient.shutdown();

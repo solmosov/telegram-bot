@@ -1,21 +1,29 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationDecision;
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.exception.AccessDeniedException;
 import io.github.shahbozolmosov.model.CallbackQuery;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.registry.dto.CallbackHandlerGroup;
 import io.github.shahbozolmosov.model.UpdateType;
+import io.github.shahbozolmosov.registry.store.CallbackHandlerStore;
 
 import java.util.List;
 
 public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
 
     private final Registry registry;
+    private final AuthorizationManager authorizationManager;
 
-    public CallbackQueryUpdateDispatcher(Registry registry) {
+    public CallbackQueryUpdateDispatcher(
+            Registry registry,
+            AuthorizationManager authorizationManager
+    ) {
         this.registry = registry;
+        this.authorizationManager = authorizationManager;
     }
 
     @Override
@@ -29,12 +37,14 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
 
         String key = callbackQuery.data();
 
-        // BotContext
-//        botContext.setCallbackParams(params);
+        List<CallbackHandlerStore.CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
 
-        List<CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
+        for (CallbackHandlerStore.CallbackHandlerGroup group : handlerGroups) {
+            AuthorizationDecision decision = authorizationManager.authorize(botContext, group.handler());
+            if (!decision.isGranted()) {
+                throw new AccessDeniedException();
+            }
 
-        for (CallbackHandlerGroup group : handlerGroups) {
             var params = CallbackParamResolver.params(group.callbackPattern(), key);
             botContext.setCallbackParams(params);
             group.handler().handle(botContext);

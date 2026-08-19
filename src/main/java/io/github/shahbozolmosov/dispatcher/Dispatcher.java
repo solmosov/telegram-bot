@@ -1,6 +1,9 @@
 package io.github.shahbozolmosov.dispatcher;
 
+import io.github.shahbozolmosov.authorization.AuthorizationDecision;
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.exception.AccessDeniedException;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.registry.Registry;
@@ -11,13 +14,16 @@ public final class Dispatcher {
 
     private final Registry registry;
     private final List<UpdateTypeDispatcher> updateTypeDispatchers;
+    private final AuthorizationManager authorizationManager;
 
     public Dispatcher(
             Registry registry,
-            List<UpdateTypeDispatcher> updateTypeDispatchers
-            ) {
+            List<UpdateTypeDispatcher> updateTypeDispatchers,
+            AuthorizationManager authorizationManager
+    ) {
         this.registry = registry;
         this.updateTypeDispatchers = updateTypeDispatchers;
+        this.authorizationManager = authorizationManager;
     }
 
     public void dispatch(
@@ -26,18 +32,22 @@ public final class Dispatcher {
     ) {
         dispatchUpdateHandlers(context);
 
-        for(UpdateTypeDispatcher typeDispatcher : updateTypeDispatchers){
-            if(typeDispatcher.supports(update.type())){
-               typeDispatcher.dispatch(update, context);
+        for (UpdateTypeDispatcher typeDispatcher : updateTypeDispatchers) {
+            if (typeDispatcher.supports(update.type())) {
+                typeDispatcher.dispatch(update, context);
             }
         }
     }
 
-    private void dispatchUpdateHandlers(BotContext boyContext) {
+    private void dispatchUpdateHandlers(BotContext botContext) {
         List<Handler> handlers = registry.getUpdateHandlers();
 
         for (Handler handler : handlers) {
-            handler.handle(boyContext);
+            AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);
+            if (!decision.isGranted()) {
+                throw new AccessDeniedException();
+            }
+            handler.handle(botContext);
         }
     }
 }

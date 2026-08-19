@@ -1,7 +1,5 @@
 package io.github.shahbozolmosov.source;
 
-import tools.jackson.databind.json.JsonMapper;
-
 public interface UpdateSource {
     void start();
 

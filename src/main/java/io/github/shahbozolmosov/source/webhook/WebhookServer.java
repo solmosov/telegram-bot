@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.concurrent.RejectedExecutionException;
 
 public class WebhookServer {
 
@@ -158,27 +159,41 @@ public class WebhookServer {
             }
         }
 
-        Update update = parseUpdate(body);
+        // Update
+        Update update;
+
+        try {
+            update = parseUpdate(body);
+        } catch (Exception ex) {
+            log.warn("Invalid webhook request body", ex);
+            sendResponse(httpExchange, 400, "");
+            return;
+        }
 
         long chatId = extractChatId(update);
 
-        updateExecutor.submit(chatId, () -> {
-            MDC.put("bot", botName);
-            try {
-                BotContext context = new BotContext(telegramClient, update);
-
+        try{
+            updateExecutor.submit(chatId, () -> {
+                MDC.put("bot", botName);
                 try {
-                    log.debug("Processing update: {}", update.updateId());
+                    BotContext context = new BotContext(telegramClient, update);
+
+                    try {
+                        log.debug("Processing update: {}", update.updateId());
 
 
-                    dispatcher.dispatch(update, context);
-                } catch (Exception ex) {
-                    globalExceptionHandler.handle(ex, update, context);
+                        dispatcher.dispatch(update, context);
+                    } catch (Exception ex) {
+                        globalExceptionHandler.handle(ex, update, context);
+                    }
+                } finally {
+                    MDC.remove("bot");
                 }
-            } finally {
-                MDC.remove("bot");
-            }
-        });
+            });
+        }catch (RejectedExecutionException ex){
+            sendResponse(httpExchange, 503, "");
+            return;
+        }
 
         sendResponse(httpExchange, 200, "OK");
     }
@@ -210,7 +225,7 @@ public class WebhookServer {
         }
 
         if (update.callbackQuery() != null) {
-            return update.callbackQuery().message().chat().id();
+            return update.callbackQuery().from().id();
         }
 
         return update.updateId();

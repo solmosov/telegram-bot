@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
+import io.github.shahbozolmosov.exception.TelegramBotException;
 import io.github.shahbozolmosov.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;
@@ -35,6 +36,7 @@ public final class TelegramBot {
     private final JsonMapper jsonMapper;
     private UpdateSource updateSource;
 
+    private boolean started;
 
     private final ExecutionMode executionMode;
 
@@ -139,6 +141,12 @@ public final class TelegramBot {
     }
 
     public void start() {
+        if (started) {
+            throw new TelegramBotException("Bot '%s' already been started".formatted(name));
+        }
+
+        started = true;
+
         String packageName = new ApplicationPackageResolver().resolve();
 
         handlerRegistrar.register(packageName);
@@ -169,6 +177,7 @@ public final class TelegramBot {
 
         telegramClient.shutdown();
 
+        started = false;
         log.info("Bot stopped");
     }
 }

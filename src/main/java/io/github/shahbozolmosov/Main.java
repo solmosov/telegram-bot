@@ -1,17 +1,13 @@
 package io.github.shahbozolmosov;
 
-import io.github.shahbozolmosov.bot.ExecutionMode;
-import io.github.shahbozolmosov.bot.TelegramBot;
-import io.github.shahbozolmosov.bot.TelegramBotConfig;
-import io.github.shahbozolmosov.bot.UpdatesMode;
+import io.github.shahbozolmosov.bot.*;
 import io.github.shahbozolmosov.example.authorization.MyAuthorizationProvider;
 import io.github.shahbozolmosov.example.exception.MyGlobalExceptionHandler;
 
 public class Main {
     public static void main(String[] args) {
 
-        // Support Bot
-        String botName = "support";
+        // Support Bot Config
         String supportToken = System.getenv("TELEGRAM_BOT_SUPPORT_TOKEN");
         String supportWebhookUrl = System.getenv("TELEGRAM_BOT_SUPPORT_WEBHOOK_URL");
 
@@ -26,19 +22,22 @@ public class Main {
                 .globalExceptionHandler(new MyGlobalExceptionHandler())
                 .build();
 
-        TelegramBot supportBot = new TelegramBot(botName, supportToken, supportConfig);
 
-        supportBot.start();
-
-        // Admin Bot
-        String token = System.getenv("TELEGRAM_BOT_ADMIN_TOKEN");
+        // Admin Bot Config
+        String adminToken = System.getenv("TELEGRAM_BOT_ADMIN_TOKEN");
 
         TelegramBotConfig adminConfig = TelegramBotConfig.builder()
                 .authorizationProvider(new MyAuthorizationProvider())
                 .build();
 
-        TelegramBot adminBot = new TelegramBot("admin", token, adminConfig);
+        // Application
+        TelegramBotApplication application = new TelegramBotApplication();
 
-        adminBot.start();
+        application
+                .register("support", supportToken, supportConfig)
+                .register("admin", adminToken, adminConfig);
+
+
+        application.start();
     }
 }

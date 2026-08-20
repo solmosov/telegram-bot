@@ -20,6 +20,7 @@ import io.github.shahbozolmosov.source.UpdateSource;
 import io.github.shahbozolmosov.source.webhook.WebhookUpdateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
@@ -105,33 +106,41 @@ public final class TelegramBot {
     }
 
     private void initializeUpdateSource(TelegramBotConfig config) {
-        switch (config.getUpdatesMode()) {
-            case POLLING:
-                this.updateSource = new PollingUpdateSource(
-                        telegramClient,
-                        dispatcher,
-                        executionMode,
-                        config.getGlobalExceptionHandler()
-                );
-                log.info("Using POLLING mode");
-                break;
-            case WEBHOOK:
-                this.updateSource = new WebhookUpdateSource(
-                        name,
-                        telegramClient,
-                        dispatcher,
-                        executionMode,
-                        jsonMapper,
-                        config.getWebhookHost(),
-                        config.getWebhookPort(),
-                        config.getWebhookPath(),
-                        config.getWebhookUrl(),
-                        // TODO: add webhook secret
+        MDC.put("bot", name);
+        log.info("Bot initializing...");
+        try {
 
-                        config.getGlobalExceptionHandler()
-                );
-                log.info("Using WEBHOOK mode");
-                break;
+
+            switch (config.getUpdatesMode()) {
+                case POLLING:
+                    this.updateSource = new PollingUpdateSource(
+                            name,
+                            telegramClient,
+                            dispatcher,
+                            executionMode,
+                            config.getGlobalExceptionHandler()
+                    );
+                    break;
+                case WEBHOOK:
+                    this.updateSource = new WebhookUpdateSource(
+                            name,
+                            telegramClient,
+                            dispatcher,
+                            executionMode,
+                            jsonMapper,
+                            config.getWebhookHost(),
+                            config.getWebhookPort(),
+                            config.getWebhookPath(),
+                            config.getWebhookUrl(),
+                            // TODO: add webhook secret
+
+                            config.getGlobalExceptionHandler()
+                    );
+                    break;
+            }
+        } finally {
+            log.info("Bot initializing completed");
+            MDC.remove("bot");
         }
     }
 
@@ -147,37 +156,51 @@ public final class TelegramBot {
 
         started = true;
 
-        String packageName = new ApplicationPackageResolver().resolve();
+        MDC.put("bot", name);
 
-        handlerRegistrar.register(packageName);
+        try {
+            String packageName = new ApplicationPackageResolver().resolve();
 
-        updateSource.start();
+            handlerRegistrar.register(packageName);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
+            updateSource.start();
 
-        log.info("Started successfully");
+            Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
+
+            log.info("Started successfully");
+        } finally {
+            MDC.remove("bot");
+        }
     }
 
     public void stopBot() {
-        log.info("Shutdown signal received");
 
-        if (updateSource != null) {
-            updateSource.stop();
-        }
+        MDC.put("bot", name);
 
         try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
+            log.info("Shutdown signal received");
+
+            if (updateSource != null) {
+                updateSource.stop();
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (updateSource != null) {
+                updateSource.shutdown();
+            }
+
+            telegramClient.shutdown();
+
+            started = false;
+            log.info("Bot stopped");
+
+        } finally {
+            MDC.remove("bot");
         }
-
-        if (updateSource != null) {
-            updateSource.shutdown();
-        }
-
-        telegramClient.shutdown();
-
-        started = false;
-        log.info("Bot stopped");
     }
 }

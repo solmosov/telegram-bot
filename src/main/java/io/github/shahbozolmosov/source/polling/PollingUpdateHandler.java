@@ -8,10 +8,13 @@ import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 public class PollingUpdateHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PollingUpdateHandler.class);
+
+    private final String botName;
 
     private final TelegramClient client;
     private final Dispatcher dispatcher;
@@ -19,11 +22,13 @@ public class PollingUpdateHandler {
     private final GlobalExceptionHandler globalExceptionHandler;
 
     public PollingUpdateHandler(
+            String botName,
             TelegramClient client,
             Dispatcher dispatcher,
             UpdateExecutor updateExecutor,
             GlobalExceptionHandler globalExceptionHandler
     ) {
+        this.botName = botName;
         this.client = client;
         this.dispatcher = dispatcher;
         this.updateExecutor = updateExecutor;
@@ -34,14 +39,19 @@ public class PollingUpdateHandler {
         long chatId = extractChatId(update);
 
         updateExecutor.submit(chatId, () -> {
-            BotContext context = new BotContext(client, update);
-
+            MDC.put("bot", botName);
             try {
-                log.debug("Processing update: {}", update.updateId());
+                BotContext context = new BotContext(client, update);
 
-                dispatcher.dispatch(update, context);
-            } catch (Exception ex) {
-                globalExceptionHandler.handle(ex, update, context);
+                try {
+                    log.debug("Processing update: {}", update.updateId());
+
+                    dispatcher.dispatch(update, context);
+                } catch (Exception ex) {
+                    globalExceptionHandler.handle(ex, update, context);
+                }
+            } finally {
+                MDC.remove("bot");
             }
         });
     }

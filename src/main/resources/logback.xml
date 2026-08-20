@@ -4,12 +4,12 @@
               class="ch.qos.logback.core.ConsoleAppender">
 
         <encoder>
-            <pattern>%highlight([Telegram Bot] %-5level) %msg%n</pattern>
+            <pattern>%highlight([Telegram Bot - %X{bot}] [%thread] %-5level) %msg%n</pattern>
         </encoder>
 
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
     </root>
 

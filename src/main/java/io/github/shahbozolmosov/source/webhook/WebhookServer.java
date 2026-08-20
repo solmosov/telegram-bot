@@ -10,6 +10,7 @@ import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -22,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 public class WebhookServer {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookServer.class);
+
+    private final String botName;
 
     private final String host;
     private final int port;
@@ -37,6 +40,7 @@ public class WebhookServer {
     private final ObjectMapper objectMapper;
 
     public WebhookServer(
+            String botName,
             String host,
             int port,
             String path,
@@ -47,6 +51,8 @@ public class WebhookServer {
 
             GlobalExceptionHandler globalExceptionHandler
     ) {
+        this.botName = botName;
+
         this.host = host;
         this.port = port;
         this.path = path;
@@ -95,15 +101,20 @@ public class WebhookServer {
         long chatId = extractChatId(update);
 
         updateExecutor.submit(chatId, () -> {
-            BotContext context = new BotContext(telegramClient, update);
+            MDC.put("bot", botName);
+            try{
+                BotContext context = new BotContext(telegramClient, update);
 
-            try {
-                log.debug("Processing update: {}", update.updateId());
+                try {
+                    log.debug("Processing update: {}", update.updateId());
 
 
-                dispatcher.dispatch(update, context);
-            } catch (Exception ex) {
-                globalExceptionHandler.handle(ex, update, context);
+                    dispatcher.dispatch(update, context);
+                } catch (Exception ex) {
+                    globalExceptionHandler.handle(ex, update, context);
+                }
+            }finally {
+                MDC.remove("bot");
             }
         });
 

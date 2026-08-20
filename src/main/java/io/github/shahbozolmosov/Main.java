@@ -14,7 +14,7 @@ public class Main {
         TelegramBotConfig supportConfig = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
                 .updateMode(UpdatesMode.WEBHOOK)
-                .executionMode(ExecutionMode.SINGLE_THREAD)
+                .executionMode(ExecutionMode.MULTI_VIRTUAL_THREAD)
                 .webhookPort(8080)
                 .webhookPath("/webhook/telegram")
                 .webhookUrl(supportWebhookUrl) // https://example.com/webhook/telegram

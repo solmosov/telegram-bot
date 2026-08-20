@@ -30,6 +30,7 @@ public class PollingUpdateSource implements UpdateSource {
     private Thread pollingThread;
 
     public PollingUpdateSource(
+            String botName,
             TelegramClient client,
             Dispatcher dispatcher,
             ExecutionMode executionMode,
@@ -42,7 +43,13 @@ public class PollingUpdateSource implements UpdateSource {
             case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
             case MULTI_VIRTUAL_THREAD -> new VirtualThreadUpdateExecutor();
         };
-        this.updateHandler = new PollingUpdateHandler(client, dispatcher, updateExecutor, globalExceptionHandler);
+        this.updateHandler = new PollingUpdateHandler(
+                botName,
+                client,
+                dispatcher,
+                updateExecutor,
+                globalExceptionHandler
+        );
     }
 
     @Override

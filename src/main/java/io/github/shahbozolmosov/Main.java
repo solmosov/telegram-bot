@@ -10,13 +10,17 @@ public class Main {
         // Support Bot Config
         String supportToken = System.getenv("TELEGRAM_BOT_SUPPORT_TOKEN");
         String supportWebhookUrl = System.getenv("TELEGRAM_BOT_SUPPORT_WEBHOOK_URL");
+        String supportWebhookPathSecret = System.getenv("TELEGRAM_BOT_SUPPORT_WEBHOOK_PATH_SECRET");
+        String supportWebhookSecret = System.getenv("TELEGRAM_BOT_SUPPORT_WEBHOOK_SECRET");
 
         TelegramBotConfig supportConfig = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
                 .updateMode(UpdatesMode.WEBHOOK)
-                .executionMode(ExecutionMode.MULTI_VIRTUAL_THREAD)
+                .executionMode(ExecutionMode.SINGLE_THREAD)
                 .webhookPort(8080)
                 .webhookPath("/webhook/telegram")
+                .webhookPathSecret(supportWebhookPathSecret)
+                .webhookSecret(supportWebhookSecret)
                 .webhookUrl(supportWebhookUrl) // https://example.com/webhook/telegram
                 .authorizationProvider(new MyAuthorizationProvider())
                 .globalExceptionHandler(new MyGlobalExceptionHandler())

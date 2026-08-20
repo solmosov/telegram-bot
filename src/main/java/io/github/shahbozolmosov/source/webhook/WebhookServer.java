@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 public class WebhookServer {
 
@@ -29,6 +30,7 @@ public class WebhookServer {
     private final String host;
     private final int port;
     private final String path;
+    private final String secret;
 
     private final UpdateExecutor updateExecutor;
     private final Dispatcher dispatcher;
@@ -41,9 +43,12 @@ public class WebhookServer {
 
     public WebhookServer(
             String botName,
+
             String host,
             int port,
             String path,
+            String secret,
+
             UpdateExecutor updateExecutor,
             Dispatcher dispatcher,
             JsonMapper jsonMapper,
@@ -56,6 +61,8 @@ public class WebhookServer {
         this.host = host;
         this.port = port;
         this.path = path;
+        this.secret = secret;
+
         this.updateExecutor = updateExecutor;
         this.dispatcher = dispatcher;
 
@@ -87,6 +94,17 @@ public class WebhookServer {
             return;
         }
 
+        String receivedSecret = httpExchange.getRequestHeaders()
+                .getFirst("X-Telegram-Bot-Api-Secret-Token");
+
+        if (receivedSecret == null || !MessageDigest.isEqual(
+                receivedSecret.getBytes(StandardCharsets.UTF_8),
+                secret.getBytes(StandardCharsets.UTF_8))
+        ) {
+            sendResponse(httpExchange, 403, "");
+            return;
+        }
+
         String body;
 
         try (InputStream inputStream = httpExchange.getRequestBody()) {
@@ -102,7 +120,7 @@ public class WebhookServer {
 
         updateExecutor.submit(chatId, () -> {
             MDC.put("bot", botName);
-            try{
+            try {
                 BotContext context = new BotContext(telegramClient, update);
 
                 try {
@@ -113,7 +131,7 @@ public class WebhookServer {
                 } catch (Exception ex) {
                     globalExceptionHandler.handle(ex, update, context);
                 }
-            }finally {
+            } finally {
                 MDC.remove("bot");
             }
         });

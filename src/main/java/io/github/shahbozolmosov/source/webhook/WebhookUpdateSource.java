@@ -23,9 +23,13 @@ public class WebhookUpdateSource implements UpdateSource {
     private final UpdateExecutor updateExecutor;
     private final WebhookServer server;
     private final ExecutionMode executionMode;
+    private final WebhookUrl webhookUrl;
 
     private final String botName;
     private final String url;
+    private final String path;
+    private final String pathSecret;
+    private final String secret;
 
     public WebhookUpdateSource(
             String botName,
@@ -38,13 +42,25 @@ public class WebhookUpdateSource implements UpdateSource {
             int port,
             String path,
             String url,
+            String pathSecret,
+            String secret,
 
             GlobalExceptionHandler globalExceptionHandler
     ) {
         this.botName = botName;
         this.client = client;
         this.url = url;
+        this.path = path;
+        this.pathSecret = pathSecret;
+        this.secret = secret;
         this.executionMode = executionMode;
+
+        this.webhookUrl = new WebhookUrl(
+                url,
+                path,
+                botName,
+                pathSecret
+        );
 
         this.updateExecutor = switch (executionMode) {
             case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
@@ -56,7 +72,9 @@ public class WebhookUpdateSource implements UpdateSource {
 
                 host,
                 port,
-                path,
+                webhookUrl.serverPath(),
+                secret,
+
                 updateExecutor,
                 dispatcher,
                 jsonMapper,
@@ -68,16 +86,16 @@ public class WebhookUpdateSource implements UpdateSource {
 
     @Override
     public void start() {
-        setWebhook(botName, url);
+        setWebhook(webhookUrl.fullUrl(), secret);
 
         server.start();
         log.info("Telegram webhook started");
         log.info("Telegram Execution mode: {}", this.executionMode.name());
     }
 
-    private void setWebhook(String botName, String url) {
+    private void setWebhook(String url, String secret) {
         try {
-            var response = client.setWebhook(botName, url);
+            var response = client.setWebhook(url, secret);
 
             log.debug("setWebhook response: {}", response);
         } catch (TelegramApiException ex) {

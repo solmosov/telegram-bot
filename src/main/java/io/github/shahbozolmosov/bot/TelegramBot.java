@@ -132,7 +132,8 @@ public final class TelegramBot {
                             config.getWebhookPort(),
                             config.getWebhookPath(),
                             config.getWebhookUrl(),
-                            // TODO: add webhook secret
+                            config.getWebhookPathSecret(),
+                            config.getWebhookSecret(),
 
                             config.getGlobalExceptionHandler()
                     );

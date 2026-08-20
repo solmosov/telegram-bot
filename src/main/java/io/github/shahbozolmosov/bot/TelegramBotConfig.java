@@ -14,6 +14,7 @@ public class TelegramBotConfig {
     private final int webhookPort;
     private final String webhookPath;
     private final String webhookUrl;
+    private final String webhookPathSecret;
     private final String webhookSecret;
 
     // Authorization
@@ -31,6 +32,7 @@ public class TelegramBotConfig {
             int webhookPort,
             String webhookPath,
             String webhookUrl,
+            String webhookPathSecret,
             String webhookSecret,
 
             AuthorizationProvider authorizationProvider,
@@ -43,6 +45,7 @@ public class TelegramBotConfig {
 
         this.webhookHost = webhookHost;
         this.webhookPath = webhookPath;
+        this.webhookPathSecret = webhookPathSecret;
         this.webhookUrl = webhookUrl;
         this.webhookPort = webhookPort;
         this.webhookSecret = webhookSecret;
@@ -90,6 +93,10 @@ public class TelegramBotConfig {
         return webhookPort;
     }
 
+    public String getWebhookPathSecret() {
+        return webhookPathSecret;
+    }
+
     public String getWebhookSecret() {
         return webhookSecret;
     }
@@ -101,7 +108,7 @@ public class TelegramBotConfig {
     }
 
     // Exception
-    public GlobalExceptionHandler getGlobalExceptionHandler(){
+    public GlobalExceptionHandler getGlobalExceptionHandler() {
         return globalExceptionHandler;
     }
 
@@ -114,6 +121,7 @@ public class TelegramBotConfig {
         private int webhookPort = 8080;
         private String webhookPath;
         private String webhookUrl;
+        private String webhookPathSecret = null;
         private String webhookSecret = null;
 
         // Authorization
@@ -158,19 +166,24 @@ public class TelegramBotConfig {
             return this;
         }
 
-        public Builder webhookSecret(String webhookSecret) {
-            this.webhookSecret = webhookSecret;
+        public Builder webhookPathSecret(String secret) {
+            this.webhookPathSecret = secret;
+            return this;
+        }
+
+        public Builder webhookSecret(String secret) {
+            this.webhookSecret = secret;
             return this;
         }
 
         // Authorization
-        public Builder authorizationProvider(AuthorizationProvider authorizationProvider){
+        public Builder authorizationProvider(AuthorizationProvider authorizationProvider) {
             this.authorizationProvider = authorizationProvider;
             return this;
         }
 
         // Exception
-        public Builder globalExceptionHandler(GlobalExceptionHandler globalExceptionHandler){
+        public Builder globalExceptionHandler(GlobalExceptionHandler globalExceptionHandler) {
             this.globalExceptionHandler = globalExceptionHandler;
             return this;
         }
@@ -187,6 +200,7 @@ public class TelegramBotConfig {
                     webhookPort,
                     webhookPath,
                     webhookUrl,
+                    webhookPathSecret,
                     webhookSecret,
 
                     authorizationProvider,
@@ -200,6 +214,18 @@ public class TelegramBotConfig {
                 if (webhookPath == null || webhookPath.isBlank()) {
                     throw new IllegalArgumentException(
                             "webhookPath is required for WEBHOOK mode (e.g., '/webhook')"
+                    );
+                }
+
+                if (webhookPathSecret == null || webhookPathSecret.isBlank()) {
+                    throw new IllegalArgumentException(
+                            "webhookPathSecret is required for WEBHOOK mode (e.g., 'your-generated-secret')"
+                    );
+                }
+
+                if (webhookSecret == null || webhookSecret.isBlank()) {
+                    throw new IllegalArgumentException(
+                            "webhookSecret is required for WEBHOOK mode (e.g., 'your-generated-secret')"
                     );
                 }
 

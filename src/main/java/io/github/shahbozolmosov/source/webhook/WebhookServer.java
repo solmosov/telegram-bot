@@ -172,7 +172,7 @@ public class WebhookServer {
 
         long chatId = extractChatId(update);
 
-        try{
+        try {
             updateExecutor.submit(chatId, () -> {
                 MDC.put("bot", botName);
                 try {
@@ -190,7 +190,8 @@ public class WebhookServer {
                     MDC.remove("bot");
                 }
             });
-        }catch (RejectedExecutionException ex){
+        } catch (RejectedExecutionException ex) {
+            log.warn("Update queue is full for chat {}", chatId);
             sendResponse(httpExchange, 503, "");
             return;
         }

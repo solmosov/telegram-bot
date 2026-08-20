@@ -5,9 +5,18 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class MultiVirtualThreadUpdateExecutor implements UpdateExecutor {
 
+    private static final int MAX_QUEUED_UPDATES_PER_CHAT = 100;
 
     private static class ChatWorker {
-        final ExecutorService executor = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(
+                1,
+                1,
+                0L,
+                TimeUnit.MICROSECONDS,
+                new ArrayBlockingQueue<>(MAX_QUEUED_UPDATES_PER_CHAT),
+                Thread.ofVirtual().factory(),
+                new ThreadPoolExecutor.AbortPolicy()
+        );
         final AtomicLong lastUsedAt = new AtomicLong(System.currentTimeMillis());
     }
 
@@ -35,7 +44,16 @@ public class MultiVirtualThreadUpdateExecutor implements UpdateExecutor {
         ChatWorker worker = workers.computeIfAbsent(chatId, id -> new ChatWorker());
         worker.lastUsedAt.set(System.currentTimeMillis());
 
-        Future<?> future = worker.executor.submit(task);
+        Future<?> future;
+
+        try {
+            future = worker.executor.submit(task);
+        } catch (RejectedExecutionException ex) {
+            throw new RejectedExecutionException(
+                    "Too many queued updates for chat: " + chatId,
+                    ex
+            );
+        }
 
         timeoutScheduler.schedule(
                 () -> {

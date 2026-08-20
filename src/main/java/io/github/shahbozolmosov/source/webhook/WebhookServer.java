@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
+import io.github.shahbozolmosov.exception.webhook.RequestBodyTooLargeException;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.model.Update;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.slf4j.MDC;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +26,8 @@ import java.security.MessageDigest;
 public class WebhookServer {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookServer.class);
+
+    private static final int MAX_REQUEST_BODY_SIZE = 256 * 1024; // 256 KB
 
     private final String botName;
 
@@ -108,10 +112,7 @@ public class WebhookServer {
         String body;
 
         try (InputStream inputStream = httpExchange.getRequestBody()) {
-            body = new String(
-                    inputStream.readAllBytes(),
-                    StandardCharsets.UTF_8
-            );
+            body = readRequestBody(inputStream);
         }
 
         Update update = parseUpdate(body);
@@ -137,6 +138,27 @@ public class WebhookServer {
         });
 
         sendResponse(httpExchange, 200, "OK");
+    }
+
+    private String readRequestBody(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[16384];
+        int totalBytes = 0;
+
+        int bytesRead;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            totalBytes += bytesRead;
+
+            if (totalBytes > MAX_REQUEST_BODY_SIZE) {
+                throw new RequestBodyTooLargeException();
+            }
+
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        return outputStream.toString(StandardCharsets.UTF_8);
     }
 
     private long extractChatId(Update update) {

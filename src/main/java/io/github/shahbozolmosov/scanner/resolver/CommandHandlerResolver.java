@@ -15,12 +15,18 @@ public class CommandHandlerResolver implements HandlerAnnotationResolver {
     }
 
     @Override
-    public void register(Method method, Handler handler, Registry registry) {
+    public void register(String botName, Method method, Handler handler, Registry registry) {
         CommandHandler command = method.getAnnotation(CommandHandler.class);
+
+        String methodKey = command.value().isEmpty()
+                ? null
+                : command.value();
+
+        String key = botName + "/" + methodKey;
 
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.COMMAND,
-                command.value(),
+                key,
                 handler
         );
 

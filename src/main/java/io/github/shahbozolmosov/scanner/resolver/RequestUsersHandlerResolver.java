@@ -15,12 +15,16 @@ public class RequestUsersHandlerResolver implements HandlerAnnotationResolver {
     }
 
     @Override
-    public void register(Method method, Handler handler, Registry registry) {
+    public void register(String botName, Method method, Handler handler, Registry registry) {
         RequestUsersHandler requestUsersHandler = method.getAnnotation(RequestUsersHandler.class);
 
-        String key = requestUsersHandler.value() == -1
+        String key = botName + "/";
+
+        String methodKey = requestUsersHandler.value() == -1
                 ? null
                 : String.valueOf(requestUsersHandler.value());
+
+        key += methodKey;
 
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.USERS_SHARED,

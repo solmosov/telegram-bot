@@ -14,9 +14,10 @@ public class UpdateHandlerResolver implements HandlerAnnotationResolver {
     }
 
     @Override
-    public void register(Method method, Handler handler, Registry registry) {
+    public void register(String botName, Method method, Handler handler, Registry registry) {
 
         UpdateHandlerRegistration registration = new UpdateHandlerRegistration(
+                botName,
                 handler
         );
 

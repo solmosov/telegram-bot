@@ -15,12 +15,16 @@ public class MessageAnnotationResolver implements HandlerAnnotationResolver {
     }
 
     @Override
-    public void register(Method method, Handler handler, Registry registry) {
+    public void register(String botName, Method method, Handler handler, Registry registry) {
         MessageHandler message = method.getAnnotation(MessageHandler.class);
 
-        String key = message.value().isEmpty()
+        String key = botName + "/";
+
+        String methodKey = message.value().isEmpty()
                 ? null
                 : message.value();
+
+        key += methodKey;
 
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.TEXT,

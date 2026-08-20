@@ -15,16 +15,29 @@ public class LocationHandlerResolver implements HandlerAnnotationResolver {
     }
 
     @Override
-    public void register(Method method, Handler handler, Registry registry) {
+    public void register(String botName, Method method, Handler handler, Registry registry) {
 
         LocationHandler location = method.getAnnotation(LocationHandler.class);
 
+        String key = botName + "/";
+
+        String methodKey = location.value().isEmpty()
+                ? null
+                : location.value();
+
+
+        key += methodKey;
+
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.LOCATION,
-                location.value(),
+                key,
                 handler
         );
 
         registry.register(registration);
+    }
+
+    private static StringBuilder getKey(StringBuilder key) {
+        return key;
     }
 }

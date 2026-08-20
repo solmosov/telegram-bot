@@ -7,5 +7,5 @@ import java.lang.reflect.Method;
 
 public interface HandlerAnnotationResolver {
     boolean supports(Method method);
-    void register(Method method, Handler handler, Registry registry);
+    void register(String botName, Method method, Handler handler, Registry registry);
 }

@@ -4,17 +4,21 @@ import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.registration.UpdateHandlerRegistration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class UpdateHandlerStore {
-    private final List<Handler> updateHandlers = new ArrayList<>();
+    private final Map<String, List<Handler>> updateHandlers = new HashMap<>();
 
     public void register(UpdateHandlerRegistration registration) {
-        updateHandlers.add(registration.handler());
+        updateHandlers
+                .computeIfAbsent(registration.botName(), k -> new ArrayList<>())
+                .add(registration.handler());
 
     }
 
-    public List<Handler> getHandlers() {
-        return updateHandlers;
+    public List<Handler> getHandlers(String botName) {
+        return updateHandlers.get(botName);
     }
 }

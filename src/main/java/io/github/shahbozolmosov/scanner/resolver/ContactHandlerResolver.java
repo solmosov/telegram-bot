@@ -15,12 +15,13 @@ public class ContactHandlerResolver implements HandlerAnnotationResolver {
     }
 
     @Override
-    public void register(Method method, Handler handler, Registry registry) {
-        ContactHandler contactHandler = method.getAnnotation(ContactHandler.class);
+    public void register(String botName, Method method, Handler handler, Registry registry) {
+
+        String key = botName + "/";
 
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.CONTACT,
-                null,
+                key,
                 handler
         );
 

@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.scanner;
 
 import io.github.shahbozolmosov.annotation.BotAuthorize;
 import io.github.shahbozolmosov.annotation.BotHandler;
+import io.github.shahbozolmosov.exception.TelegramBotException;
 import io.github.shahbozolmosov.handler.Handler;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.resolver.HandlerAnnotationResolver;
@@ -32,6 +33,14 @@ public final class HandlerRegistrar {
         List<Class<?>> classes = scanner.scan(packageName, BotHandler.class);
 
         for (Class<?> clazz : classes) {
+
+            BotHandler botHandler = clazz.getAnnotation(BotHandler.class);
+            final String botName = botHandler.value();
+
+            if (botName == null || botName.isBlank()) {
+                throw new TelegramBotException("@BotHandler bot name is required");
+            }
+
             Object instance = factory.create(clazz);
 
             for (Method method : clazz.getDeclaredMethods()) {
@@ -42,7 +51,7 @@ public final class HandlerRegistrar {
 
                     Handler handler = getHandler(method, instance);
 
-                    resolver.register(method, handler, registry);
+                    resolver.register(botName, method, handler, registry);
                 }
             }
         }

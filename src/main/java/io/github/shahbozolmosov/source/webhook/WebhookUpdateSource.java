@@ -24,10 +24,6 @@ public class WebhookUpdateSource implements UpdateSource {
     private final ExecutionMode executionMode;
     private final WebhookUrl webhookUrl;
 
-    private final String botName;
-    private final String url;
-    private final String path;
-    private final String pathSecret;
     private final String secret;
 
     public WebhookUpdateSource(
@@ -47,12 +43,10 @@ public class WebhookUpdateSource implements UpdateSource {
             GlobalExceptionHandler globalExceptionHandler,
             long processingTimeout
     ) {
-        this.botName = botName;
         this.client = client;
-        this.url = url;
-        this.path = path;
-        this.pathSecret = pathSecret;
+
         this.secret = secret;
+        
         this.executionMode = executionMode;
 
         this.webhookUrl = new WebhookUrl(

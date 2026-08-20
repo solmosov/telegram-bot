@@ -31,7 +31,6 @@ public final class TelegramBot {
 
     private final String name;
     private final TelegramClient telegramClient;
-    private final Registry registry;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
     private final JsonMapper jsonMapper;
@@ -54,7 +53,9 @@ public final class TelegramBot {
         this.jsonMapper = ObjectMapperFactory.create();
 
         this.telegramClient = new TelegramClient(botToken, jsonMapper);
-        this.registry = new Registry();
+
+        // Registry
+        final Registry registry = new Registry();
 
         // Authorization Manager
         final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());

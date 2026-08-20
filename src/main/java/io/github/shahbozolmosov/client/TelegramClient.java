@@ -9,8 +9,6 @@ import io.github.shahbozolmosov.request.media.send.*;
 import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
 import io.github.shahbozolmosov.request.message.EditMessageRequest;
 import io.github.shahbozolmosov.request.message.SendMessageRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;

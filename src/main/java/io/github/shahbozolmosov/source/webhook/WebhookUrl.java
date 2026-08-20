@@ -40,7 +40,7 @@ public final class WebhookUrl {
     }
 
     private static String normalizePath(String value) {
-        if (value == null && value.isBlank()) {
+        if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Webhook path is required");
         }
 

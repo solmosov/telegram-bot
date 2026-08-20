@@ -10,22 +10,35 @@ import io.github.shahbozolmosov.example.exception.MyGlobalExceptionHandler;
 public class Main {
     public static void main(String[] args) {
 
-        String token = System.getenv("TELEGRAM_BOT_TOKEN");
-        String webhookUrl = System.getenv("WEBHOOK_URL");
+        // Support Bot
+        String botName = "support";
+        String supportToken = System.getenv("TELEGRAM_BOT_SUPPORT_TOKEN");
+        String supportWebhookUrl = System.getenv("TELEGRAM_BOT_SUPPORT_WEBHOOK_URL");
 
-        TelegramBotConfig config = TelegramBotConfig.builder()
+        TelegramBotConfig supportConfig = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
                 .updateMode(UpdatesMode.WEBHOOK)
                 .executionMode(ExecutionMode.SINGLE_THREAD)
                 .webhookPort(8080)
                 .webhookPath("/webhook/telegram")
-                .webhookUrl(webhookUrl) // https://example.com/webhook/telegram
+                .webhookUrl(supportWebhookUrl) // https://example.com/webhook/telegram
                 .authorizationProvider(new MyAuthorizationProvider())
                 .globalExceptionHandler(new MyGlobalExceptionHandler())
                 .build();
 
-        TelegramBot bot = new TelegramBot("support", token, config);
+        TelegramBot supportBot = new TelegramBot(botName, supportToken, supportConfig);
 
-        bot.start();
+        supportBot.start();
+
+        // Admin Bot
+        String token = System.getenv("TELEGRAM_BOT_ADMIN_TOKEN");
+
+        TelegramBotConfig adminConfig = TelegramBotConfig.builder()
+                .authorizationProvider(new MyAuthorizationProvider())
+                .build();
+
+        TelegramBot adminBot = new TelegramBot("admin", token, adminConfig);
+
+        adminBot.start();
     }
 }

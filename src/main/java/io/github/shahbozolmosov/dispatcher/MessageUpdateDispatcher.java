@@ -41,11 +41,11 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
     }
 
     @Override
-    public void dispatch(Update update, BotContext botContext) {
+    public void dispatch(String botName, Update update, BotContext botContext) {
         Message message = update.message();
 
         MessageType type = resolveType(message);
-        String key = resolveKey(type, message);
+        String key = botName + "/" + resolveKey(type, message);
 
         List<Handler> handlers = registry.find(type, key);
 

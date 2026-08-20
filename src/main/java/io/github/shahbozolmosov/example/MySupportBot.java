@@ -10,7 +10,7 @@ import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
 import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
 
 @BotHandler("support")
-public class MyBot {
+public class MySupportBot {
 
     @CommandHandler("/start")
     public void start(BotContext context) {

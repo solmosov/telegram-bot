@@ -12,18 +12,18 @@ public class MyAuthorizationProvider implements AuthorizationProvider {
 
     // DB
     private final Map<Long, MyUser> users = Map.of(
-            8975724196L,
+            5561519648L,
             new MyUser(
-                    8975724196L,
+                    5561519648L,
                     "admin",
                     Set.of("ADMIN")
             ),
 
-            987654321L,
+            8975724196L,
             new MyUser(
-                    987654321L,
-                    "courier",
-                    Set.of("COURIER")
+                    8975724196L,
+                    "support",
+                    Set.of("SUPPORT")
             )
     );
 

@@ -19,6 +19,12 @@ public final class UpdateHandlerStore {
     }
 
     public List<Handler> getHandlers(String botName) {
-        return updateHandlers.get(botName);
+        List<Handler> list = updateHandlers.get(botName);
+
+        if (list == null) {
+            return List.of();
+        }
+
+        return list;
     }
 }

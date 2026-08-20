@@ -12,15 +12,18 @@ import java.util.List;
 
 public final class Dispatcher {
 
+    private final String botName;
     private final Registry registry;
     private final List<UpdateTypeDispatcher> updateTypeDispatchers;
     private final AuthorizationManager authorizationManager;
 
     public Dispatcher(
+            String botName,
             Registry registry,
             List<UpdateTypeDispatcher> updateTypeDispatchers,
             AuthorizationManager authorizationManager
     ) {
+        this.botName = botName;
         this.registry = registry;
         this.updateTypeDispatchers = updateTypeDispatchers;
         this.authorizationManager = authorizationManager;
@@ -34,13 +37,13 @@ public final class Dispatcher {
 
         for (UpdateTypeDispatcher typeDispatcher : updateTypeDispatchers) {
             if (typeDispatcher.supports(update.type())) {
-                typeDispatcher.dispatch(update, context);
+                typeDispatcher.dispatch(botName, update, context);
             }
         }
     }
 
     private void dispatchUpdateHandlers(BotContext botContext) {
-        List<Handler> handlers = registry.getUpdateHandlers();
+        List<Handler> handlers = registry.getUpdateHandlers(botName);
 
         for (Handler handler : handlers) {
             AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);

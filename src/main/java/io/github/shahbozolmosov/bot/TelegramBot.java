@@ -72,7 +72,7 @@ public final class TelegramBot {
                 new CallbackQueryUpdateDispatcher(registry, authorizationManager)
         );
 
-        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers, authorizationManager);
+        this.dispatcher = new Dispatcher(name, registry, updateTypeDispatchers, authorizationManager);
         // Annotation Resolvers
         List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
                 // Message

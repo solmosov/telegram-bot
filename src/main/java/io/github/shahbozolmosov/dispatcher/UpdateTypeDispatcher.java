@@ -8,5 +8,5 @@ public interface UpdateTypeDispatcher {
 
     boolean supports(UpdateType type);
 
-    void dispatch(Update update, BotContext botContext);
+    void dispatch(String botName, Update update, BotContext botContext);
 }

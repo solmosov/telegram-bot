@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 
 public class TelegramBotConfig {
     private final long shutdownTimeoutMillis;
+    private final long processingTimeout;
     private final UpdatesMode updatesMode;
     private final ExecutionMode executionMode;
 
@@ -25,6 +26,7 @@ public class TelegramBotConfig {
 
     private TelegramBotConfig(
             long shutdownTimeoutMillis,
+            long processingTimeout,
             ExecutionMode executionMode,
             UpdatesMode updatesMode,
 
@@ -40,6 +42,7 @@ public class TelegramBotConfig {
             GlobalExceptionHandler globalExceptionHandler
     ) {
         this.shutdownTimeoutMillis = shutdownTimeoutMillis;
+        this.processingTimeout = processingTimeout;
         this.executionMode = executionMode;
         this.updatesMode = updatesMode;
 
@@ -65,6 +68,10 @@ public class TelegramBotConfig {
 
     public long getShutdownTimeoutMillis() {
         return shutdownTimeoutMillis;
+    }
+
+    public long getProcessingTimeout() {
+        return processingTimeout;
     }
 
     public ExecutionMode getExecutionMode() {
@@ -112,8 +119,10 @@ public class TelegramBotConfig {
         return globalExceptionHandler;
     }
 
+
     public static class Builder {
-        private long shutdownTimeoutMillis = 5_000;
+        private long shutdownTimeoutMillis = 5_000; // 5s
+        private long processingTimeout = 30; // 30s
         private ExecutionMode executionMode = ExecutionMode.SINGLE_THREAD;
         private UpdatesMode updatesMode = UpdatesMode.POLLING;
 
@@ -132,6 +141,11 @@ public class TelegramBotConfig {
 
         public Builder shutdownTimeout(long millis) {
             this.shutdownTimeoutMillis = millis;
+            return this;
+        }
+
+        public Builder processingTimeout(long second) {
+            this.processingTimeout = second;
             return this;
         }
 
@@ -193,6 +207,7 @@ public class TelegramBotConfig {
 
             return new TelegramBotConfig(
                     shutdownTimeoutMillis,
+                    processingTimeout,
                     executionMode,
                     updatesMode,
 

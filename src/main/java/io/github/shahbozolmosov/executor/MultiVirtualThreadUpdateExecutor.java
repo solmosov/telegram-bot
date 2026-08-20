@@ -3,7 +3,8 @@ package io.github.shahbozolmosov.executor;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class VirtualThreadUpdateExecutor implements UpdateExecutor {
+public class MultiVirtualThreadUpdateExecutor implements UpdateExecutor {
+
 
     private static class ChatWorker {
         final ExecutorService executor = Executors.newSingleThreadExecutor(Thread.ofVirtual().factory());
@@ -12,10 +13,19 @@ public class VirtualThreadUpdateExecutor implements UpdateExecutor {
 
     private final ConcurrentHashMap<Long, ChatWorker> workers = new ConcurrentHashMap<>();
     private final ScheduledExecutorService cleaner = Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().factory());
+    private final ScheduledExecutorService timeoutScheduler = Executors.newSingleThreadScheduledExecutor(Thread.ofVirtual().factory());
+
+    private final long processingTimeout;
 
     private static final long IDLE_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(10);
 
-    public VirtualThreadUpdateExecutor() {
+    public MultiVirtualThreadUpdateExecutor(long processingTimeout) {
+        if (processingTimeout <= 0) {
+            throw new IllegalArgumentException("Processing timeout must be greater than zero");
+        }
+
+        this.processingTimeout = processingTimeout;
+
         cleaner.scheduleAtFixedRate(this::evictIdleWorkers, 5, 5, TimeUnit.MINUTES);
     }
 
@@ -26,11 +36,25 @@ public class VirtualThreadUpdateExecutor implements UpdateExecutor {
         worker.lastUsedAt.set(System.currentTimeMillis());
 
         worker.executor.submit(task);
+
+        Future<?> future = worker.executor.submit(task);
+
+        timeoutScheduler.schedule(
+                () -> {
+                    if (!future.isDone()) {
+                        future.cancel(true);
+                    }
+                },
+                processingTimeout,
+                TimeUnit.SECONDS
+        );
     }
 
     @Override
     public void shutdown() {
         cleaner.shutdown();
+        timeoutScheduler.shutdown();
+
         workers.values().forEach(workers -> workers.executor.shutdown());
 
         for (ChatWorker worker : workers.values()) {

@@ -9,7 +9,7 @@ import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
-import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
+import io.github.shahbozolmosov.executor.MultiVirtualThreadUpdateExecutor;
 import io.github.shahbozolmosov.source.UpdateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +34,15 @@ public class PollingUpdateSource implements UpdateSource {
             TelegramClient client,
             Dispatcher dispatcher,
             ExecutionMode executionMode,
-            GlobalExceptionHandler globalExceptionHandler
+            GlobalExceptionHandler globalExceptionHandler,
+            long processingTimeout
     ) {
         this.client = client;
         this.executionMode = executionMode;
 
         this.updateExecutor = switch (this.executionMode) {
-            case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
-            case MULTI_VIRTUAL_THREAD -> new VirtualThreadUpdateExecutor();
+            case SINGLE_THREAD -> new SingleThreadUpdateExecutor(processingTimeout);
+            case MULTI_VIRTUAL_THREAD -> new MultiVirtualThreadUpdateExecutor(processingTimeout);
         };
         this.updateHandler = new PollingUpdateHandler(
                 botName,

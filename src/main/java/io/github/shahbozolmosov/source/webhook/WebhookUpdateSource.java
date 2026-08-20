@@ -5,11 +5,10 @@ import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.exception.api.TelegramApiException;
-import io.github.shahbozolmosov.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.exception.api.WebhookSetupException;
 import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
-import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
+import io.github.shahbozolmosov.executor.MultiVirtualThreadUpdateExecutor;
 import io.github.shahbozolmosov.source.UpdateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +44,8 @@ public class WebhookUpdateSource implements UpdateSource {
             String pathSecret,
             String secret,
 
-            GlobalExceptionHandler globalExceptionHandler
+            GlobalExceptionHandler globalExceptionHandler,
+            long processingTimeout
     ) {
         this.botName = botName;
         this.client = client;
@@ -63,8 +63,8 @@ public class WebhookUpdateSource implements UpdateSource {
         );
 
         this.updateExecutor = switch (executionMode) {
-            case SINGLE_THREAD -> new SingleThreadUpdateExecutor();
-            case MULTI_VIRTUAL_THREAD -> new VirtualThreadUpdateExecutor();
+            case SINGLE_THREAD -> new SingleThreadUpdateExecutor(processingTimeout);
+            case MULTI_VIRTUAL_THREAD -> new MultiVirtualThreadUpdateExecutor(processingTimeout);
         };
 
         this.server = new WebhookServer(

@@ -118,7 +118,8 @@ public final class TelegramBot {
                             telegramClient,
                             dispatcher,
                             executionMode,
-                            config.getGlobalExceptionHandler()
+                            config.getGlobalExceptionHandler(),
+                            config.getProcessingTimeout()
                     );
                     break;
                 case WEBHOOK:
@@ -135,8 +136,9 @@ public final class TelegramBot {
                             config.getWebhookPathSecret(),
                             config.getWebhookSecret(),
 
-                            config.getGlobalExceptionHandler()
-                    );
+                            config.getGlobalExceptionHandler(),
+                            config.getProcessingTimeout()
+                            );
                     break;
             }
         } finally {

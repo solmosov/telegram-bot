@@ -10,6 +10,7 @@ public record Message(
 
         From from,
         Chat chat,
+        Long date,
         String text,
 
         List<PhotoSize> photo,

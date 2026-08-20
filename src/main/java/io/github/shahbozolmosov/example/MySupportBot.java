@@ -31,8 +31,6 @@ public class MySupportBot {
     public void button1(BotContext context) {
         var keyboard = InlineKeyboard.removeKeyboard();
 
-        System.out.println("render");
-
         context.message().removeInlineKeyboard(context.message().messageId(), keyboard);
     }
 }

@@ -27,6 +27,7 @@ public final class TelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
 
+    private final String name;
     private final TelegramClient telegramClient;
     private final Registry registry;
     private final Dispatcher dispatcher;
@@ -37,11 +38,13 @@ public final class TelegramBot {
 
     private final ExecutionMode executionMode;
 
-    public TelegramBot(String botToken) {
-        this(botToken, TelegramBotConfig.defaults());
+    public TelegramBot(String name, String botToken) {
+        this(name, botToken, TelegramBotConfig.defaults());
     }
 
-    public TelegramBot(String botToken, TelegramBotConfig config) {
+    public TelegramBot(String name, String botToken, TelegramBotConfig config) {
+        this.name = name;
+
         this.executionMode = config.getExecutionMode();
 
         // Object Mapper
@@ -112,6 +115,7 @@ public final class TelegramBot {
                 break;
             case WEBHOOK:
                 this.updateSource = new WebhookUpdateSource(
+                        name,
                         telegramClient,
                         dispatcher,
                         executionMode,
@@ -127,6 +131,11 @@ public final class TelegramBot {
                 log.info("Using WEBHOOK mode");
                 break;
         }
+    }
+
+
+    public String name() {
+        return this.name;
     }
 
     public void start() {

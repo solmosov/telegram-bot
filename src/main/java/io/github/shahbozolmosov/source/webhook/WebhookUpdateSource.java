@@ -24,9 +24,11 @@ public class WebhookUpdateSource implements UpdateSource {
     private final WebhookServer server;
     private final ExecutionMode executionMode;
 
+    private final String botName;
     private final String url;
 
     public WebhookUpdateSource(
+            String botName,
             TelegramClient client,
             Dispatcher dispatcher,
             ExecutionMode executionMode,
@@ -39,6 +41,7 @@ public class WebhookUpdateSource implements UpdateSource {
 
             GlobalExceptionHandler globalExceptionHandler
     ) {
+        this.botName = botName;
         this.client = client;
         this.url = url;
         this.executionMode = executionMode;
@@ -63,16 +66,16 @@ public class WebhookUpdateSource implements UpdateSource {
 
     @Override
     public void start() {
-        setWebhook(url);
+        setWebhook(botName, url);
 
         server.start();
         log.info("Telegram webhook started");
         log.info("Telegram Execution mode: {}", this.executionMode.name());
     }
 
-    private void setWebhook(String url) {
+    private void setWebhook(String botName, String url) {
         try {
-            var response = client.setWebhook(url);
+            var response = client.setWebhook(botName, url);
 
             log.debug("setWebhook response: {}", response);
         } catch (TelegramApiException ex) {

@@ -24,7 +24,7 @@ public class Main {
                 .globalExceptionHandler(new MyGlobalExceptionHandler())
                 .build();
 
-        TelegramBot bot = new TelegramBot(token, config);
+        TelegramBot bot = new TelegramBot("support", token, config);
 
         bot.start();
     }

@@ -98,12 +98,12 @@ public final class TelegramClient {
 
 
     // --------------------- Send Webhook ---------------------
-    public TelegramResponse<Boolean> setWebhook(String webhookUrl) {
+    public TelegramResponse<Boolean> setWebhook(String botName, String webhookUrl) {
 
         String url = API_BASE_URL + "/bot" + botToken + "/setWebhook";
 
         String jsonBody = objectMapper.writeValueAsString(Map.of(
-                "url", webhookUrl
+                "url", webhookUrl + botName
 
                 // TODO add to secret
         ));

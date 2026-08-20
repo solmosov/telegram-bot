@@ -5,6 +5,7 @@ import io.github.shahbozolmosov.bot.TelegramBot;
 import io.github.shahbozolmosov.bot.TelegramBotConfig;
 import io.github.shahbozolmosov.bot.UpdatesMode;
 import io.github.shahbozolmosov.example.authorization.MyAuthorizationProvider;
+import io.github.shahbozolmosov.example.exception.MyGlobalExceptionHandler;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class Main {
 //                .webhookPath("/webhook/telegram")
 //                .webhookUrl(webhookUrl) // https://example.com/webhook/telegram
                 .authorizationProvider(new MyAuthorizationProvider())
+                .globalExceptionHandler(new MyGlobalExceptionHandler())
                 .build();
 
         TelegramBot bot = new TelegramBot(token, config);

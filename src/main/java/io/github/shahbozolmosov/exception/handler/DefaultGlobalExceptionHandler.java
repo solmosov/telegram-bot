@@ -35,35 +35,27 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
 
     private void handleApiException(TelegramApiException ex) {
         log.error(
-                "Handler error for update "
-                        + " | errorCode=" + ex.getErrorCode()
-                        + " | message=" + sanitize(ex.getMessage())
+                "Handler error for update | errorCode={} | message={}", ex.getErrorCode(), sanitize(ex.getMessage())
         );
     }
 
 
     private void handleClientException(TelegramClientException ex, Update update) {
         log.error(
-                "Telegram client error"
-                        + " | updateId=" + update.updateId()
-                        + " | message=" + sanitize(ex.getMessage())
+                "Telegram client error | updateId={} | message={}", update.updateId(), sanitize(ex.getMessage())
         );
     }
 
 
     private void handleAccessDeniedException(AccessDeniedException ex, Update update) {
         log.error(
-                "Access denied"
-                        + " | updatedId=" + update.updateId()
-                        + " | message=" + sanitize(ex.getMessage())
+                "Access denied | updatedId={} | message={}", update.updateId(), sanitize(ex.getMessage())
         );
     }
 
     private void handleUnexpectedException(Exception ex, Update update) {
         log.error(
-                "Unexpected error"
-                        + " | updateId=" + update.updateId()
-                        + " | message=" + sanitize(ex.getMessage())
+                "Unexpected error  | updateId={} | message={}", update.updateId(), sanitize(ex.getMessage())
         );
 
         ex.printStackTrace();

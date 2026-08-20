@@ -94,14 +94,16 @@ public class WebhookServer {
 
         long chatId = extractChatId(update);
 
-        BotContext context = new BotContext(telegramClient, update);
         updateExecutor.submit(chatId, () -> {
+            BotContext context = new BotContext(telegramClient, update);
+
             try {
                 log.info("Processing update: " + update.updateId());
 
+
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {
-                globalExceptionHandler.handle(ex, update);
+                globalExceptionHandler.handle(ex, update, context);
             }
         });
 

@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.exception.handler;
 
+import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.exception.authorization.AccessDeniedException;
@@ -13,7 +14,7 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(DefaultGlobalExceptionHandler.class);
 
     @Override
-    public void handle(Exception exception, Update update) {
+    public void handle(Exception exception, Update update, BotContext context) {
         if (exception instanceof TelegramApiException ex) {
             handleApiException(ex);
             return;

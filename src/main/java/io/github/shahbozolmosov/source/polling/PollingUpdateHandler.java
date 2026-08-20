@@ -34,13 +34,14 @@ public class PollingUpdateHandler {
         long chatId = extractChatId(update);
 
         updateExecutor.submit(chatId, () -> {
-            try {
-               log.info("Processing update: " + update.updateId());
+            BotContext context = new BotContext(client, update);
 
-                BotContext context = new BotContext(client, update);
+            try {
+                log.info("Processing update: " + update.updateId());
+
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {
-                globalExceptionHandler.handle(ex, update);
+                globalExceptionHandler.handle(ex, update, context);
             }
         });
     }

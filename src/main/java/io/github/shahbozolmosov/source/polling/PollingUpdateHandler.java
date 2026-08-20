@@ -37,7 +37,7 @@ public class PollingUpdateHandler {
             BotContext context = new BotContext(client, update);
 
             try {
-                log.info("Processing update: " + update.updateId());
+                log.debug("Processing update: {}", update.updateId());
 
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {

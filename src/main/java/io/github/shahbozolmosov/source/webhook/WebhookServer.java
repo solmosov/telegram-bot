@@ -98,7 +98,7 @@ public class WebhookServer {
             BotContext context = new BotContext(telegramClient, update);
 
             try {
-                log.info("Processing update: " + update.updateId());
+                log.debug("Processing update: {}", update.updateId());
 
 
                 dispatcher.dispatch(update, context);

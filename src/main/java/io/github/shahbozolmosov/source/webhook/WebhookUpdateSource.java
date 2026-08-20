@@ -64,16 +64,16 @@ public class WebhookUpdateSource implements UpdateSource {
 
         server.start();
         log.info("Telegram webhook started");
-        log.info("Telegram Execution mode: " + this.executionMode.name());
+        log.info("Telegram Execution mode: {}", this.executionMode.name());
     }
 
     private void setWebhook(String url) {
         var response = client.setWebhook(url);
         if(response.ok()){
-            log.info("setWebhook response: " + response);
+            log.debug("setWebhook response: {}", response);
         }else {
             // TODO replace with WebhookSetupException
-            log.error("setWebhook response: " + response);
+            log.error("setWebhook response: {}", response);
         }
     }
 

@@ -67,6 +67,10 @@ public class WebhookServer {
         this.path = path;
         this.secret = secret;
 
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException("Secret is required");
+        }
+
         this.updateExecutor = updateExecutor;
         this.dispatcher = dispatcher;
 
@@ -93,26 +97,65 @@ public class WebhookServer {
     }
 
     private void handle(HttpExchange httpExchange) throws IOException {
+        // Method Type
         if (!"POST".equalsIgnoreCase(httpExchange.getRequestMethod())) {
             sendResponse(httpExchange, 405, "");
             return;
         }
 
+        // Secret
         String receivedSecret = httpExchange.getRequestHeaders()
                 .getFirst("X-Telegram-Bot-Api-Secret-Token");
 
-        if (receivedSecret == null || !MessageDigest.isEqual(
-                receivedSecret.getBytes(StandardCharsets.UTF_8),
-                secret.getBytes(StandardCharsets.UTF_8))
+        if (
+                receivedSecret == null
+                        || receivedSecret.isBlank()
+                        || !MessageDigest.isEqual(
+                        receivedSecret.getBytes(StandardCharsets.UTF_8),
+                        secret.getBytes(StandardCharsets.UTF_8)
+                )
         ) {
             sendResponse(httpExchange, 403, "");
             return;
         }
 
+        // Content Type
+        String contentType = httpExchange.getRequestHeaders()
+                .getFirst("Content-Type");
+
+        if (contentType == null || !contentType.toLowerCase().startsWith("application/json")) {
+            sendResponse(httpExchange, 415, "");
+            return;
+        }
+
+        // Content Length
+        String contentLength = httpExchange.getRequestHeaders()
+                .getFirst("Content-Length");
+
+        if (contentLength != null) {
+            try {
+                long length = Long.parseLong(contentLength);
+
+                if (length > MAX_REQUEST_BODY_SIZE) {
+                    sendResponse(httpExchange, 413, "");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                sendResponse(httpExchange, 400, "");
+                return;
+            }
+        }
+
+        // Body
         String body;
 
         try (InputStream inputStream = httpExchange.getRequestBody()) {
-            body = readRequestBody(inputStream);
+            try {
+                body = readRequestBody(inputStream);
+            } catch (RequestBodyTooLargeException ex) {
+                sendResponse(httpExchange, 413, "");
+                return;
+            }
         }
 
         Update update = parseUpdate(body);

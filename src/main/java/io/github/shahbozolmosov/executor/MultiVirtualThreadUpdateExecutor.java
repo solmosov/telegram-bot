@@ -35,8 +35,6 @@ public class MultiVirtualThreadUpdateExecutor implements UpdateExecutor {
         ChatWorker worker = workers.computeIfAbsent(chatId, id -> new ChatWorker());
         worker.lastUsedAt.set(System.currentTimeMillis());
 
-        worker.executor.submit(task);
-
         Future<?> future = worker.executor.submit(task);
 
         timeoutScheduler.schedule(

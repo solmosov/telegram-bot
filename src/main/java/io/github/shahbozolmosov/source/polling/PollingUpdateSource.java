@@ -11,13 +11,16 @@ import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
 import io.github.shahbozolmosov.source.UpdateSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class PollingUpdateSource implements UpdateSource {
 
+    private static final Logger log = LoggerFactory.getLogger(PollingUpdateSource.class);
+
     private final TelegramClient client;
-    private final Dispatcher dispatcher;
     private final UpdateExecutor updateExecutor;
     private final PollingUpdateHandler updateHandler;
     private final ExecutionMode executionMode;
@@ -33,7 +36,6 @@ public class PollingUpdateSource implements UpdateSource {
             GlobalExceptionHandler globalExceptionHandler
     ) {
         this.client = client;
-        this.dispatcher = dispatcher;
         this.executionMode = executionMode;
 
         this.updateExecutor = switch (this.executionMode) {
@@ -53,7 +55,7 @@ public class PollingUpdateSource implements UpdateSource {
                     try {
                         poll();
                     } catch (TelegramClientException ex) {
-                        System.err.println("[Telegram Bot] Polling error: " + ex.getMessage());
+                        log.error("Polling error: " + ex.getMessage());
 
                         try {
                             Thread.sleep(1000);
@@ -69,8 +71,8 @@ public class PollingUpdateSource implements UpdateSource {
 
         pollingThread.setName("telegram-polling-thread");
         pollingThread.start();
-        System.out.println("[Telegram Bot] Telegram polling started");
-        System.out.println("[Telegram Bot] Execution mode: " + this.executionMode.name());
+        log.info("Telegram polling started");
+        log.info("Execution mode: " + this.executionMode.name());
     }
 
     private void checkWebhookExists() {
@@ -80,10 +82,10 @@ public class PollingUpdateSource implements UpdateSource {
             var deleteResponse = client.deleteWebhook();
             boolean webhookRemoved = deleteResponse.ok() && deleteResponse.result();
             if (webhookRemoved) {
-                System.out.println("[Telegram Bot] The Telegram bot webhook successfully removed for POLLING MODE");
+                log.info("The Telegram bot webhook successfully removed for POLLING MODE");
             }else {
                 throw new IllegalStateException(
-                        "[Telegram Bot] Failed to remove the Telegram bot webhook for POLLING MODE \n. Please remove the webhook URL manually."
+                        "Failed to remove the Telegram bot webhook for POLLING MODE \n. Please remove the webhook URL manually."
                 );
             }
         }
@@ -105,12 +107,12 @@ public class PollingUpdateSource implements UpdateSource {
 
     @Override
     public void shutdown() {
-        System.out.println("[Telegram Bot] Polling Shutting down...");
+        log.info("Polling Shutting down...");
         if (pollingThread != null && pollingThread.isAlive()) {
             pollingThread.interrupt();
         }
         updateExecutor.shutdown();
-        System.out.println("[Telegram Bot] Polling Shutdown completed");
+        log.info("Polling Shutdown completed");
     }
 
     @Override

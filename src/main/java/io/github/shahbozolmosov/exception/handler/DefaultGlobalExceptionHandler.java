@@ -5,9 +5,13 @@ import io.github.shahbozolmosov.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.exception.authorization.AccessDeniedException;
 import io.github.shahbozolmosov.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.model.Update;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-// TODO change serr log message replace with Slf4j dependency
 public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultGlobalExceptionHandler.class);
+
     @Override
     public void handle(Exception exception, Update update) {
         if (exception instanceof TelegramApiException ex) {
@@ -29,8 +33,8 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
     }
 
     private void handleApiException(TelegramApiException ex) {
-        System.err.println(
-                "[Telegram Bot] Handler error for update "
+        log.error(
+                "Handler error for update "
                         + " | errorCode=" + ex.getErrorCode()
                         + " | message=" + sanitize(ex.getMessage())
         );
@@ -38,8 +42,8 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
 
 
     private void handleClientException(TelegramClientException ex, Update update) {
-        System.err.println(
-                "[Telegram Bot] Telegram client error"
+        log.error(
+                "Telegram client error"
                         + " | updateId=" + update.updateId()
                         + " | message=" + sanitize(ex.getMessage())
         );
@@ -47,16 +51,16 @@ public class DefaultGlobalExceptionHandler implements GlobalExceptionHandler {
 
 
     private void handleAccessDeniedException(AccessDeniedException ex, Update update) {
-        System.err.println(
-                "[Telegram Bot] Access denied"
+        log.error(
+                "Access denied"
                         + " | updatedId=" + update.updateId()
                         + " | message=" + sanitize(ex.getMessage())
         );
     }
 
     private void handleUnexpectedException(Exception ex, Update update) {
-        System.err.println(
-                "[Telegram Bot] Unexpected error"
+        log.error(
+                "Unexpected error"
                         + " | updateId=" + update.updateId()
                         + " | message=" + sanitize(ex.getMessage())
         );

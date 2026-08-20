@@ -17,11 +17,15 @@ import io.github.shahbozolmosov.scanner.resolver.*;
 import io.github.shahbozolmosov.source.polling.PollingUpdateSource;
 import io.github.shahbozolmosov.source.UpdateSource;
 import io.github.shahbozolmosov.source.webhook.WebhookUpdateSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
 public final class TelegramBot {
+
+    private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
 
     private final TelegramClient telegramClient;
     private final Registry registry;
@@ -104,7 +108,7 @@ public final class TelegramBot {
                         executionMode,
                         config.getGlobalExceptionHandler()
                 );
-                System.out.println("[Telegram Bot] Using POLLING mode");
+                log.info("Using POLLING mode");
                 break;
             case WEBHOOK:
                 this.updateSource = new WebhookUpdateSource(
@@ -120,6 +124,8 @@ public final class TelegramBot {
 
                         config.getGlobalExceptionHandler()
                 );
+                log.info("Using WEBHOOK mode");
+                break;
         }
     }
 
@@ -132,11 +138,11 @@ public final class TelegramBot {
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
 
-        System.out.println("[Telegram Bot] Started successfully");
+        log.info("Started successfully");
     }
 
     public void stopBot() {
-        System.out.println("[Telegram Bot] Shutdown signal received");
+        log.info("Shutdown signal received");
 
         if (updateSource != null) {
             updateSource.stop();
@@ -154,6 +160,6 @@ public final class TelegramBot {
 
         telegramClient.shutdown();
 
-        System.out.println("[Telegram Bot] Bot stopped");
+        log.info("Bot stopped");
     }
 }

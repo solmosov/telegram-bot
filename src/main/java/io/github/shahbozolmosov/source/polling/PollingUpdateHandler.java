@@ -6,8 +6,12 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.model.Update;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PollingUpdateHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(PollingUpdateHandler.class);
 
     private final TelegramClient client;
     private final Dispatcher dispatcher;
@@ -31,7 +35,7 @@ public class PollingUpdateHandler {
 
         updateExecutor.submit(chatId, () -> {
             try {
-                System.out.println("[Telegram Bot] Processing update: " + update.updateId());
+               log.info("Processing update: " + update.updateId());
 
                 BotContext context = new BotContext(client, update);
                 dispatcher.dispatch(update, context);

@@ -8,9 +8,13 @@ import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
 import io.github.shahbozolmosov.source.UpdateSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.json.JsonMapper;
 
 public class WebhookUpdateSource implements UpdateSource {
+
+    private static final Logger log = LoggerFactory.getLogger(WebhookUpdateSource.class);
 
     private final TelegramClient client;
     private final UpdateExecutor updateExecutor;
@@ -59,16 +63,17 @@ public class WebhookUpdateSource implements UpdateSource {
         setWebhook(url);
 
         server.start();
-        System.out.println("[Telegram Bot] Telegram webhook started");
-        System.out.println("[Telegram Bot] Telegram Execution mode: " + this.executionMode.name());
+        log.info("Telegram webhook started");
+        log.info("Telegram Execution mode: " + this.executionMode.name());
     }
 
     private void setWebhook(String url) {
         var response = client.setWebhook(url);
         if(response.ok()){
-            System.out.println("[Telegram Bot] setWebhook response: " + response);
+            log.info("setWebhook response: " + response);
         }else {
-            System.err.println("[Telegram Bot] setWebhook response: " + response);
+            // TODO replace with WebhookSetupException
+            log.error("setWebhook response: " + response);
         }
     }
 
@@ -79,10 +84,10 @@ public class WebhookUpdateSource implements UpdateSource {
 
     @Override
     public void shutdown() {
-        System.out.println("[Telegram Bot] Webhook Shutting down...");
+        log.info("Webhook Shutting down...");
         server.shutdown();
         updateExecutor.shutdown();
-        System.out.println("[Telegram Bot] Webhook Shutdown completed");
+        log.info("Webhook Shutdown completed");
     }
 
     @Override

@@ -8,6 +8,8 @@ import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.model.Update;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -18,6 +20,8 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
 public class WebhookServer {
+
+    private static final Logger log = LoggerFactory.getLogger(WebhookServer.class);
 
     private final String host;
     private final int port;
@@ -93,7 +97,7 @@ public class WebhookServer {
         BotContext context = new BotContext(telegramClient, update);
         updateExecutor.submit(chatId, () -> {
             try {
-                System.out.println("[Telegram Bot] Processing update: " + update.updateId());
+                log.info("Processing update: " + update.updateId());
 
                 dispatcher.dispatch(update, context);
             } catch (Exception ex) {

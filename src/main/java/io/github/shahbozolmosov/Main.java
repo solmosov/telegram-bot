@@ -15,11 +15,11 @@ public class Main {
 
         TelegramBotConfig config = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
-                .updateMode(UpdatesMode.POLLING)
+                .updateMode(UpdatesMode.WEBHOOK)
                 .executionMode(ExecutionMode.SINGLE_THREAD)
-//                .webhookPort(8080)
-//                .webhookPath("/webhook/telegram")
-//                .webhookUrl(webhookUrl) // https://example.com/webhook/telegram
+                .webhookPort(8080)
+                .webhookPath("/webhook/telegram")
+                .webhookUrl(webhookUrl) // https://example.com/webhook/telegram
                 .authorizationProvider(new MyAuthorizationProvider())
                 .globalExceptionHandler(new MyGlobalExceptionHandler())
                 .build();

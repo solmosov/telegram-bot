@@ -4,6 +4,9 @@ import io.github.shahbozolmosov.bot.ExecutionMode;
 import io.github.shahbozolmosov.client.TelegramClient;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.exception.GlobalExceptionHandler;
+import io.github.shahbozolmosov.exception.api.TelegramApiException;
+import io.github.shahbozolmosov.exception.client.TelegramClientException;
+import io.github.shahbozolmosov.exception.api.WebhookSetupException;
 import io.github.shahbozolmosov.executor.SingleThreadUpdateExecutor;
 import io.github.shahbozolmosov.executor.UpdateExecutor;
 import io.github.shahbozolmosov.executor.VirtualThreadUpdateExecutor;
@@ -68,12 +71,14 @@ public class WebhookUpdateSource implements UpdateSource {
     }
 
     private void setWebhook(String url) {
-        var response = client.setWebhook(url);
-        if(response.ok()){
+        try {
+            var response = client.setWebhook(url);
+
             log.debug("setWebhook response: {}", response);
-        }else {
-            // TODO replace with WebhookSetupException
-            log.error("setWebhook response: {}", response);
+        } catch (TelegramApiException ex) {
+            throw new WebhookSetupException(ex);
+        } catch (Exception ex) {
+            log.error("Exception {}", ex.getMessage());
         }
     }
 

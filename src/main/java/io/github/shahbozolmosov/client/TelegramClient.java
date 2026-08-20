@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.model.*;
 import io.github.shahbozolmosov.request.media.send.*;
 import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
+import io.github.shahbozolmosov.request.message.EditMessageReplyMarkupRequest;
 import io.github.shahbozolmosov.request.message.EditMessageRequest;
 import io.github.shahbozolmosov.request.message.SendMessageRequest;
 import tools.jackson.core.JacksonException;
@@ -205,6 +206,29 @@ public final class TelegramClient {
         acquirePermit(requestBody.chatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    // --------------------- Edit Message Reply Markup ----------
+    public TelegramResponse<Message> editMessageReplyMarkup(
+            EditMessageReplyMarkupRequest requestBody
+    ) {
+        acquirePermit(requestBody.chatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/editMessageReplyMarkup";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
 

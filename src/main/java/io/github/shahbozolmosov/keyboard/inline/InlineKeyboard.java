@@ -1,5 +1,7 @@
 package io.github.shahbozolmosov.keyboard.inline;
 
+import io.github.shahbozolmosov.keyboard.ReplyMarkup;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,5 +44,9 @@ public final class InlineKeyboard {
         }
 
         return new InlineKeyboardMarkup(rows);
+    }
+
+    public static ReplyMarkup removeKeyboard() {
+        return InlineKeyboardMarkup.remove();
     }
 }

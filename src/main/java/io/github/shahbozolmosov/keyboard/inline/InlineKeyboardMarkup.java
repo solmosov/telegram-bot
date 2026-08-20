@@ -9,4 +9,7 @@ public record InlineKeyboardMarkup(
         @JsonProperty("inline_keyboard")
         List<List<InlineKeyboardButton>> inlineKeyboard
 ) implements ReplyMarkup {
+    public static InlineKeyboardMarkup remove() {
+        return new InlineKeyboardMarkup(List.of());
+    }
 }

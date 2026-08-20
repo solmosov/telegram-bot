@@ -9,6 +9,7 @@ import io.github.shahbozolmosov.model.ParseMode;
 import io.github.shahbozolmosov.model.TelegramResponse;
 import io.github.shahbozolmosov.request.media.send.*;
 import io.github.shahbozolmosov.request.message.DeleteMessageRequest;
+import io.github.shahbozolmosov.request.message.EditMessageReplyMarkupRequest;
 import io.github.shahbozolmosov.request.message.EditMessageRequest;
 import io.github.shahbozolmosov.request.message.SendMessageRequest;
 
@@ -477,4 +478,14 @@ public final class MessageContext {
         );
     }
 
+    // --------------------- Remove Inline Keyboard ---------------------
+    public TelegramResponse<Message> removeInlineKeyboard(long messageId, ReplyMarkup replyMarkup) {
+        return telegramClient.editMessageReplyMarkup(
+                new EditMessageReplyMarkupRequest(
+                        chatId(),
+                        messageId,
+                        replyMarkup
+                )
+        );
+    }
 }

@@ -1,13 +1,10 @@
 package io.github.shahbozolmosov.example;
 
-import io.github.shahbozolmosov.annotation.BotAuthorize;
-import io.github.shahbozolmosov.annotation.BotHandler;
-import io.github.shahbozolmosov.annotation.CommandHandler;
-import io.github.shahbozolmosov.annotation.MessageHandler;
+import io.github.shahbozolmosov.annotation.*;
 import io.github.shahbozolmosov.context.BotContext;
-import io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard;
+import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 
-import static io.github.shahbozolmosov.keyboard.reply.ReplyKeyboard.button;
+import static io.github.shahbozolmosov.keyboard.inline.InlineKeyboard.button;
 
 @BotHandler("support")
 public class MySupportBot {
@@ -15,7 +12,12 @@ public class MySupportBot {
 
     @CommandHandler("/start")
     public void start(BotContext context) {
-        context.message().sendText("Welcome to support bot");
+
+        var keyboard = InlineKeyboard.of(
+                button("Button 1", "button1")
+        );
+
+        context.message().sendText("Welcome to support bot", keyboard);
     }
 
 
@@ -23,5 +25,14 @@ public class MySupportBot {
     @MessageHandler("dashboard")
     public void dashboard(BotContext context) {
         context.message().sendText("Support dashboard");
+    }
+
+    @CallbackQueryHandler("button1")
+    public void button1(BotContext context) {
+        var keyboard = InlineKeyboard.removeKeyboard();
+
+        System.out.println("render");
+
+        context.message().removeInlineKeyboard(context.message().messageId(), keyboard);
     }
 }

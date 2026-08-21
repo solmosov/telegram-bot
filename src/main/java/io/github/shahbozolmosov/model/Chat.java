@@ -11,6 +11,8 @@ public record Chat(
         @JsonProperty("last_name")
         String lastName,
 
+        String title, // for group
+
         String username,
 
         ChatType type

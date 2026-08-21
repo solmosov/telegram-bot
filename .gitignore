@@ -39,5 +39,5 @@ build/
 .DS_Store
 
 .idea/
-/src/main/resources/files/orders.pdf
-/src/main/resources/files/video.mp4
+telegram-bot-core/src/main/resources/files/orders.pdf
+telegram-bot-core/src/main/resources/files/video.mp4

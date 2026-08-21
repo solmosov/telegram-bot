@@ -5,8 +5,7 @@ import io.github.shahbozolmosov.context.BotContext;
 import io.github.shahbozolmosov.keyboard.inline.InlineKeyboard;
 import io.github.shahbozolmosov.keyboard.inline.InlineKeyboardButton;
 
-import static io.github.shahbozolmosov.keyboard.inline.InlineKeyboard.button;
-import static io.github.shahbozolmosov.keyboard.inline.InlineKeyboard.row;
+import static io.github.shahbozolmosov.keyboard.inline.InlineKeyboard.*;
 
 @BotHandler("support")
 public class MySupportBot {
@@ -21,7 +20,9 @@ public class MySupportBot {
                         button("Success", "success", InlineKeyboardButton.Style.SUCCESS),
                         button("Danger", "danger", InlineKeyboardButton.Style.DANGER),
                         button("Default", "default", InlineKeyboardButton.Style.DEFAULT)
-                )
+                ),
+                buttonUrl("YouTube", "https://youtube.com", InlineKeyboardButton.Style.PRIMARY),
+                buttonWebApp("Google", "https://google.com", InlineKeyboardButton.Style.SUCCESS)
         );
 
         context.message().sendText("Welcome to support bot", keyboard);

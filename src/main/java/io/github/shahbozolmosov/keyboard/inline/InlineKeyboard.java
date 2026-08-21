@@ -14,7 +14,7 @@ public final class InlineKeyboard {
             String text,
             String callbackData
     ) {
-        return new InlineKeyboardButton(text, callbackData, InlineKeyboardButton.Style.DEFAULT,null);
+        return button(text, callbackData, null);
     }
 
     public static InlineKeyboardButton button(
@@ -22,14 +22,14 @@ public final class InlineKeyboard {
             String callbackData,
             InlineKeyboardButton.Style style
     ) {
-        return new InlineKeyboardButton(text, callbackData, style,null);
+        return InlineKeyboardButton.callback(text, callbackData, style);
     }
 
     public static InlineKeyboardButton buttonUrl(
             String text,
             String url
     ) {
-        return new InlineKeyboardButton(text, null, InlineKeyboardButton.Style.DEFAULT, url);
+        return buttonUrl(text, url, null);
     }
 
     public static InlineKeyboardButton buttonUrl(
@@ -37,7 +37,22 @@ public final class InlineKeyboard {
             String url,
             InlineKeyboardButton.Style style
     ) {
-        return new InlineKeyboardButton(text, null, style, url);
+        return InlineKeyboardButton.url(text, url, style);
+    }
+
+    public static InlineKeyboardButton buttonWebApp(
+            String text,
+            String webAppUrl
+    ) {
+        return buttonWebApp(text, webAppUrl, null);
+    }
+
+    public static InlineKeyboardButton buttonWebApp(
+            String text,
+            String webAppUrl,
+            InlineKeyboardButton.Style style
+    ) {
+        return InlineKeyboardButton.webApp(text, webAppUrl, style);
     }
 
     public static InlineKeyboardRow row(

@@ -15,8 +15,56 @@ public record InlineKeyboardButton(
 
         Style style,
 
-        String url
+        String url,
+
+        @JsonProperty("web_app")
+        WebApp webApp
 ) implements InlineKeyboardElement {
+
+
+    public InlineKeyboardButton {
+        if (callbackData != null) {
+            int byteLength = callbackData.getBytes(StandardCharsets.UTF_8).length;
+
+            if (byteLength > 64) {
+                throw new IllegalArgumentException(
+                        "Callback data exceeds Telegram's 64-byte limit: "
+                                + byteLength + " bytes"
+                );
+            }
+        }
+    }
+
+    public static InlineKeyboardButton callback(String text, String callbackData, Style style) {
+        return new InlineKeyboardButton(
+                text,
+                callbackData,
+                style,
+                null,
+                null
+        );
+    }
+
+    public static InlineKeyboardButton url(String text, String url, Style style) {
+        return new InlineKeyboardButton(
+                text,
+                null,
+                style,
+                url,
+                null
+        );
+    }
+
+
+    public static InlineKeyboardButton webApp(String text, String webAppUrl, Style style) {
+        return new InlineKeyboardButton(
+                text,
+                null,
+                style,
+                null,
+                new WebApp(webAppUrl)
+        );
+    }
 
     public enum Style {
         PRIMARY("primary"),
@@ -41,16 +89,8 @@ public record InlineKeyboardButton(
         }
     }
 
-    public InlineKeyboardButton {
-        if (callbackData != null) {
-            int byteLength = callbackData.getBytes(StandardCharsets.UTF_8).length;
-
-            if (byteLength > 64) {
-                throw new IllegalArgumentException(
-                        "Callback data exceeds Telegram's 64-byte limit: "
-                                + byteLength + " bytes"
-                );
-            }
-        }
+    private record WebApp(
+            String url
+    ) {
     }
 }

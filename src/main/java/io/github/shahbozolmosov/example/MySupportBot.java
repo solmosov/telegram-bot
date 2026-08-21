@@ -25,7 +25,12 @@ public class MySupportBot {
                 buttonWebApp("Google", "https://google.com", InlineKeyboardButton.Style.SUCCESS)
         );
 
-        context.message().sendText("Welcome to support bot", keyboard);
+        context.message().sendText("Welcome to support bot \n\n Params: " + context.deepLinkParam(), keyboard);
+    }
+
+    @CommandHandler("/start@aslkjdlw289higbuyas7891i123_Bot")
+    public void startInGroup(BotContext context) {
+        context.message().sendText("Hello group users. \n\n Param: " + context.deepLinkParam());
     }
 
 

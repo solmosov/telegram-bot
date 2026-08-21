@@ -12,7 +12,7 @@ public class Main {
 
         TelegramBotConfig supportConfig = TelegramBotConfig.builder()
                 .shutdownTimeout(4000)
-                .updateMode(UpdatesMode.WEBHOOK)
+                .updateMode(UpdatesMode.POLLING)
                 .executionMode(ExecutionMode.SINGLE_THREAD)
                 .authorizationProvider(new MyAuthorizationProvider())
                 .globalExceptionHandler(new MyGlobalExceptionHandler())

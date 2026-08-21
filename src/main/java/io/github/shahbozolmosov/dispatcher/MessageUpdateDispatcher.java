@@ -3,6 +3,7 @@ package io.github.shahbozolmosov.dispatcher;
 import io.github.shahbozolmosov.authorization.AuthorizationDecision;
 import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.dispatcher.resolver.DeepLinkParamResolver;
 import io.github.shahbozolmosov.dispatcher.resolver.FallbackMessageTypeResolver;
 import io.github.shahbozolmosov.dispatcher.resolver.MessageTypeResolver;
 import io.github.shahbozolmosov.exception.authorization.AccessDeniedException;
@@ -49,6 +50,10 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
 
         List<Handler> handlers = registry.find(type, key);
 
+        if (type == MessageType.COMMAND && message.text() != null && message.text().startsWith("/start")) {
+            botContext.setDeepLinkParam(DeepLinkParamResolver.param(message.text()));
+        }
+
         for (Handler handler : handlers) {
             AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);
             if (!decision.isGranted()) {
@@ -72,6 +77,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
 
     private String resolveKey(MessageType type, Message message) {
         return switch (type) {
+            case COMMAND -> message.text().split(" ")[0];
             case LOCATION -> message.replyToMessage().text();
             case USERS_SHARED -> String.valueOf(message.usersShared().requestId());
             default -> message.text();

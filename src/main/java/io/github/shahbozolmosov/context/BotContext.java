@@ -9,6 +9,7 @@ public final class BotContext {
 
     private final Update update;
     private Map<String, Object> callbackParams;
+    private String deepLinkParams;
 
 
     private final MessageContext messageContext;
@@ -71,5 +72,14 @@ public final class BotContext {
 
     public Map<String, Object> callbackParams() {
         return callbackParams;
+    }
+
+    // --------------------- Depp Link Params ---------------------
+    public void setDeepLinkParam(String param){
+        deepLinkParams = param;
+    }
+
+    public String deepLinkParam(){
+        return deepLinkParams;
     }
 }

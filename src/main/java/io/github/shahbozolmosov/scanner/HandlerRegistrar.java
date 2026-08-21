@@ -1,14 +1,13 @@
 package io.github.shahbozolmosov.scanner;
 
-import io.github.shahbozolmosov.annotation.Command;
-import io.github.shahbozolmosov.annotation.Message;
-import io.github.shahbozolmosov.annotation.Updates;
+import io.github.shahbozolmosov.annotation.BotAuthorize;
+import io.github.shahbozolmosov.annotation.BotHandler;
+import io.github.shahbozolmosov.exception.TelegramBotException;
 import io.github.shahbozolmosov.handler.Handler;
-import io.github.shahbozolmosov.registry.HandlerMapping;
 import io.github.shahbozolmosov.registry.Registry;
-import io.github.shahbozolmosov.scanner.resolver.AnnotationHandlerResolver;
-import io.github.shahbozolmosov.type.MessageType;
+import io.github.shahbozolmosov.scanner.resolver.HandlerAnnotationResolver;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -16,13 +15,13 @@ public final class HandlerRegistrar {
     private final ClassScanner scanner;
     private final ClassInstanceFactory factory;
     private final Registry registry;
-    private final List<AnnotationHandlerResolver> resolvers;
+    private final List<HandlerAnnotationResolver> resolvers;
 
     public HandlerRegistrar(
             ClassScanner scanner,
             ClassInstanceFactory factory,
             Registry registry,
-            List<AnnotationHandlerResolver> resolvers
+            List<HandlerAnnotationResolver> resolvers
     ) {
         this.scanner = scanner;
         this.factory = factory;
@@ -31,58 +30,48 @@ public final class HandlerRegistrar {
     }
 
     public void register(String packageName) {
-        List<Class<?>> classes = scanner.scan(packageName);
+        List<Class<?>> classes = scanner.scan(packageName, BotHandler.class);
 
         for (Class<?> clazz : classes) {
 
-            if (clazz.isInterface()) {
-                continue;
-            }
+            BotHandler botHandler = clazz.getAnnotation(BotHandler.class);
+            final String botName = botHandler.value();
 
-            Method[] methods = clazz.getDeclaredMethods();
-
-            boolean hasHandler = false;
-
-            for (Method method : methods) {
-                if (hasSupportingResolver(method)) {
-                    hasHandler = true;
-                    break;
-                }
-            }
-
-            if (!hasHandler) {
-                continue;
+            if (botName == null || botName.isBlank()) {
+                throw new TelegramBotException("@BotHandler bot name is required");
             }
 
             Object instance = factory.create(clazz);
 
-            for (Method method : methods) {
-                for (AnnotationHandlerResolver resolver : resolvers) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                for (HandlerAnnotationResolver resolver : resolvers) {
                     if (!resolver.supports(method)) {
                         continue;
                     }
 
-                    Handler handler = context -> {
-                        try {
-                            method.invoke(instance, context);
-                        } catch (Exception ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    };
+                    Handler handler = getHandler(method, instance);
 
-                    resolver.register(method, handler, registry);
+                    resolver.register(botName, method, handler, registry);
                 }
             }
         }
     }
 
-    private boolean hasSupportingResolver(Method method) {
-        for(AnnotationHandlerResolver resolver : resolvers){
-            if(resolver.supports(method)){
-                return true;
-            }
-        }
+    private static Handler getHandler(Method method, Object instance) {
+        BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
 
-        return false;
+        return new Handler(
+                context -> {
+                    try {
+                        method.invoke(instance, context);
+                    } catch (InvocationTargetException ex) {
+                        Throwable cause = ex.getCause();
+                        System.err.println("Handler execution failed for update: " + cause);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                },
+                authorization
+        );
     }
 }

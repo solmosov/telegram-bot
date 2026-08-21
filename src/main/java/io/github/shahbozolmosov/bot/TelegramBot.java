@@ -1,53 +1,98 @@
 package io.github.shahbozolmosov.bot;
 
+import io.github.shahbozolmosov.authorization.AuthorizationManager;
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.context.BotContext;
+import io.github.shahbozolmosov.dispatcher.CallbackQueryUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.dispatcher.resolver.*;
-import io.github.shahbozolmosov.model.TelegramResponse;
-import io.github.shahbozolmosov.model.Update;
-import io.github.shahbozolmosov.polling.Polling;
+import io.github.shahbozolmosov.exception.TelegramBotException;
+import io.github.shahbozolmosov.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.registry.Registry;
 import io.github.shahbozolmosov.scanner.ApplicationPackageResolver;
 import io.github.shahbozolmosov.scanner.ClassInstanceFactory;
 import io.github.shahbozolmosov.scanner.ClassScanner;
 import io.github.shahbozolmosov.scanner.HandlerRegistrar;
 import io.github.shahbozolmosov.scanner.resolver.*;
+import io.github.shahbozolmosov.source.polling.PollingUpdateSource;
+import io.github.shahbozolmosov.source.UpdateSource;
+import io.github.shahbozolmosov.source.webhook.WebhookUpdateSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
 public final class TelegramBot {
 
+    private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
+
+    private final String name;
     private final TelegramClient telegramClient;
-    private final Registry registry;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
+    private final JsonMapper jsonMapper;
+    private UpdateSource updateSource;
 
+    private boolean started;
 
-    public TelegramBot(String botToken) {
-        this.telegramClient = new TelegramClient(botToken);
-        this.registry = new Registry();
+    private final ExecutionMode executionMode;
 
+    public TelegramBot(String name, String botToken) {
+        this(name, botToken, TelegramBotConfig.defaults());
+    }
 
+    public TelegramBot(String name, String botToken, TelegramBotConfig config) {
+        this.name = name;
+
+        this.executionMode = config.getExecutionMode();
+
+        // Object Mapper
+        this.jsonMapper = ObjectMapperFactory.create();
+
+        this.telegramClient = new TelegramClient(botToken, jsonMapper);
+
+        // Registry
+        final Registry registry = new Registry();
+
+        // Authorization Manager
+        final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());
+
+        // Message Type Resolvers
         List<MessageTypeResolver> messageTypeResolvers = List.of(
                 new CommandMessageTypeResolver(),
-                new PhotoMessageTypeResolver()
+                new PhotoMessageTypeResolver(),
+                new LocationMessageTypeResolver(),
+                new ContactMessageTypeResolver(),
+                new RequestUsersMessageTypeResolver()
         );
         FallbackMessageTypeResolver fallbackMessageTypeResolver = new TextMessageTypeResolver();
 
+        // Update dispatchers
         List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
-                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver)
+                new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver, authorizationManager),
+                new CallbackQueryUpdateDispatcher(registry, authorizationManager)
         );
 
-        this.dispatcher = new Dispatcher(registry, updateTypeDispatchers);
+        this.dispatcher = new Dispatcher(name, registry, updateTypeDispatchers, authorizationManager);
+        // Annotation Resolvers
+        List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
+                // Message
+                new CommandHandlerResolver(),
+                new PhotoHandlerResolver(),
+                new LocationHandlerResolver(),
+                new ContactHandlerResolver(),
+                new RequestUsersHandlerResolver(),
 
-        List<AnnotationHandlerResolver> annotationHandlerResolvers = List.of(
-                new CommandAnnotationHandlerResolver(),
-                new MessageAnnotationHandlerResolver(),
-                new PhotoAnnotationHandlerResolver(),
-                new UpdateAnnotationHandlerResolver()
+                new MessageAnnotationResolver(),
+
+                // Callback
+                new CallbackHandlerResolver(),
+
+                // Update
+                new UpdateHandlerResolver()
         );
 
         this.handlerRegistrar = new HandlerRegistrar(
@@ -56,18 +101,110 @@ public final class TelegramBot {
                 registry,
                 annotationHandlerResolvers
         );
+
+        // Initialize UpdateSource based on config
+        initializeUpdateSource(config);
+    }
+
+    private void initializeUpdateSource(TelegramBotConfig config) {
+        MDC.put("bot", name);
+        log.info("Bot initializing...");
+        try {
+
+
+            switch (config.getUpdatesMode()) {
+                case POLLING:
+                    this.updateSource = new PollingUpdateSource(
+                            name,
+                            telegramClient,
+                            dispatcher,
+                            executionMode,
+                            config.getGlobalExceptionHandler(),
+                            config.getProcessingTimeout()
+                    );
+                    break;
+                case WEBHOOK:
+                    this.updateSource = new WebhookUpdateSource(
+                            name,
+                            telegramClient,
+                            dispatcher,
+                            executionMode,
+                            jsonMapper,
+                            config.getWebhookHost(),
+                            config.getWebhookPort(),
+                            config.getWebhookPath(),
+                            config.getWebhookUrl(),
+                            config.getWebhookPathSecret(),
+                            config.getWebhookSecret(),
+
+                            config.getGlobalExceptionHandler(),
+                            config.getProcessingTimeout()
+                            );
+                    break;
+            }
+        } finally {
+            log.info("Bot initializing completed");
+            MDC.remove("bot");
+        }
+    }
+
+
+    public String name() {
+        return this.name;
     }
 
     public void start() {
-        String packageName = new ApplicationPackageResolver().resolve();
+        if (started) {
+            throw new TelegramBotException("Bot '%s' already been started".formatted(name));
+        }
 
-        handlerRegistrar.register(packageName);
+        started = true;
 
-        // Polling
-        Polling polling = new Polling(
-                telegramClient,
-                dispatcher
-        );
-        polling.start();
+        MDC.put("bot", name);
+
+        try {
+            String packageName = new ApplicationPackageResolver().resolve();
+
+            handlerRegistrar.register(packageName);
+
+            updateSource.start();
+
+            Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
+
+            log.info("Started successfully");
+        } finally {
+            MDC.remove("bot");
+        }
+    }
+
+    public void stopBot() {
+
+        MDC.put("bot", name);
+
+        try {
+            log.info("Shutdown signal received");
+
+            if (updateSource != null) {
+                updateSource.stop();
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (updateSource != null) {
+                updateSource.shutdown();
+            }
+
+            telegramClient.shutdown();
+
+            started = false;
+            log.info("Bot stopped");
+
+        } finally {
+            MDC.remove("bot");
+        }
     }
 }

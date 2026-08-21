@@ -15,6 +15,9 @@ public record User(
         String lastName,
 
         @JsonProperty("username")
-        String username
+        String username,
+
+        @JsonProperty("language_code")
+        String languageCode
 ) {
 }

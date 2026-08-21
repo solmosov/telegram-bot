@@ -1,13 +1,18 @@
 package io.github.shahbozolmosov.scanner;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.invoke.CallSite;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class ClassScanner {
 
-    public List<Class<?>> scan(String packageName) {
+    public List<Class<?>> scan(
+            String packageName,
+            Class<? extends Annotation> annotation
+    ) {
         String path = packageName.replace(".", "/");
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -24,10 +29,10 @@ public final class ClassScanner {
             return List.of();
         }
 
-        return scanDirectory(directory, packageName);
+        return scanDirectory(directory, packageName, annotation);
     }
 
-    private List<Class<?>> scanDirectory(File directory, String packageName) {
+    private List<Class<?>> scanDirectory(File directory, String packageName, Class<? extends Annotation> annotation) {
         List<Class<?>> classes = new ArrayList<>();
 
         File[] files = directory.listFiles();
@@ -42,21 +47,25 @@ public final class ClassScanner {
                 classes.addAll(
                         scanDirectory(
                                 file,
-                                packageName + "." + file.getName()
+                                packageName + "." + file.getName(),
+                                annotation
                         )
                 );
                 continue;
             }
 
             String className = file.getName()
-                    .replace(".class", "");
+                    .substring(0, file.getName().length() - 6);
 
             try {
-                classes.add(
-                        Class.forName(
-                                packageName + "." + className
-                        )
+
+                Class<?> clazz = Class.forName(
+                        packageName + "." + className
                 );
+
+                if (clazz.isAnnotationPresent(annotation)) {
+                    classes.add(clazz);
+                }
             } catch (ClassNotFoundException ex) {
                 throw new RuntimeException(ex);
             }

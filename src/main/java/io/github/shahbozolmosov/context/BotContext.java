@@ -1,81 +1,85 @@
 package io.github.shahbozolmosov.context;
 
 import io.github.shahbozolmosov.client.TelegramClient;
-import io.github.shahbozolmosov.model.From;
-import io.github.shahbozolmosov.model.Message;
-import io.github.shahbozolmosov.model.PhotoSize;
 import io.github.shahbozolmosov.model.Update;
 
-import java.util.List;
+import java.util.Map;
 
 public final class BotContext {
 
-    private final TelegramClient telegramClient;
     private final Update update;
+    private Map<String, Object> callbackParams;
+    private String deepLinkParams;
+
+
+    private final MessageContext messageContext;
+    private final PhotoContext photoContext;
+    private final CallbackQueryContext callbackQueryContext;
+    private final ReplyKeyboardContext replyKeyboardContext;
 
     public BotContext(
-            TelegramClient client,
+            TelegramClient telegramClient,
             Update update
     ) {
-        this.telegramClient = client;
         this.update = update;
+        this.messageContext = update.message() != null
+                ? new MessageContext(telegramClient, update.message())
+                : update.callbackQuery().message() != null ? new MessageContext(telegramClient, update.callbackQuery().message())
+                  : null;
+
+        this.photoContext = update.message() != null
+                ? new PhotoContext(update.message())
+                : null;
+
+        this.callbackQueryContext = update.callbackQuery() != null
+                ? new CallbackQueryContext(telegramClient, update.callbackQuery())
+                : null;
+
+        this.replyKeyboardContext = new ReplyKeyboardContext(messageContext);
     }
 
+    // --------------------- Current Update ---------------------
     public Update update() {
         return update;
     }
 
-    public Message message() {
-        return update.message();
+    // --------------------- Message Context ---------------------
+    public MessageContext message() {
+        return messageContext;
     }
 
-    public long chatId() {
-        return update.message().chat().id();
+    // --------------------- Reply Keyboard Context ---------------------
+    public ReplyKeyboardContext replyKeyboard() {
+        return replyKeyboardContext;
     }
 
-    public From from() {
-        return update.message().from();
+    // --------------------- Photo Context ---------------------
+    public PhotoContext photo() {
+        return photoContext;
     }
 
-    public String text() {
-        return update.message().text();
+
+    // --------------------- Answer Callback Query Context ---------------------
+    public CallbackQueryContext callbackQuery() {
+        return callbackQueryContext;
     }
 
-    public void sendMessage(String text) {
-        System.out.println("[BotContext] sendMessage: " + update.message().chat().id() + " = " + text);
-        telegramClient.sendMessage(
-                update.message().chat().id(),
-                text
-        );
+
+    // --------------------- Callback Params ---------------------
+    public void setCallbackParams(Map<String, Object> callbackParams) {
+        this.callbackParams = callbackParams;
     }
 
-    // Photo
-    public PhotoSize originalPhoto() {
-        List<PhotoSize> sizes = update.message().photo();
-
-        if (sizes == null || sizes.isEmpty()) {
-            throw new IllegalStateException(
-                    "originalPhoto() called but this update has no photo. "
-                            + "Make sure this is only used inside a @Photo handler."
-            );
-        }
-
-        PhotoSize largest = sizes.getFirst();
-
-        for (PhotoSize size : sizes) {
-            if (size.width() * size.height() > largest.width() * largest.height()) {
-                largest = size;
-            }
-        }
-
-        return largest;
+    public Map<String, Object> callbackParams() {
+        return callbackParams;
     }
 
-    public List<PhotoSize> photoAllSizes() {
-        return update.message().photo();
+    // --------------------- Depp Link Params ---------------------
+    public void setDeepLinkParam(String param){
+        deepLinkParams = param;
     }
 
-    public String caption() {
-        return update.message().caption();
+    public String deepLinkParam(){
+        return deepLinkParams;
     }
 }

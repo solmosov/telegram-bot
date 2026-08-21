@@ -7,10 +7,24 @@ import java.util.List;
 public record Message(
         @JsonProperty("message_id")
         long messageId,
+
         From from,
         Chat chat,
+        Long date,
         String text,
+
         List<PhotoSize> photo,
-        String caption
+        DocumentInfo document,
+        String caption,
+
+        @JsonProperty("reply_to_message")
+        ReplyToMessage replyToMessage,
+
+        Location location,
+
+        Contact contact,
+
+        @JsonProperty("users_shared")
+        UsersShared usersShared
 ) {
 }

@@ -14,14 +14,30 @@ public final class InlineKeyboard {
             String text,
             String callbackData
     ) {
-        return new InlineKeyboardButton(text, callbackData, null);
+        return new InlineKeyboardButton(text, callbackData, InlineKeyboardButton.Style.DEFAULT,null);
+    }
+
+    public static InlineKeyboardButton button(
+            String text,
+            String callbackData,
+            InlineKeyboardButton.Style style
+    ) {
+        return new InlineKeyboardButton(text, callbackData, style,null);
     }
 
     public static InlineKeyboardButton buttonUrl(
             String text,
             String url
     ) {
-        return new InlineKeyboardButton(text, null, url);
+        return new InlineKeyboardButton(text, null, InlineKeyboardButton.Style.DEFAULT, url);
+    }
+
+    public static InlineKeyboardButton buttonUrl(
+            String text,
+            String url,
+            InlineKeyboardButton.Style style
+    ) {
+        return new InlineKeyboardButton(text, null, style, url);
     }
 
     public static InlineKeyboardRow row(

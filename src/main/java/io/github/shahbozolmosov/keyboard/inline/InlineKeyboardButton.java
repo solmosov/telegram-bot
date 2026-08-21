@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.keyboard.inline;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,8 +13,33 @@ public record InlineKeyboardButton(
         @JsonProperty("callback_data")
         String callbackData,
 
+        Style style,
+
         String url
 ) implements InlineKeyboardElement {
+
+    public enum Style {
+        PRIMARY("primary"),
+        SUCCESS("success"),
+        DANGER("danger"),
+        DEFAULT("default");
+
+
+        private final String value;
+
+        Style(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String value() {
+            return value;
+        }
+
+        public String toApiValue() {
+            return value;
+        }
+    }
 
     public InlineKeyboardButton {
         if (callbackData != null) {

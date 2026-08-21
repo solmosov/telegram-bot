@@ -22,13 +22,17 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.concurrent.RejectedExecutionException;
+import java.util.Map;
+import java.util.concurrent.*;
 
 public class WebhookServer {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookServer.class);
 
     private static final int MAX_REQUEST_BODY_SIZE = 256 * 1024; // 256 KB
+
+    private final Map<Long, Long> processUpdates = new ConcurrentHashMap<>();
+    private static final long CACHE_EXPIRY_MS = 60000L;
 
     private final String botName;
 
@@ -45,6 +49,8 @@ public class WebhookServer {
     private HttpServer server;
 
     private final ObjectMapper objectMapper;
+
+    private ScheduledExecutorService cleanupScheduler;
 
     public WebhookServer(
             String botName,
@@ -80,6 +86,7 @@ public class WebhookServer {
         this.objectMapper = jsonMapper;
 
         this.telegramClient = telegramClient;
+
     }
 
     public void start() {
@@ -92,9 +99,39 @@ public class WebhookServer {
             server.createContext(path, this::handle);
 
             server.start();
+
+            // Cleanup Scheduler
+            cleanupScheduler = Executors.newScheduledThreadPool(1, r -> {
+                Thread t = new Thread(r, "WebhookCleanupThread");
+                t.setDaemon(true);
+                return t;
+            });
+
+            cleanupScheduler.scheduleAtFixedRate(
+                    this::cleanupExpiredEntries,
+                    2,
+                    2,
+                    TimeUnit.MINUTES
+            );
+
+            log.info("Webhook server started on {}:{}{}", host, port, path);
         } catch (IOException ex) {
             throw new RuntimeException("Failed to start webhook server", ex);
         }
+    }
+
+    public void stop() {
+        if (server != null) {
+            server.stop(0);
+        }
+
+        if (cleanupScheduler != null) {
+            cleanupScheduler.shutdown();
+        }
+    }
+
+    public void shutdown() {
+        stop();
     }
 
     private void handle(HttpExchange httpExchange) throws IOException {
@@ -170,12 +207,22 @@ public class WebhookServer {
             return;
         }
 
+        long updateId = update.updateId();
+
+        if (isUpdateAlreadyProcessed(updateId)) {
+            log.debug("Update {} already processed", updateId);
+            sendResponse(httpExchange, 200, "");
+            return;
+        }
+
         long chatId = extractChatId(update);
 
         try {
             updateExecutor.submit(chatId, () -> {
                 MDC.put("bot", botName);
                 try {
+                    processUpdates.put(updateId, System.currentTimeMillis());
+
                     BotContext context = new BotContext(telegramClient, update);
 
                     try {
@@ -246,13 +293,36 @@ public class WebhookServer {
         }
     }
 
-    public void stop() {
-        if (server != null) {
-            server.stop(0);
+    private boolean isUpdateAlreadyProcessed(long updateId) {
+        Long timestamp = processUpdates.get(updateId);
+
+        if (timestamp == null) {
+            return false;
+        }
+
+        long elapsedTime = System.currentTimeMillis() - timestamp;
+
+        if (elapsedTime > CACHE_EXPIRY_MS) {
+            processUpdates.remove(updateId);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void cleanupExpiredEntries() {
+        MDC.put("bot", botName);
+        try{
+            long now = System.currentTimeMillis();
+
+            processUpdates.entrySet()
+                    .removeIf(entry -> now - entry.getValue() > CACHE_EXPIRY_MS);
+
+            log.debug("Cleaned up expired entries from processedUpdates cache");
+        }finally {
+            MDC.remove("bot");
         }
     }
 
-    public void shutdown() {
-        stop();
-    }
+
 }

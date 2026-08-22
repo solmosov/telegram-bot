@@ -33,29 +33,37 @@ public final class HandlerRegistrar {
         List<Class<?>> classes = scanner.scan(packageName, BotHandler.class);
 
         for (Class<?> clazz : classes) {
+            register(factory.create(clazz));
+        }
+    }
 
-            BotHandler botHandler = clazz.getAnnotation(BotHandler.class);
-            final String botName = botHandler.value();
+    public void register(Object instance) {
+        Class<?> clazz = instance.getClass();
 
-            if (botName == null || botName.isBlank()) {
-                throw new TelegramBotException("@BotHandler bot name is required");
-            }
+        BotHandler botHandler = clazz.getAnnotation(BotHandler.class);
 
-            Object instance = factory.create(clazz);
+        if (botHandler == null) {
+            throw new TelegramBotException("Handler class must be annotated with @BotHandler");
+        }
 
-            for (Method method : clazz.getDeclaredMethods()) {
-                for (HandlerAnnotationResolver resolver : resolvers) {
-                    if (!resolver.supports(method)) {
-                        continue;
-                    }
+        final String botName = botHandler.value();
+        if (botName == null || botName.isBlank()) {
+            throw new TelegramBotException("@BotHandler bot name is required");
+        }
 
-                    Handler handler = getHandler(method, instance);
-
-                    resolver.register(botName, method, handler, registry);
+        for (Method method : clazz.getDeclaredMethods()) {
+            for (HandlerAnnotationResolver resolver : resolvers) {
+                if (!resolver.supports(method)) {
+                    continue;
                 }
+
+                Handler handler = getHandler(method, instance);
+
+                resolver.register(botName, method, handler, registry);
             }
         }
     }
+
 
     private static Handler getHandler(Method method, Object instance) {
         BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);

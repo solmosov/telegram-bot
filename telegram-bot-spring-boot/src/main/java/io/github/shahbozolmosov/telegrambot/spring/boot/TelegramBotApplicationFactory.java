@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.telegrambot.spring.boot;
 
+import io.github.shahbozolmosov.telegrambot.bot.HandlerRegistrationMode;
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotConfig;
 
@@ -25,7 +26,9 @@ public class TelegramBotApplicationFactory {
                 throw new IllegalArgumentException("Telegram bot token is required for bot: " + botName);
             }
 
-            TelegramBotConfig config = TelegramBotConfig.builder().build();
+            TelegramBotConfig config = TelegramBotConfig.builder()
+                    .handlerRegistrationMode(HandlerRegistrationMode.EXTERNAL)
+                    .build();
 
             application.register(botName, token, config);
         });

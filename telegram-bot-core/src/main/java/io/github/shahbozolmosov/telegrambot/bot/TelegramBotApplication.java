@@ -10,6 +10,13 @@ public class TelegramBotApplication {
 
     public TelegramBotApplication register(
             String name,
+            String token
+    ) {
+        return register(name, token, null);
+    }
+
+    public TelegramBotApplication register(
+            String name,
             String token,
             TelegramBotConfig config
     ) {
@@ -21,7 +28,13 @@ public class TelegramBotApplication {
             throw new IllegalArgumentException("Bot token must not be blank for bot: " + name);
         }
 
-        TelegramBot bot = new TelegramBot(name, token, config);
+        TelegramBot bot;
+
+        if (config != null) {
+            bot = new TelegramBot(name, token, config);
+        } else {
+            bot = new TelegramBot(name, token);
+        }
 
         TelegramBot existing = bots.putIfAbsent(name, bot);
 
@@ -46,19 +59,19 @@ public class TelegramBotApplication {
         return bots.containsKey(name);
     }
 
-    public Collection<TelegramBot> bots(){
+    public Collection<TelegramBot> bots() {
         return bots.values();
     }
 
-    public void start(){
-        if(bots.isEmpty()){
+    public void start() {
+        if (bots.isEmpty()) {
             throw new IllegalStateException("No telegram bots registered");
         }
 
         bots.values().forEach(TelegramBot::start);
     }
 
-    public void stop(){
+    public void stop() {
         bots.values().forEach(TelegramBot::stopBot);
     }
 }

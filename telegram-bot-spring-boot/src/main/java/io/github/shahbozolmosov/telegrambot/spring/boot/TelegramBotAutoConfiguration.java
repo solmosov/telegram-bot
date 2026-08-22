@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.telegrambot.spring.boot;
 
 
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -33,5 +34,14 @@ public class TelegramBotAutoConfiguration {
             TelegramBotApplication application
     ) {
         return new TelegramBotLifecycle(application);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SpringBotHandlerRegistrar springBotHandlerRegistrar(
+            ListableBeanFactory beanFactory,
+            TelegramBotApplication application
+    ) {
+        return new SpringBotHandlerRegistrar(beanFactory, application);
     }
 }

@@ -108,6 +108,10 @@ public final class TelegramBot {
         initializeUpdateSource(config);
     }
 
+    public void registerHandler(Object handler) {
+        handlerRegistrar.register(handler);
+    }
+
     private void initializeUpdateSource(TelegramBotConfig config) {
         MDC.put("bot", name);
         log.info("Bot initializing...");
@@ -141,7 +145,7 @@ public final class TelegramBot {
 
                             config.getGlobalExceptionHandler(),
                             config.getProcessingTimeout()
-                            );
+                    );
                     break;
             }
         } finally {

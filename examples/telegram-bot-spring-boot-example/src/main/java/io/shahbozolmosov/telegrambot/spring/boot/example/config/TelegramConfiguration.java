@@ -1,4 +1,4 @@
-package io.shahbozolmosov.telegrambot.springboot.example.config;
+package io.shahbozolmosov.telegrambot.spring.boot.example.config;
 
 import io.github.shahbozolmosov.telegrambot.spring.boot.TelegramBotRegistration;
 import org.springframework.context.annotation.Bean;

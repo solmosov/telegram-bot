@@ -1,4 +1,4 @@
-package io.shahbozolmosov.telegrambot.springboot.example.user;
+package io.shahbozolmosov.telegrambot.spring.boot.example.user;
 
 import java.util.Set;
 

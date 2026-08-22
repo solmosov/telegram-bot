@@ -1,4 +1,4 @@
-package io.shahbozolmosov.telegrambot.springboot.example.bot;
+package io.shahbozolmosov.telegrambot.spring.boot.example.bot;
 
 import io.github.shahbozolmosov.telegrambot.annotation.BotAuthorize;
 import io.github.shahbozolmosov.telegrambot.annotation.BotHandler;

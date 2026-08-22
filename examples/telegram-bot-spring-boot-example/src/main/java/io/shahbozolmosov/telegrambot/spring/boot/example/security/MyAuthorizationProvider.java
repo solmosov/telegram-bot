@@ -1,9 +1,9 @@
-package io.shahbozolmosov.telegrambot.springboot.example.security;
+package io.shahbozolmosov.telegrambot.spring.boot.example.security;
 
 import io.github.shahbozolmosov.telegrambot.authorization.AuthorizationPrincipal;
 import io.github.shahbozolmosov.telegrambot.authorization.AuthorizationProvider;
 import io.github.shahbozolmosov.telegrambot.context.BotContext;
-import io.shahbozolmosov.telegrambot.springboot.example.user.MyUser;
+import io.shahbozolmosov.telegrambot.spring.boot.example.user.MyUser;
 
 import java.util.Map;
 import java.util.Set;

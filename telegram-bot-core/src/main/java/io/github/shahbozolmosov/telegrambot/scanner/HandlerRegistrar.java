@@ -17,16 +17,20 @@ public final class HandlerRegistrar {
     private final Registry registry;
     private final List<HandlerAnnotationResolver> resolvers;
 
+    private final String botName;
+
     public HandlerRegistrar(
             ClassScanner scanner,
             ClassInstanceFactory factory,
             Registry registry,
-            List<HandlerAnnotationResolver> resolvers
+            List<HandlerAnnotationResolver> resolvers,
+            String botName
     ) {
         this.scanner = scanner;
         this.factory = factory;
         this.registry = registry;
         this.resolvers = resolvers;
+        this.botName = botName;
     }
 
     public void register(String packageName) {
@@ -46,9 +50,13 @@ public final class HandlerRegistrar {
             throw new TelegramBotException("Handler class must be annotated with @BotHandler");
         }
 
-        final String botName = botHandler.value();
-        if (botName == null || botName.isBlank()) {
+        final String botNameOfHandler = botHandler.value();
+        if (botNameOfHandler == null || botNameOfHandler.isBlank()) {
             throw new TelegramBotException("@BotHandler bot name is required");
+        }
+
+        if(!botName.equals(botHandler.value())){
+            return;
         }
 
         for (Method method : clazz.getDeclaredMethods()) {
@@ -59,7 +67,7 @@ public final class HandlerRegistrar {
 
                 Handler handler = getHandler(method, instance);
 
-                resolver.register(botName, method, handler, registry);
+                resolver.register(botNameOfHandler, method, handler, registry);
             }
         }
     }

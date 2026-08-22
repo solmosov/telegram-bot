@@ -99,7 +99,8 @@ public final class TelegramBot {
                 new ClassScanner(),
                 new ClassInstanceFactory(),
                 registry,
-                annotationHandlerResolvers
+                annotationHandlerResolvers,
+                name
         );
 
         // Initialize UpdateSource based on config

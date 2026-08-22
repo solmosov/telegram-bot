@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: telegram-bot-spring-boot-example
+
+telegram:
+  bot:
+    bots:
+      admin:
+        token: 8416406670:AAEE-eVda-YsP56SGPDzZnrUbcjVZGDrGSs
+      support:
+        token: 8293703120:AAHdwD2ueVWOe3fy1Jq7fJIKBAEoy8HnnS8
+
+
+logging:
+  level:
+    io.github.shahbozolmosov.telegrambot: INFO
+    org.springframework.boot.autoconfigure: INFO

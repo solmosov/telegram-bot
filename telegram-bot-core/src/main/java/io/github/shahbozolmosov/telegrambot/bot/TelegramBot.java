@@ -8,8 +8,6 @@ import io.github.shahbozolmosov.telegrambot.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.*;
 import io.github.shahbozolmosov.telegrambot.scanner.resolver.*;
-import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.*;
-import io.github.shahbozolmosov.telegrambot.scanner.resolver.*;
 import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
 import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.telegrambot.registry.Registry;
@@ -40,16 +38,16 @@ public final class TelegramBot {
 
     private boolean started;
 
-    private final ExecutionMode executionMode;
+    private final TelegramBotConfig config;
 
     public TelegramBot(String name, String botToken) {
         this(name, botToken, TelegramBotConfig.defaults());
     }
 
     public TelegramBot(String name, String botToken, TelegramBotConfig config) {
-        this.name = name;
+        this.config = config;
 
-        this.executionMode = config.getExecutionMode();
+        this.name = name;
 
         // Object Mapper
         this.jsonMapper = ObjectMapperFactory.create();
@@ -124,7 +122,7 @@ public final class TelegramBot {
                             name,
                             telegramClient,
                             dispatcher,
-                            executionMode,
+                            config.getExecutionMode(),
                             config.getGlobalExceptionHandler(),
                             config.getProcessingTimeout()
                     );
@@ -134,7 +132,7 @@ public final class TelegramBot {
                             name,
                             telegramClient,
                             dispatcher,
-                            executionMode,
+                            config.getExecutionMode(),
                             jsonMapper,
                             config.getWebhookHost(),
                             config.getWebhookPort(),

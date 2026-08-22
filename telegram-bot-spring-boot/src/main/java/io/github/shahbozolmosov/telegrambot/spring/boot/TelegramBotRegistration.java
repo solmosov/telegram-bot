@@ -23,16 +23,19 @@ public record TelegramBotRegistration(
         private Builder() {
         }
 
-        public void setBotName(String name) {
+        public Builder botName(String name) {
             this.botName = name;
+            return this;
         }
 
-        public void setToken(String token) {
+        public Builder token(String token) {
             this.token = token;
+            return this;
         }
 
-        public void setConfig(TelegramBotConfig config) {
+        public Builder config(TelegramBotConfig config) {
             this.config = config;
+            return this;
         }
 
         public TelegramBotRegistration build() {

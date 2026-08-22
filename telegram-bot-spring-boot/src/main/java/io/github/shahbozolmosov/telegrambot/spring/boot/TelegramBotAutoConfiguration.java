@@ -1,10 +1,37 @@
 package io.github.shahbozolmosov.telegrambot.spring.boot;
 
 
+import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
 @EnableConfigurationProperties(TelegramBotProperties.class)
 public class TelegramBotAutoConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TelegramBotApplicationFactory telegramBotApplicationFactory(
+            TelegramBotProperties properties
+    ) {
+        return new TelegramBotApplicationFactory(properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TelegramBotApplication telegramBotApplication(
+            TelegramBotApplicationFactory factory
+    ) {
+        return factory.create();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TelegramBotLifecycle telegramBotLifecycle(
+            TelegramBotApplication application
+    ) {
+        return new TelegramBotLifecycle(application);
+    }
 }

@@ -1,8 +1,10 @@
 package io.github.shahbozolmosov.telegrambot.spring.boot;
 
 
+import io.github.shahbozolmosov.telegrambot.authorization.AuthorizationProvider;
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -15,9 +17,10 @@ public class TelegramBotAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public TelegramBotApplicationFactory telegramBotApplicationFactory(
-            TelegramBotProperties properties
+            TelegramBotProperties properties,
+            ObjectProvider<AuthorizationProvider> authorizationProviders
     ) {
-        return new TelegramBotApplicationFactory(properties);
+        return new TelegramBotApplicationFactory(properties, authorizationProviders.getIfAvailable());
     }
 
     @Bean

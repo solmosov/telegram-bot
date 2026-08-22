@@ -1,5 +1,6 @@
 package io.github.shahbozolmosov.telegrambot.spring.boot;
 
+import io.github.shahbozolmosov.telegrambot.authorization.AuthorizationProvider;
 import io.github.shahbozolmosov.telegrambot.bot.HandlerRegistrationMode;
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotConfig;
@@ -7,9 +8,11 @@ import io.github.shahbozolmosov.telegrambot.bot.TelegramBotConfig;
 public class TelegramBotApplicationFactory {
 
     private final TelegramBotProperties properties;
+    private final AuthorizationProvider authorizationProvider;
 
-    public TelegramBotApplicationFactory(TelegramBotProperties properties) {
+    public TelegramBotApplicationFactory(TelegramBotProperties properties, AuthorizationProvider authorizationProvider) {
         this.properties = properties;
+        this.authorizationProvider = authorizationProvider;
     }
 
     public TelegramBotApplication create() {
@@ -28,6 +31,7 @@ public class TelegramBotApplicationFactory {
 
             TelegramBotConfig config = TelegramBotConfig.builder()
                     .handlerRegistrationMode(HandlerRegistrationMode.EXTERNAL)
+                    .authorizationProvider(authorizationProvider)
                     .build();
 
             application.register(botName, token, config);

@@ -13,5 +13,5 @@ telegram:
 
 logging:
   level:
-    io.github.shahbozolmosov.telegrambot: INFO
+    io.github.shahbozolmosov.telegrambot: DEBUG
     org.springframework.boot.autoconfigure: INFO

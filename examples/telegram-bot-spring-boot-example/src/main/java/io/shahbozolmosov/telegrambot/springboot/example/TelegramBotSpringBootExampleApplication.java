@@ -1,4 +1,4 @@
-package io.shahbozolmosov.telegram_bot_spring_boot_example;
+package io.shahbozolmosov.telegrambot.springboot.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

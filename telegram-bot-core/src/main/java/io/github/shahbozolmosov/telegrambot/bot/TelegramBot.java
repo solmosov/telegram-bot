@@ -167,9 +167,11 @@ public final class TelegramBot {
         MDC.put("bot", name);
 
         try {
-            String packageName = new ApplicationPackageResolver().resolve();
+            if(config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN){
+                String packageName = new ApplicationPackageResolver().resolve();
 
-            handlerRegistrar.register(packageName);
+                handlerRegistrar.register(packageName);
+            }
 
             updateSource.start();
 

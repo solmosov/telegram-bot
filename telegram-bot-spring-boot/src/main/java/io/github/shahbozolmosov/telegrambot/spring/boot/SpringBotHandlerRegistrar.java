@@ -1,27 +1,39 @@
 package io.github.shahbozolmosov.telegrambot.spring.boot;
 
 import io.github.shahbozolmosov.telegrambot.annotation.BotHandler;
-import io.github.shahbozolmosov.telegrambot.scanner.HandlerRegistrar;
+import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 
 public class SpringBotHandlerRegistrar implements SmartInitializingSingleton {
 
     private final ListableBeanFactory beanFactory;
-    private final HandlerRegistrar handlerRegistrar;
+    private final TelegramBotApplication telegramBotApplication;
 
     public SpringBotHandlerRegistrar(
             ListableBeanFactory beanFactory,
-            HandlerRegistrar handlerRegistrar
+            TelegramBotApplication application
     ) {
         this.beanFactory = beanFactory;
-        this.handlerRegistrar = handlerRegistrar;
+        this.telegramBotApplication = application;
     }
 
     @Override
     public void afterSingletonsInstantiated() {
         beanFactory.getBeansWithAnnotation(BotHandler.class)
                 .values()
-                .forEach(handlerRegistrar::register);
+                .forEach(this::register);
+    }
+
+    private void register(Object handler) {
+        BotHandler annotation = handler.getClass().getAnnotation(BotHandler.class);
+
+        if (annotation == null) {
+            return;
+        }
+
+
+        telegramBotApplication.getBot(annotation.value())
+                .registerHandler(handler);
     }
 }

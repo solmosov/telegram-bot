@@ -55,7 +55,7 @@ public final class HandlerRegistrar {
             throw new TelegramBotException("@BotHandler bot name is required");
         }
 
-        if(!botName.equals(botHandler.value())){
+        if(!botName.equals(botNameOfHandler)){
             return;
         }
 

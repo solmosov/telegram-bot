@@ -9,10 +9,10 @@ public class TelegramConfiguration {
 
     @Bean
     public TelegramBotRegistration supportBot() {
-        return new TelegramBotRegistration(
-                "support",
-                System.getenv("TELEGRAM_BOT_SUPPORT_TOKEN")
-        );
+        return TelegramBotRegistration.builder()
+                .botName("support")
+                .token(System.getenv("TELEGRAM_BOT_SUPPORT_TOKEN"))
+                .build();
     }
 
     @Bean TelegramBotRegistration adminBot(){

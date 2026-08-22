@@ -1,40 +1,27 @@
 package io.github.shahbozolmosov.telegrambot.spring.boot;
 
-import io.github.shahbozolmosov.telegrambot.authorization.AuthorizationProvider;
-import io.github.shahbozolmosov.telegrambot.bot.HandlerRegistrationMode;
 import io.github.shahbozolmosov.telegrambot.bot.TelegramBotApplication;
-import io.github.shahbozolmosov.telegrambot.bot.TelegramBotConfig;
+
+import java.util.List;
 
 public class TelegramBotApplicationFactory {
 
-    private final TelegramBotProperties properties;
-    private final AuthorizationProvider authorizationProvider;
+    private final List<TelegramBotRegistration> registrations;
 
-    public TelegramBotApplicationFactory(TelegramBotProperties properties, AuthorizationProvider authorizationProvider) {
-        this.properties = properties;
-        this.authorizationProvider = authorizationProvider;
+    public TelegramBotApplicationFactory(List<TelegramBotRegistration> registrations) {
+        this.registrations = registrations;
     }
 
     public TelegramBotApplication create() {
         TelegramBotApplication application = new TelegramBotApplication();
 
-        properties.getBots().forEach((botName, botProperties) -> {
-            if (!botProperties.isEnabled()) {
-                return;
-            }
 
-            String token = botProperties.getToken();
-
-            if (token == null || token.isBlank()) {
-                throw new IllegalArgumentException("Telegram bot token is required for bot: " + botName);
-            }
-
-            TelegramBotConfig config = TelegramBotConfig.builder()
-                    .handlerRegistrationMode(HandlerRegistrationMode.EXTERNAL)
-                    .authorizationProvider(authorizationProvider)
-                    .build();
-
-            application.register(botName, token, config);
+        registrations.forEach(registration -> {
+            application.register(
+                    registration.botName(),
+                    registration.token(),
+                    registration.config()
+            );
         });
 
         return application;

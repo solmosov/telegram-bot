@@ -1,6 +1,9 @@
 package io.shahbozolmosov.telegrambot.spring.boot.example.config;
 
+import io.github.shahbozolmosov.telegrambot.bot.HandlerRegistrationMode;
+import io.github.shahbozolmosov.telegrambot.bot.TelegramBotConfig;
 import io.github.shahbozolmosov.telegrambot.spring.boot.TelegramBotRegistration;
+import io.shahbozolmosov.telegrambot.spring.boot.example.security.MyAuthorizationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,10 +18,14 @@ public class TelegramConfiguration {
                 .build();
     }
 
-    @Bean TelegramBotRegistration adminBot(){
-        return new TelegramBotRegistration(
-                "admin",
-                System.getenv("TELEGRAM_BOT_ADMIN_TOKEN")
-        );
+    @Bean
+    TelegramBotRegistration adminBot() {
+        return TelegramBotRegistration.builder()
+                .botName("admin")
+                .token(System.getenv("TELEGRAM_BOT_ADMIN_TOKEN"))
+                .config(config -> {
+                    config.authorizationProvider(new MyAuthorizationProvider());
+                })
+                .build();
     }
 }

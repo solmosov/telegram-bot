@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.telegrambot.example.handler;
+package io.github.shahbozolmosov.telegrambot.example.bot;
 
 import io.github.shahbozolmosov.telegrambot.annotation.BotAuthorize;
 import io.github.shahbozolmosov.telegrambot.annotation.BotHandler;

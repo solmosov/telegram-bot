@@ -6,18 +6,23 @@ import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
 import io.github.shahbozolmosov.telegrambot.registry.Registry;
 import io.github.shahbozolmosov.telegrambot.scanner.resolver.HandlerAnnotationResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
 public final class HandlerRegistrar {
+    private final static Logger log = LoggerFactory.getLogger(HandlerRegistrar.class);
+
     private final ClassScanner scanner;
     private final ClassInstanceFactory factory;
     private final Registry registry;
     private final List<HandlerAnnotationResolver> resolvers;
 
     private final String botName;
+
 
     public HandlerRegistrar(
             ClassScanner scanner,
@@ -75,14 +80,13 @@ public final class HandlerRegistrar {
 
     private static Handler getHandler(Method method, Object instance) {
         BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
-
         return new Handler(
                 context -> {
                     try {
                         method.invoke(instance, context);
                     } catch (InvocationTargetException ex) {
                         Throwable cause = ex.getCause();
-                        System.err.println("Handler execution failed for update: " + cause);
+                        log.error("Handler execution failed for update: " + cause);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }

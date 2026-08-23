@@ -5,6 +5,8 @@ import io.github.shahbozolmosov.telegrambot.exception.handler.DefaultGlobalExcep
 import io.github.shahbozolmosov.telegrambot.exception.GlobalExceptionHandler;
 
 public class TelegramBotConfig {
+
+    private final HandlerRegistrationMode handlerRegistrationMode;
     private final long shutdownTimeoutMillis;
     private final long processingTimeout;
     private final UpdatesMode updatesMode;
@@ -25,6 +27,7 @@ public class TelegramBotConfig {
     private final GlobalExceptionHandler globalExceptionHandler;
 
     private TelegramBotConfig(
+            HandlerRegistrationMode handlerRegistrationMode,
             long shutdownTimeoutMillis,
             long processingTimeout,
             ExecutionMode executionMode,
@@ -41,6 +44,7 @@ public class TelegramBotConfig {
 
             GlobalExceptionHandler globalExceptionHandler
     ) {
+        this.handlerRegistrationMode = handlerRegistrationMode;
         this.shutdownTimeoutMillis = shutdownTimeoutMillis;
         this.processingTimeout = processingTimeout;
         this.executionMode = executionMode;
@@ -64,6 +68,10 @@ public class TelegramBotConfig {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public HandlerRegistrationMode getHandlerRegistrationMode() {
+        return handlerRegistrationMode;
     }
 
     public long getShutdownTimeoutMillis() {
@@ -121,6 +129,7 @@ public class TelegramBotConfig {
 
 
     public static class Builder {
+        private HandlerRegistrationMode handlerRegistrationMode = HandlerRegistrationMode.CLASSPATH_SCAN;
         private long shutdownTimeoutMillis = 5_000; // 5s
         private long processingTimeout = 30; // 30s
         private ExecutionMode executionMode = ExecutionMode.SINGLE_THREAD;
@@ -138,6 +147,11 @@ public class TelegramBotConfig {
 
         // Exception
         private GlobalExceptionHandler globalExceptionHandler = new DefaultGlobalExceptionHandler();
+
+        public Builder handlerRegistrationMode(HandlerRegistrationMode mode) {
+            this.handlerRegistrationMode = mode;
+            return this;
+        }
 
         public Builder shutdownTimeout(long millis) {
             this.shutdownTimeoutMillis = millis;
@@ -206,6 +220,7 @@ public class TelegramBotConfig {
             validateConfiguration();
 
             return new TelegramBotConfig(
+                    handlerRegistrationMode,
                     shutdownTimeoutMillis,
                     processingTimeout,
                     executionMode,
@@ -225,6 +240,10 @@ public class TelegramBotConfig {
         }
 
         private void validateConfiguration() {
+            if (handlerRegistrationMode == null) {
+                throw new IllegalArgumentException("handlerRegistrationMode is required.");
+            }
+
             if (updatesMode == UpdatesMode.WEBHOOK) {
                 if (webhookPath == null || webhookPath.isBlank()) {
                     throw new IllegalArgumentException(

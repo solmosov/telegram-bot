@@ -8,8 +8,6 @@ import io.github.shahbozolmosov.telegrambot.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.*;
 import io.github.shahbozolmosov.telegrambot.scanner.resolver.*;
-import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.*;
-import io.github.shahbozolmosov.telegrambot.scanner.resolver.*;
 import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
 import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.telegrambot.registry.Registry;
@@ -40,16 +38,16 @@ public final class TelegramBot {
 
     private boolean started;
 
-    private final ExecutionMode executionMode;
+    private final TelegramBotConfig config;
 
     public TelegramBot(String name, String botToken) {
         this(name, botToken, TelegramBotConfig.defaults());
     }
 
     public TelegramBot(String name, String botToken, TelegramBotConfig config) {
-        this.name = name;
+        this.config = config;
 
-        this.executionMode = config.getExecutionMode();
+        this.name = name;
 
         // Object Mapper
         this.jsonMapper = ObjectMapperFactory.create();
@@ -101,11 +99,16 @@ public final class TelegramBot {
                 new ClassScanner(),
                 new ClassInstanceFactory(),
                 registry,
-                annotationHandlerResolvers
+                annotationHandlerResolvers,
+                name
         );
 
         // Initialize UpdateSource based on config
         initializeUpdateSource(config);
+    }
+
+    public void registerHandler(Object handler) {
+        handlerRegistrar.register(handler);
     }
 
     private void initializeUpdateSource(TelegramBotConfig config) {
@@ -120,7 +123,7 @@ public final class TelegramBot {
                             name,
                             telegramClient,
                             dispatcher,
-                            executionMode,
+                            config.getExecutionMode(),
                             config.getGlobalExceptionHandler(),
                             config.getProcessingTimeout()
                     );
@@ -130,7 +133,7 @@ public final class TelegramBot {
                             name,
                             telegramClient,
                             dispatcher,
-                            executionMode,
+                            config.getExecutionMode(),
                             jsonMapper,
                             config.getWebhookHost(),
                             config.getWebhookPort(),
@@ -141,7 +144,7 @@ public final class TelegramBot {
 
                             config.getGlobalExceptionHandler(),
                             config.getProcessingTimeout()
-                            );
+                    );
                     break;
             }
         } finally {
@@ -165,9 +168,11 @@ public final class TelegramBot {
         MDC.put("bot", name);
 
         try {
-            String packageName = new ApplicationPackageResolver().resolve();
+            if(config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN){
+                String packageName = new ApplicationPackageResolver().resolve();
 
-            handlerRegistrar.register(packageName);
+                handlerRegistrar.register(packageName);
+            }
 
             updateSource.start();
 

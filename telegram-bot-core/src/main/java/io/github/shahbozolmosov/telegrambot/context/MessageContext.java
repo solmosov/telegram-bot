@@ -249,9 +249,21 @@ public final class MessageContext {
         );
     }
 
+    public TelegramResponse<Message> sendMarkdown(String value, Boolean disableWebPagePreview) {
+        return sendMarkdown(
+                chatId(),
+                value,
+                disableWebPagePreview
+        );
+    }
+
     public TelegramResponse<Message> sendMarkdown(String chatId, String value) {
+        return sendMarkdown(chatId, value, false);
+    }
+
+    public TelegramResponse<Message> sendMarkdown(String chatId, String value, Boolean disableWebPagePreview) {
         return telegramClient.sendMessage(
-                SendMessageRequest.markdown(chatId, value)
+                SendMessageRequest.markdown(chatId, value, null, disableWebPagePreview)
         );
     }
 
@@ -263,9 +275,22 @@ public final class MessageContext {
         );
     }
 
+    public TelegramResponse<Message> sendMarkdown(String value, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
+        return sendMarkdown(
+                chatId(),
+                value,
+                replyMarkup,
+                disableWebPagePreview
+        );
+    }
+
     public TelegramResponse<Message> sendMarkdown(String chatId, String value, ReplyMarkup replyMarkup) {
+        return sendMarkdown(chatId, value, replyMarkup, null);
+    }
+
+    public TelegramResponse<Message> sendMarkdown(String chatId, String value, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return telegramClient.sendMessage(
-                SendMessageRequest.markdown(chatId, value, replyMarkup)
+                SendMessageRequest.markdown(chatId, value, replyMarkup, disableWebPagePreview)
         );
     }
 
@@ -318,23 +343,42 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> sendMarkdownV2(String chatId, String value) {
-        return telegramClient.sendMessage(
-                SendMessageRequest.markdownV2(chatId, value)
-        );
-    }
-
-    public TelegramResponse<Message> sendMarkdownV2(String value, ReplyMarkup replyMarkup) {
+    public TelegramResponse<Message> sendMarkdownV2(String value, Boolean disableWebPagePreview) {
         return sendMarkdownV2(
                 chatId(),
                 value,
-                replyMarkup
+                disableWebPagePreview
         );
     }
 
-    public TelegramResponse<Message> sendMarkdownV2(String chatId, String text, ReplyMarkup replyMarkup) {
+    public TelegramResponse<Message> sendMarkdownV2(String chatId, String value) {
+        return sendMarkdownV2(chatId, value, false);
+    }
+
+    public TelegramResponse<Message> sendMarkdownV2(String chatId, String value, Boolean disableWebPagePreview) {
+        return sendMarkdownV2(chatId, value, null, disableWebPagePreview);
+    }
+
+    public TelegramResponse<Message> sendMarkdownV2(String value, ReplyMarkup replyMarkup) {
+        return sendMarkdownV2(value, replyMarkup, null);
+    }
+
+    public TelegramResponse<Message> sendMarkdownV2(String value, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
+        return sendMarkdownV2(
+                chatId(),
+                value,
+                replyMarkup,
+                disableWebPagePreview
+        );
+    }
+
+    public TelegramResponse<Message> sendMarkdownV2(String chatId, String value, ReplyMarkup replyMarkup) {
+        return sendMarkdownV2(chatId, value, replyMarkup, null);
+    }
+
+    public TelegramResponse<Message> sendMarkdownV2(String chatId, String value, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return telegramClient.sendMessage(
-                SendMessageRequest.markdownV2(chatId, text, replyMarkup)
+                SendMessageRequest.markdownV2(chatId, value, replyMarkup, disableWebPagePreview)
         );
     }
 

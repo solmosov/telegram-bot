@@ -23,14 +23,6 @@ public record SendMessageRequest(
         Boolean disableWebPagePreview
 ) {
     /*------------------------------- TEXT --------------------------------------------*/
-    public static SendMessageRequest text(String chatId, String text) {
-        return text(chatId, text, null);
-    }
-
-    public static SendMessageRequest text(String chatId, String text, ReplyMarkup replyMarkup) {
-        return text(chatId, text, replyMarkup, null);
-    }
-
     public static SendMessageRequest text(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return new SendMessageRequest(
                 chatId,
@@ -42,14 +34,6 @@ public record SendMessageRequest(
     }
 
     /*------------------------------- Markdown --------------------------------------------*/
-    public static SendMessageRequest markdown(String chatId, String text) {
-        return markdown(chatId, text, null, null);
-    }
-
-    public static SendMessageRequest markdown(String chatId, String text, ReplyMarkup replyMarkup){
-        return markdown(chatId, text, replyMarkup, null);
-    }
-
     public static SendMessageRequest markdown(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return new SendMessageRequest(
                 chatId,
@@ -61,13 +45,6 @@ public record SendMessageRequest(
     }
 
     /*------------------------------- Markdown V2 --------------------------------------------*/
-    public static SendMessageRequest markdownV2(String chatId, String text) {
-        return markdownV2(chatId, text, null, null);
-    }
-
-    public static SendMessageRequest markdownV2(String chatId, String text, ReplyMarkup replyMarkup){
-        return markdownV2(chatId, text, replyMarkup, null);
-    }
 
     public static SendMessageRequest markdownV2(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return new SendMessageRequest(
@@ -80,13 +57,6 @@ public record SendMessageRequest(
     }
 
     /*------------------------------- Html --------------------------------------------*/
-    public static SendMessageRequest html(String chatId, String text) {
-        return html(chatId, text, null, null);
-    }
-
-    public static SendMessageRequest html(String chatId, String text, ReplyMarkup replyMarkup){
-        return html(chatId, text, replyMarkup, null);
-    }
 
     public static SendMessageRequest html(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return new SendMessageRequest(

@@ -160,15 +160,6 @@ public final class TelegramClient {
 
     // --------------------- Send Message ---------------------
     public TelegramResponse<Message> sendMessage(
-            String chatId,
-            String text
-    ) {
-        return sendMessage(
-                SendMessageRequest.text(chatId, text)
-        );
-    }
-
-    public TelegramResponse<Message> sendMessage(
             SendMessageRequest requestBody
     ) {
 

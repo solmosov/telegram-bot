@@ -55,10 +55,24 @@ public final class MessageContext {
         );
     }
 
+    public TelegramResponse<Message> sendText(String text, Boolean disableWebPagePreview) {
+        return sendText(
+                this.chatId(),
+                text,
+                disableWebPagePreview
+        );
+    }
+
     public TelegramResponse<Message> sendText(String chatId, String text) {
-        return telegramClient.sendMessage(
+        return sendText(chatId, text, false);
+    }
+
+    public TelegramResponse<Message> sendText(String chatId, String text, Boolean disableWebPagePreview) {
+        return sendText(
                 chatId,
-                text
+                text,
+                null,
+                disableWebPagePreview
         );
     }
 
@@ -70,9 +84,22 @@ public final class MessageContext {
         );
     }
 
+    public TelegramResponse<Message> sendText(String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
+        return sendText(
+                this.chatId(),
+                text,
+                replyMarkup,
+                disableWebPagePreview
+        );
+    }
+
     public TelegramResponse<Message> sendText(String chatId, String text, ReplyMarkup replyMarkup) {
+        return sendText(chatId, text, replyMarkup, null);
+    }
+
+    public TelegramResponse<Message> sendText(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return telegramClient.sendMessage(
-                SendMessageRequest.text(chatId, text, replyMarkup)
+                SendMessageRequest.text(chatId, text, replyMarkup, disableWebPagePreview)
         );
     }
 

@@ -9,17 +9,17 @@ public final class Video {
     private Video() {
     }
 
-    public static SendVideoRequest.Builder video(String url) {
+    public static SendVideoRequest.Builder url(String url) {
         return SendVideoRequest.builder()
                 .video(url);
     }
 
-    public static SendVideoUploadRequest.Builder video(byte[] file, String name) {
+    public static SendVideoUploadRequest.Builder file(byte[] file, String name) {
         return SendVideoUploadRequest.builder()
                 .video(new InputFIle(file, name));
     }
 
-    public static SendVideoUploadRequest.Builder video(byte[] file, String name, String mimeType) {
+    public static SendVideoUploadRequest.Builder file(byte[] file, String name, String mimeType) {
         return SendVideoUploadRequest.builder()
                 .video(new InputFIle(file, name, mimeType));
     }

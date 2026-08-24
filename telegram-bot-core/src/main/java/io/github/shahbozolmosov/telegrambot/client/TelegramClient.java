@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.telegrambot.model.*;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
+import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionRequest;
 import io.github.shahbozolmosov.telegrambot.request.media.send.*;
 import io.github.shahbozolmosov.telegrambot.model.*;
 import io.github.shahbozolmosov.telegrambot.request.media.send.*;
@@ -150,6 +151,27 @@ public final class TelegramClient {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Boolean>>() {
+                }
+        );
+    }
+
+    // --------------------- Chat Action ---------------------
+    public TelegramResponse<Boolean> sendChatAction(
+            SendChatActionRequest requestBody
+    ) {
+        String url = API_BASE_URL + "/bot" + botToken + "/sendChatAction";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
 
         return execute(
                 request,

@@ -22,15 +22,6 @@ public record SendMessageRequest(
         @JsonProperty("disable_web_page_preview")
         Boolean disableWebPagePreview
 ) {
-    public SendMessageRequest(
-            String chatId,
-            String text,
-            ReplyMarkup replyMarkup,
-            Boolean disableWebPagePreview
-    ) {
-        this(chatId, text, null, replyMarkup, disableWebPagePreview);
-    }
-
     /*------------------------------- TEXT --------------------------------------------*/
     public static SendMessageRequest text(String chatId, String text) {
         return text(chatId, text, null);

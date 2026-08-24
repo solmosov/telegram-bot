@@ -22,52 +22,6 @@ public record SendMessageRequest(
         @JsonProperty("disable_web_page_preview")
         Boolean disableWebPagePreview
 ) {
-    /*------------------------------- TEXT --------------------------------------------*/
-    public static SendMessageRequest text(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
-        return new SendMessageRequest(
-                chatId,
-                text,
-                null,
-                replyMarkup,
-                disableWebPagePreview
-        );
-    }
-
-    /*------------------------------- Markdown --------------------------------------------*/
-    public static SendMessageRequest markdown(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
-        return new SendMessageRequest(
-                chatId,
-                text,
-                ParseMode.MARKDOWN,
-                replyMarkup,
-                disableWebPagePreview
-        );
-    }
-
-    /*------------------------------- Markdown V2 --------------------------------------------*/
-
-    public static SendMessageRequest markdownV2(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
-        return new SendMessageRequest(
-                chatId,
-                text,
-                ParseMode.MARKDOWN_V2,
-                replyMarkup,
-                disableWebPagePreview
-        );
-    }
-
-    /*------------------------------- Html --------------------------------------------*/
-
-    public static SendMessageRequest html(String chatId, String text, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
-        return new SendMessageRequest(
-                chatId,
-                text,
-                ParseMode.HTML,
-                replyMarkup,
-                disableWebPagePreview
-        );
-    }
-
     /*------------------------------- Remove Keyboard --------------------------------------------*/
     public static SendMessageRequest removeReplyKeyboard(String chatId, String text){
         return new SendMessageRequest(

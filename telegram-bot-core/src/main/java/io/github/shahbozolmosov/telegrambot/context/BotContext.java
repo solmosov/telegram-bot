@@ -7,6 +7,7 @@ import java.util.Map;
 
 public final class BotContext {
 
+    private final TelegramClient client;
     private final Update update;
     private Map<String, Object> callbackParams;
     private String deepLinkParams;
@@ -21,10 +22,11 @@ public final class BotContext {
             TelegramClient telegramClient,
             Update update
     ) {
+        this.client = telegramClient;
         this.update = update;
         this.messageContext = update.message() != null
-                ? new MessageContext(telegramClient, update.message())
-                : update.callbackQuery().message() != null ? new MessageContext(telegramClient, update.callbackQuery().message())
+                ? new MessageContext(update.message())
+                : update.callbackQuery().message() != null ? new MessageContext(update.callbackQuery().message())
                   : null;
 
         this.photoContext = update.message() != null
@@ -32,7 +34,7 @@ public final class BotContext {
                 : null;
 
         this.callbackQueryContext = update.callbackQuery() != null
-                ? new CallbackQueryContext(telegramClient, update.callbackQuery())
+                ? new CallbackQueryContext(client, update.callbackQuery())
                 : null;
 
         this.replyKeyboardContext = new ReplyKeyboardContext(messageContext);
@@ -46,6 +48,16 @@ public final class BotContext {
     // --------------------- Message Context ---------------------
     public MessageContext message() {
         return messageContext;
+    }
+
+
+    public MessageBuilder reply(String textContext) {
+        return new MessageBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                textContext
+        );
     }
 
     // --------------------- Reply Keyboard Context ---------------------
@@ -75,11 +87,11 @@ public final class BotContext {
     }
 
     // --------------------- Depp Link Params ---------------------
-    public void setDeepLinkParam(String param){
+    public void setDeepLinkParam(String param) {
         deepLinkParams = param;
     }
 
-    public String deepLinkParam(){
+    public String deepLinkParam() {
         return deepLinkParams;
     }
 }

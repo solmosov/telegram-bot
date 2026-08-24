@@ -148,9 +148,28 @@ public final class MessageContext {
         );
     }
 
+    public TelegramResponse<Message> sendHtml(String html, Boolean disableWebPagePreview) {
+        return sendHtml(
+                chatId(),
+                html,
+                disableWebPagePreview
+        );
+    }
+
     public TelegramResponse<Message> sendHtml(String chatId, String html) {
-        return telegramClient.sendMessage(
-                SendMessageRequest.html(chatId, html)
+        return sendHtml(
+                chatId,
+                html,
+                false
+        );
+    }
+
+    public TelegramResponse<Message> sendHtml(String chatId, String html, Boolean disableWebPagePreview) {
+        return sendHtml(
+                chatId,
+                html,
+                null,
+                disableWebPagePreview
         );
     }
 
@@ -162,9 +181,22 @@ public final class MessageContext {
         );
     }
 
+    public TelegramResponse<Message> sendHtml(String html, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
+        return sendHtml(
+                chatId(),
+                html,
+                replyMarkup,
+                disableWebPagePreview
+        );
+    }
+
     public TelegramResponse<Message> sendHtml(String chatId, String html, ReplyMarkup replyMarkup) {
+        return sendHtml(chatId, html, replyMarkup, null);
+    }
+
+    public TelegramResponse<Message> sendHtml(String chatId, String html, ReplyMarkup replyMarkup, Boolean disableWebPagePreview) {
         return telegramClient.sendMessage(
-                SendMessageRequest.html(chatId, html, replyMarkup)
+                SendMessageRequest.html(chatId, html, replyMarkup, disableWebPagePreview)
         );
     }
 

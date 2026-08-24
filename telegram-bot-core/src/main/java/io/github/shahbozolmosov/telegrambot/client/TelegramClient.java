@@ -184,16 +184,6 @@ public final class TelegramClient {
 
     // --------------------- Edit Message ---------------------
     public TelegramResponse<Message> editMessage(
-            String chatId,
-            long messageId,
-            String text
-    ) {
-        return editMessage(
-                new EditMessageRequest(chatId, messageId, text, null)
-        );
-    }
-
-    public TelegramResponse<Message> editMessage(
             EditMessageRequest requestBody
     ) {
 

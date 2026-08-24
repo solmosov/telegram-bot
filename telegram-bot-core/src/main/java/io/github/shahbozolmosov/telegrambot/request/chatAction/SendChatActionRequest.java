@@ -1,11 +1,12 @@
 package io.github.shahbozolmosov.telegrambot.request.chatAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import javax.swing.*;
-
 public record SendChatActionRequest(
+        @JsonProperty("chat_id")
         String chatId,
+
         Action action
 ) {
 

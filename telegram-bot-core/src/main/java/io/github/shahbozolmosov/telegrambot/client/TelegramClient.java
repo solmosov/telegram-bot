@@ -5,6 +5,7 @@ import io.github.shahbozolmosov.telegrambot.client.http.MultipartBodyBuilder;
 import io.github.shahbozolmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.telegrambot.model.*;
+import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.shahbozolmosov.telegrambot.request.media.send.*;
 import io.github.shahbozolmosov.telegrambot.model.*;
 import io.github.shahbozolmosov.telegrambot.request.media.send.*;
@@ -299,20 +300,14 @@ public final class TelegramClient {
     }
 
     public TelegramResponse<Boolean> answerCallbackQuery(
-            String callbackQueryId,
-            String text
+            AnswerCallbackRequest requestBody
     ) {
 
         acquirePermitGlobal();
 
         String url = API_BASE_URL + "/bot" + botToken + "/answerCallbackQuery";
 
-        String jsonBody = objectMapper.writeValueAsString(
-                Map.of(
-                        "callback_query_id", callbackQueryId,
-                        "text", text
-                )
-        );
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

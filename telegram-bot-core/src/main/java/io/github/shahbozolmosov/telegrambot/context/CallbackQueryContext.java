@@ -4,6 +4,7 @@ import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.model.CallbackQuery;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
+import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 
 public final class CallbackQueryContext {
 
@@ -38,8 +39,21 @@ public final class CallbackQueryContext {
 
     public TelegramResponse<Boolean> answerCallbackQuery(String text) {
         return telegramClient.answerCallbackQuery(
-                callbackQuery.id(),
-                text
+                new AnswerCallbackRequest(
+                        callbackQuery.id(),
+                        text,
+                        null
+                )
+        );
+    }
+
+    public TelegramResponse<Boolean> answerCallbackQueryAlert(String text) {
+        return telegramClient.answerCallbackQuery(
+                new AnswerCallbackRequest(
+                        callbackQuery.id(),
+                        text,
+                        true
+                )
         );
     }
 }

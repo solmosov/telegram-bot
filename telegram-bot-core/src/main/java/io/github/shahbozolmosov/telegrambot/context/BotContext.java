@@ -1,12 +1,10 @@
 package io.github.shahbozolmosov.telegrambot.context;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
-import io.github.shahbozolmosov.telegrambot.context.builder.DeleteMessageBuilder;
-import io.github.shahbozolmosov.telegrambot.context.builder.EditMessageBuilder;
-import io.github.shahbozolmosov.telegrambot.context.builder.MessageBuilder;
-import io.github.shahbozolmosov.telegrambot.context.builder.PhotoBuilder;
+import io.github.shahbozolmosov.telegrambot.context.builder.*;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import io.github.shahbozolmosov.telegrambot.request.media.send.SendPhotoRequest;
+import io.github.shahbozolmosov.telegrambot.request.media.send.SendPhotoUploadRequest;
 
 import java.util.Map;
 
@@ -90,6 +88,15 @@ public final class BotContext {
 
     public PhotoBuilder photo(SendPhotoRequest.Builder builder) {
         return new PhotoBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                builder
+        );
+    }
+
+    public PhotoUploadBuilder photo(SendPhotoUploadRequest.Builder builder) {
+        return new PhotoUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),

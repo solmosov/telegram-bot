@@ -29,6 +29,11 @@ public class DocumentBuilder {
         this.reqBuilder = reqBuilder;
     }
 
+    public DocumentBuilder toChat(String chatId) {
+        this.chatId = chatId;
+        return this;
+    }
+
     public TelegramResponse<Message> send() {
         log.debug("Send to document to updateId: {} chatId: {}", updateId == null ? "-" : updateId, chatId);
 

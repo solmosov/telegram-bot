@@ -18,8 +18,8 @@ public final class Document {
         return SendDocumentUploadRequest.builder().document(inputFile);
     }
 
-    public static SendDocumentUploadRequest.Builder file(byte[] file, String name, String type){
-        var inputFile = new InputFIle(file, name, type);
+    public static SendDocumentUploadRequest.Builder file(byte[] file, String name, String mimeType){
+        var inputFile = new InputFIle(file, name, mimeType);
         return SendDocumentUploadRequest.builder().document(inputFile);
     }
 }

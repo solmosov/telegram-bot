@@ -20,8 +20,8 @@ public final class Photo {
                 .photo(inputFIle);
     }
 
-    public static SendPhotoUploadRequest.Builder file(byte[] photo, String name, String type) {
-        InputFIle inputFIle = new InputFIle(photo, name, type);
+    public static SendPhotoUploadRequest.Builder file(byte[] photo, String name, String mimeType) {
+        InputFIle inputFIle = new InputFIle(photo, name, mimeType);
         return SendPhotoUploadRequest.builder()
                 .photo(inputFIle);
     }

@@ -7,6 +7,6 @@ public record DeleteMessageRequest(
         String chatId,
 
         @JsonProperty("message_id")
-        long messageId
+        String messageId
 ) {
 }

@@ -369,6 +369,28 @@ public final class TelegramClient {
         );
     }
 
+    public TelegramResponse<Message> sendPhoto(
+            SendPhotoUploadRequest requestBody
+    ) {
+        acquirePermit(requestBody.chatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
+
+        MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", multipartBody.contentType())
+                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
     // --------------------- Send Video ---------------------
     public TelegramResponse<Message> sendVideo(
             SendVideoRequest requestBody

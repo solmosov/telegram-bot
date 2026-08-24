@@ -130,6 +130,15 @@ public final class BotContext {
         );
     }
 
+    public DocumentUploadBuilder document(SendDocumentUploadRequest.Builder builder) {
+        return new DocumentUploadBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                builder
+        );
+    }
+
     // --------------------- Reply Keyboard Context ---------------------
     public ReplyKeyboardContext replyKeyboard() {
         return replyKeyboardContext;

@@ -1,8 +1,10 @@
 package io.github.shahbozolmosov.telegrambot.context;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
+import io.github.shahbozolmosov.telegrambot.context.builder.EditMessageBuilder;
 import io.github.shahbozolmosov.telegrambot.context.builder.MessageBuilder;
 import io.github.shahbozolmosov.telegrambot.model.Update;
+import io.github.shahbozolmosov.telegrambot.request.message.EditMessageRequest;
 
 import java.util.Map;
 
@@ -51,6 +53,10 @@ public final class BotContext {
         return messageContext;
     }
 
+    public String messageId() {
+        return message().messageId();
+    }
+
 
     public MessageBuilder reply(String textContext) {
         return new MessageBuilder(
@@ -58,6 +64,16 @@ public final class BotContext {
                 update.updateId(),
                 message().chatId(),
                 textContext
+        );
+    }
+
+    public EditMessageBuilder editMessage(String messageId, String textContent) {
+        return new EditMessageBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                messageId,
+                textContent
         );
     }
 

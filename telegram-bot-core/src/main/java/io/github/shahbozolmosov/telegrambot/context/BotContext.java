@@ -5,6 +5,7 @@ import io.github.shahbozolmosov.telegrambot.context.builder.*;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import io.github.shahbozolmosov.telegrambot.request.media.send.SendPhotoRequest;
 import io.github.shahbozolmosov.telegrambot.request.media.send.SendPhotoUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.media.send.SendVideoRequest;
 
 import java.util.Map;
 
@@ -99,6 +100,15 @@ public final class BotContext {
         return new PhotoUploadBuilder(
                 client,
                 update.updateId(),
+                message().chatId(),
+                builder
+        );
+    }
+
+    public VideoBuilder video(SendVideoRequest.Builder builder) {
+        return new VideoBuilder(
+                client,
+                update().updateId(),
                 message().chatId(),
                 builder
         );

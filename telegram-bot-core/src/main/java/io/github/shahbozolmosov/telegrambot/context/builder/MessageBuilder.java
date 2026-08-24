@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.telegrambot.context;
+package io.github.shahbozolmosov.telegrambot.context.builder;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;

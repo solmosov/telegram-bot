@@ -3,10 +3,7 @@ package io.github.shahbozolmosov.telegrambot.context;
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.context.builder.*;
 import io.github.shahbozolmosov.telegrambot.model.Update;
-import io.github.shahbozolmosov.telegrambot.request.media.send.SendPhotoRequest;
-import io.github.shahbozolmosov.telegrambot.request.media.send.SendPhotoUploadRequest;
-import io.github.shahbozolmosov.telegrambot.request.media.send.SendVideoRequest;
-import io.github.shahbozolmosov.telegrambot.request.media.send.SendVideoUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.media.send.*;
 
 import java.util.Map;
 
@@ -119,6 +116,15 @@ public final class BotContext {
         return new VideoUploadBuilder(
                 client,
                 update().updateId(),
+                message().chatId(),
+                builder
+        );
+    }
+
+    public DocumentBuilder document(SendDocumentRequest.Builder builder) {
+        return new DocumentBuilder(
+                client,
+                update.updateId(),
                 message().chatId(),
                 builder
         );

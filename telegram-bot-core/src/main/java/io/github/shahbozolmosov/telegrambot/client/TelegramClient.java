@@ -164,7 +164,7 @@ public final class TelegramClient {
             String text
     ) {
         return sendMessage(
-                new SendMessageRequest(chatId, text, null)
+                SendMessageRequest.text(chatId, text)
         );
     }
 

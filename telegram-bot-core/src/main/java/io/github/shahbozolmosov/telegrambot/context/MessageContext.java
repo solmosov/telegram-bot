@@ -72,11 +72,7 @@ public final class MessageContext {
 
     public TelegramResponse<Message> sendText(String chatId, String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        text,
-                        replyMarkup
-                )
+                SendMessageRequest.text(chatId, text, replyMarkup)
         );
     }
 
@@ -127,12 +123,7 @@ public final class MessageContext {
 
     public TelegramResponse<Message> sendHtml(String chatId, String html) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        html,
-                        ParseMode.HTML,
-                        null
-                )
+                SendMessageRequest.html(chatId, html)
         );
     }
 
@@ -146,12 +137,7 @@ public final class MessageContext {
 
     public TelegramResponse<Message> sendHtml(String chatId, String html, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        html,
-                        ParseMode.HTML,
-                        replyMarkup
-                )
+                SendMessageRequest.html(chatId, html, replyMarkup)
         );
     }
 
@@ -206,12 +192,7 @@ public final class MessageContext {
 
     public TelegramResponse<Message> sendMarkdown(String chatId, String value) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        value,
-                        ParseMode.MARKDOWN,
-                        null
-                )
+                SendMessageRequest.markdown(chatId, value)
         );
     }
 
@@ -223,14 +204,9 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> sendMarkdown(String chatId, String text, ReplyMarkup replyMarkup) {
+    public TelegramResponse<Message> sendMarkdown(String chatId, String value, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        text,
-                        ParseMode.MARKDOWN,
-                        replyMarkup
-                )
+                SendMessageRequest.markdown(chatId, value, replyMarkup)
         );
     }
 
@@ -283,14 +259,9 @@ public final class MessageContext {
         );
     }
 
-    public TelegramResponse<Message> sendMarkdownV2(String chatId, String text) {
+    public TelegramResponse<Message> sendMarkdownV2(String chatId, String value) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        text,
-                        ParseMode.MARKDOWN_V2,
-                        null
-                )
+                SendMessageRequest.markdownV2(chatId, value)
         );
     }
 
@@ -304,12 +275,7 @@ public final class MessageContext {
 
     public TelegramResponse<Message> sendMarkdownV2(String chatId, String text, ReplyMarkup replyMarkup) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId,
-                        text,
-                        ParseMode.MARKDOWN_V2,
-                        replyMarkup
-                )
+                SendMessageRequest.markdownV2(chatId, text, replyMarkup)
         );
     }
 
@@ -470,12 +436,12 @@ public final class MessageContext {
 
     // --------------------- Remove Reply Keyboard ---------------------
     public TelegramResponse<Message> removeReplyKeyboard(String text) {
+        return this.removeReplyKeyboard(chatId(), text);
+    }
+
+    public TelegramResponse<Message> removeReplyKeyboard(String chatId, String text) {
         return telegramClient.sendMessage(
-                new SendMessageRequest(
-                        chatId(),
-                        text,
-                        ReplyKeyboardMarkup.remove()
-                )
+                SendMessageRequest.removeReplyKeyboard(chatId, text)
         );
     }
 

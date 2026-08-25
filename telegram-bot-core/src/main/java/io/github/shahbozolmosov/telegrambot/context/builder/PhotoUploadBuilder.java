@@ -1,17 +1,22 @@
 package io.github.shahbozolmosov.telegrambot.context.builder;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
+import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.options.LinkPreviewOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PhotoUploadBuilder {
+import java.util.function.Consumer;
+
+public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(PhotoUploadBuilder.class);
-    private final TelegramClient client;
-    private final Long updateId;
+
     private final SendPhotoUploadRequest.Builder reqBuilder;
 
     private String chatId;
@@ -20,16 +25,35 @@ public class PhotoUploadBuilder {
             TelegramClient client,
             Long updateId,
             String chatId,
-            SendPhotoUploadRequest.Builder reqBuilder
+            byte[] file,
+            String fileName,
+            String mimeType
     ) {
-        this.client = client;
-        this.updateId = updateId;
-        this.chatId = chatId;
-        this.reqBuilder = reqBuilder;
+        super(client, updateId);
+
+        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        this.reqBuilder = SendPhotoUploadRequest.builder()
+                .chatId(chatId)
+                .photo(inputFile);
     }
 
     public PhotoUploadBuilder toChat(String chatId) {
-        this.chatId = chatId;
+        reqBuilder.chatId(chatId);
+        return this;
+    }
+
+    public PhotoUploadBuilder options(Consumer<SendPhotoUploadRequest.Builder> consumer){
+        consumer.accept(reqBuilder);
+        return this;
+    }
+
+    public PhotoUploadBuilder keyboard(ReplyMarkup replyMarkup){
+        reqBuilder.replyMarkup(replyMarkup);
+        return this;
+    }
+
+    public PhotoUploadBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+        reqBuilder.linkPreviewOptions(consumer);
         return this;
     }
 

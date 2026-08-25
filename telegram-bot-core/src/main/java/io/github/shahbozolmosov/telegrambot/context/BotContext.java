@@ -92,21 +92,23 @@ public final class BotContext {
         );
     }
 
-    public PhotoBuilder photo(SendPhotoRequest.Builder builder) {
+    public PhotoBuilder photo(String photoUrl) {
         return new PhotoBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                photoUrl
         );
     }
 
-    public PhotoUploadBuilder photo(SendPhotoUploadRequest.Builder builder) {
+    public PhotoUploadBuilder photo(byte[] file, String fileName, String mimeType) {
         return new PhotoUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                file,
+                fileName,
+                mimeType
         );
     }
 

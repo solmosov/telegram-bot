@@ -1,13 +1,12 @@
-package io.github.shahbozolmosov.telegrambot.request.message;
+package io.github.shahbozolmosov.telegrambot.request.message.message_action;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
-import io.github.shahbozolmosov.telegrambot.keyboard.reply.ReplyKeyboardMarkup;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record EditMessageRequest(
+public record EditMessageCaptionRequest(
         @JsonProperty("chat_id")
         String chatId,
 

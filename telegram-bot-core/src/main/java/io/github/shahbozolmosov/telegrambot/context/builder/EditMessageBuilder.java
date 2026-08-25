@@ -5,7 +5,7 @@ import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
-import io.github.shahbozolmosov.telegrambot.request.message.EditMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

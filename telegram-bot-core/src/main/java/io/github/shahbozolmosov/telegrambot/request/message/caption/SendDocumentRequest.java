@@ -1,17 +1,17 @@
-package io.github.shahbozolmosov.telegrambot.request.media.send;
+package io.github.shahbozolmosov.telegrambot.request.message.caption;
+
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
 
-public final class SendDocumentUploadRequest extends SendMediaRequest {
+public final class SendDocumentRequest extends SendMediaRequest {
 
     @JsonProperty("document")
-    private final InputFIle document;
+    private final String document;
 
     @JsonProperty("disable_content_type_detection")
     private final Boolean disableContentTypeDetection;
 
-    SendDocumentUploadRequest(Builder builder) {
+    private SendDocumentRequest(Builder builder) {
         super(builder);
         this.document = builder.document;
         this.disableContentTypeDetection = builder.disableContentTypeDetection;
@@ -22,26 +22,25 @@ public final class SendDocumentUploadRequest extends SendMediaRequest {
     }
 
     public static final class Builder extends SendMediaRequest.Builder<Builder> {
-        private InputFIle document;
+        private String document;
         private Boolean disableContentTypeDetection;
-
 
         private Builder() {
         }
 
-        public Builder document(InputFIle document){
+        public Builder document(String document) {
             this.document = document;
             return this;
         }
 
-        public Builder disableContentTypeDetection(boolean value){
+        public Builder disableContentTypeDetection(boolean value) {
             this.disableContentTypeDetection = value;
             return this;
         }
 
         @Override
-        public SendDocumentUploadRequest build() {
-            return new SendDocumentUploadRequest(this);
+        public SendDocumentRequest build() {
+            return new SendDocumentRequest(this);
         }
     }
 }

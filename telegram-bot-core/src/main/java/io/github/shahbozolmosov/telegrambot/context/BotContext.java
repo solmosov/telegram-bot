@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.telegrambot.context;
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.context.builder.*;
 import io.github.shahbozolmosov.telegrambot.model.Update;
-import io.github.shahbozolmosov.telegrambot.request.media.send.*;
+import io.github.shahbozolmosov.telegrambot.request.message.caption.*;
 
 import java.util.Map;
 

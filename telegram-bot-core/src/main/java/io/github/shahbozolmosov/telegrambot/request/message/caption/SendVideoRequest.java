@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.telegrambot.request.media.send;
+package io.github.shahbozolmosov.telegrambot.request.message.caption;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

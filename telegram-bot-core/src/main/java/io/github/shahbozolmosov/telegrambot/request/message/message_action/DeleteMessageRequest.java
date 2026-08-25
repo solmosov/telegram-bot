@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.telegrambot.request.message;
+package io.github.shahbozolmosov.telegrambot.request.message.message_action;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

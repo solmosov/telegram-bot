@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.telegrambot.context.builder;
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
-import io.github.shahbozolmosov.telegrambot.request.media.send.SendVideoUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.caption.SendVideoUploadRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

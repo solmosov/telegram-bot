@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.telegrambot.context.builder;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
-import io.github.shahbozolmosov.telegrambot.request.message.DeleteMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

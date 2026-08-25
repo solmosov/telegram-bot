@@ -7,13 +7,11 @@ import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientExcep
 import io.github.shahbozolmosov.telegrambot.model.*;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionRequest;
-import io.github.shahbozolmosov.telegrambot.request.media.send.*;
-import io.github.shahbozolmosov.telegrambot.model.*;
-import io.github.shahbozolmosov.telegrambot.request.media.send.*;
-import io.github.shahbozolmosov.telegrambot.request.message.DeleteMessageRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.EditMessageReplyMarkupRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.EditMessageRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.SendMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.*;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -185,7 +183,7 @@ public final class TelegramClient {
             SendMessageRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
@@ -206,10 +204,10 @@ public final class TelegramClient {
 
     // --------------------- Edit Message ---------------------
     public TelegramResponse<Message> editMessage(
-            EditMessageRequest requestBody
+            EditMessageTextRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
 
@@ -330,7 +328,7 @@ public final class TelegramClient {
             SendDocumentRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
@@ -352,7 +350,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendDocument(
             SendDocumentUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
@@ -372,7 +370,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendPhoto(
             SendPhotoRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
@@ -394,7 +392,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendPhoto(
             SendPhotoUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
@@ -417,7 +415,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 
@@ -440,7 +438,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 

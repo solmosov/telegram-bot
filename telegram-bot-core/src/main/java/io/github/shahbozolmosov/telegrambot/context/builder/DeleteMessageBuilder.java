@@ -2,33 +2,30 @@ package io.github.shahbozolmosov.telegrambot.context.builder;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
-import io.github.shahbozolmosov.telegrambot.request.message.DeleteMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DeleteMessageBuilder {
+public class DeleteMessageBuilder extends AbstractMessageBuilder<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(DeleteMessageBuilder.class);
-    private final TelegramClient client;
-    private final Long updateId;
 
-    private String targetChatId;
+    private String chatId;
     private String messageId;
 
     public DeleteMessageBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
+            String defaultChatId,
             String messageId
     ) {
-        this.client = client;
-        this.updateId = updateId;
-        this.targetChatId = chatId;
+        super(client, updateId);
+        this.chatId = defaultChatId;
         this.messageId = messageId;
     }
 
     public DeleteMessageBuilder toChat(String chatId) {
-        this.targetChatId = chatId;
+        this.chatId = chatId;
         return this;
     }
 
@@ -38,10 +35,10 @@ public class DeleteMessageBuilder {
     }
 
     public TelegramResponse<Boolean> send() {
-        log.debug("Send delete message to updateId: {} chatId: {} messageId: {}", updateId == null ? "-" : updateId, targetChatId, messageId);
+        log.debug("Send delete message to updateId: {} chatId: {} messageId: {}", getUpdateId(), chatId, messageId);
 
         DeleteMessageRequest request = new DeleteMessageRequest(
-                targetChatId,
+                chatId,
                 messageId
         );
 

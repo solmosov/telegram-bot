@@ -3,81 +3,59 @@ package io.github.shahbozolmosov.telegrambot.context.builder;
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.Message;
-import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
-import io.github.shahbozolmosov.telegrambot.request.message.EditMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.options.LinkPreviewOptions;
+import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EditMessageBuilder {
+import java.util.function.Consumer;
+
+public class EditMessageBuilder extends AbstractMessageBuilder<Message> {
+
     private final static Logger log = LoggerFactory.getLogger(EditMessageBuilder.class);
 
-    private final TelegramClient client;
-    private final Long updateId;
-    private final String messageId;
-    private final String textContent;
-
-
-    private String targetChatId;
-    private ParseMode parseMode;
-    private ReplyMarkup replyMarkup;
-    private Boolean disableWebPagePreview;
+    private final EditMessageTextRequest.Builder reqBuilder;
 
     public EditMessageBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
-            String messageId,
+            String defaultChatId,
+            String defaultMessageId,
             String textContent
     ) {
-        this.client = client;
-        this.updateId = updateId;
-        this.targetChatId = chatId;
-        this.messageId = messageId;
-        this.textContent = textContent;
+        super(client, updateId);
+        reqBuilder = EditMessageTextRequest.builder()
+                .chatId(defaultChatId)
+                .text(textContent)
+                .messageId(defaultMessageId);
     }
 
-    public EditMessageBuilder toChat(String chatId) {
-        this.targetChatId = chatId;
+    public EditMessageBuilder messageId(String messageId) {
+        reqBuilder.messageId(messageId);
         return this;
     }
 
-    public EditMessageBuilder html() {
-        this.parseMode = ParseMode.HTML;
+    public EditMessageBuilder options(Consumer<EditMessageTextRequest.Builder> consumer) {
+        consumer.accept(reqBuilder);
         return this;
     }
 
-    public EditMessageBuilder markdown() {
-        this.parseMode = ParseMode.MARKDOWN;
+    public EditMessageBuilder keyboard(ReplyMarkup replyMarkup) {
+        reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public EditMessageBuilder markdownV2() {
-        this.parseMode = ParseMode.MARKDOWN_V2;
+    public EditMessageBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
+        reqBuilder.linkPreviewOptions(consumer);
         return this;
     }
 
-    public EditMessageBuilder replyMarkup(ReplyMarkup replyMarkup) {
-        this.replyMarkup = replyMarkup;
-        return this;
-    }
-
-    public EditMessageBuilder disableWebPagePreview(Boolean disable) {
-        this.disableWebPagePreview = disable;
-        return this;
-    }
-
+    @Override
     public TelegramResponse<Message> send() {
-        log.debug("Sending edit message to updateId: {} chatId: {}", updateId == null ? "-" : updateId, targetChatId);
+        EditMessageTextRequest request = reqBuilder.build();
 
-        EditMessageRequest request = new EditMessageRequest(
-                targetChatId,
-                messageId,
-                textContent,
-                parseMode,
-                replyMarkup,
-                disableWebPagePreview
-        );
+        log.debug("Sending edit message to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.editMessage(request);
     }

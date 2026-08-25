@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.telegrambot.client.http;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
@@ -40,7 +40,7 @@ public final class MultipartBodyBuilder {
 
                 String name = resolveName(field);
 
-                if (value instanceof InputFIle file) {
+                if (value instanceof InputFile file) {
                     writeFilePart(out, boundary, name, file);
                 } else {
                     writeTextPart(out, boundary, name, serializeScalarOrJson(value));
@@ -82,7 +82,7 @@ public final class MultipartBodyBuilder {
     }
 
 
-    private void writeFilePart(ByteArrayOutputStream out, String boundary, String name, InputFIle file) throws IOException {
+    private void writeFilePart(ByteArrayOutputStream out, String boundary, String name, InputFile file) throws IOException {
         out.write(("--" + boundary + LINE).getBytes(StandardCharsets.UTF_8));
         out.write(("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + file.getFileName() + "\"" + LINE).getBytes(StandardCharsets.UTF_8));
         out.write(("Content-Type: " + file.getMimeType() + LINE + LINE).getBytes(StandardCharsets.UTF_8));

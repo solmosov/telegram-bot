@@ -6,11 +6,9 @@ import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionReq
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChatActionBuilder {
+public class ChatActionBuilder extends AbstractMessageBuilder<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(ChatActionBuilder.class);
-    private final TelegramClient client;
-    private final Long updateId;
 
     private String chatId;
     private SendChatActionRequest.Action action;
@@ -18,11 +16,10 @@ public class ChatActionBuilder {
     public ChatActionBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId
+            String defaultChatId
             ) {
-        this.client = client;
-        this.updateId = updateId;
-        this.chatId = chatId;
+        super(client, updateId);
+        this.chatId = defaultChatId;
     }
 
     public ChatActionBuilder toChat(String chatId) {
@@ -81,7 +78,7 @@ public class ChatActionBuilder {
     }
 
     public TelegramResponse<Boolean> send() {
-        log.debug("Send chat action to updateId: {} chatId: {}", updateId == null ? "-" : updateId, chatId);
+        log.debug("Send chat action to updateId: {} chatId: {}", getUpdateId(), chatId);
 
         SendChatActionRequest request = new SendChatActionRequest(
                 chatId,

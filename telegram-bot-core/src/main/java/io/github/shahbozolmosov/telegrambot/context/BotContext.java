@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.telegrambot.context;
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.context.builder.*;
 import io.github.shahbozolmosov.telegrambot.model.Update;
-import io.github.shahbozolmosov.telegrambot.request.media.send.*;
+import io.github.shahbozolmosov.telegrambot.request.message.media.*;
 
 import java.util.Map;
 
@@ -73,12 +73,12 @@ public final class BotContext {
         );
     }
 
-    public EditMessageBuilder editMessage(String messageId, String textContent) {
+    public EditMessageBuilder editMessage(String textContent) {
         return new EditMessageBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                messageId,
+                messageId(),
                 textContent
         );
     }
@@ -92,57 +92,63 @@ public final class BotContext {
         );
     }
 
-    public PhotoBuilder photo(SendPhotoRequest.Builder builder) {
+    public PhotoBuilder photo(String photoUrl) {
         return new PhotoBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                photoUrl
         );
     }
 
-    public PhotoUploadBuilder photo(SendPhotoUploadRequest.Builder builder) {
+    public PhotoUploadBuilder photo(byte[] file, String fileName, String mimeType) {
         return new PhotoUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                file,
+                fileName,
+                mimeType
         );
     }
 
-    public VideoBuilder video(SendVideoRequest.Builder builder) {
+    public VideoBuilder video(String videoUrl) {
         return new VideoBuilder(
                 client,
                 update().updateId(),
                 message().chatId(),
-                builder
+                videoUrl
         );
     }
 
-    public VideoUploadBuilder video(SendVideoUploadRequest.Builder builder) {
+    public VideoUploadBuilder video(byte[] file, String fileName, String mimeType) {
         return new VideoUploadBuilder(
                 client,
                 update().updateId(),
                 message().chatId(),
-                builder
+                file,
+                fileName,
+                mimeType
         );
     }
 
-    public DocumentBuilder document(SendDocumentRequest.Builder builder) {
+    public DocumentBuilder document(String documentUrl) {
         return new DocumentBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                documentUrl
         );
     }
 
-    public DocumentUploadBuilder document(SendDocumentUploadRequest.Builder builder) {
+    public DocumentUploadBuilder document(byte[] file, String fileName, String mimeType) {
         return new DocumentUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                file,
+                fileName,
+                mimeType
         );
     }
 

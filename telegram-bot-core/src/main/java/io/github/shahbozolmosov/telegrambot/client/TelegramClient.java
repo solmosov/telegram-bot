@@ -182,7 +182,7 @@ public final class TelegramClient {
             SendMessageRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 

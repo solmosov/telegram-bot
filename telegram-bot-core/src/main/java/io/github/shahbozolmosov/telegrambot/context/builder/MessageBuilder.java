@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
-public class MessageBuilder extends AbstractMessageBuilder<MessageBuilder, Message> {
+public class MessageBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(MessageBuilder.class);
 
@@ -31,6 +31,11 @@ public class MessageBuilder extends AbstractMessageBuilder<MessageBuilder, Messa
         this.reqBuilder = SendMessageRequest.builder()
                 .chatId(defaultChatId)
                 .text(textContent);
+    }
+
+    public MessageBuilder toChat(String chatId){
+        reqBuilder.chatId(chatId);
+        return this;
     }
 
     public MessageBuilder options(Consumer<SendMessageRequest.Builder> consumer){

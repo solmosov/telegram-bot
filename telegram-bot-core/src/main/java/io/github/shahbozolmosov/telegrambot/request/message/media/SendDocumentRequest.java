@@ -21,7 +21,7 @@ public final class SendDocumentRequest extends MediaRequest {
         return new Builder();
     }
 
-    public static final class Builder extends MediaRequest.Builder<Builder> {
+    public static class Builder extends MediaRequest.Builder<Builder> {
         private String document;
         private Boolean disableContentTypeDetection;
 

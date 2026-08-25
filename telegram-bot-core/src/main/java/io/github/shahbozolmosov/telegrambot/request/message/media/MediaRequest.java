@@ -1,10 +1,12 @@
 package io.github.shahbozolmosov.telegrambot.request.message.media;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 import io.github.shahbozolmosov.telegrambot.request.message.AbstractRequest;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 abstract class MediaRequest extends AbstractRequest {
 
     @JsonProperty("caption")
@@ -23,16 +25,17 @@ abstract class MediaRequest extends AbstractRequest {
         this.replyMarkup = builder.replyMarkup;
     }
 
-    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<Builder<T>>{
+    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<T> {
         private String caption;
         private ParseMode parseMode;
         private ReplyMarkup replyMarkup;
 
-        public T self(){
+        @SuppressWarnings("unchecked")
+        public T self() {
             return (T) this;
         }
 
-        public T caption(String caption){
+        public T caption(String caption) {
             this.caption = caption;
             return self();
         }

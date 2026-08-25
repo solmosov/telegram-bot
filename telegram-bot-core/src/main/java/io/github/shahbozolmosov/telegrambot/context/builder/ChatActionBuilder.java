@@ -6,7 +6,7 @@ import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionReq
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChatActionBuilder extends AbstractMessageBuilder<ChatActionBuilder, Boolean> {
+public class ChatActionBuilder extends AbstractMessageBuilder<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(ChatActionBuilder.class);
 

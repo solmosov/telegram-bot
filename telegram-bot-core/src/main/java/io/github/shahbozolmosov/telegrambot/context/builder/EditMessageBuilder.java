@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
-public class EditMessageBuilder extends AbstractMessageBuilder<EditMessageBuilder, Message> {
+public class EditMessageBuilder extends AbstractMessageBuilder<Message> {
 
     private final static Logger log = LoggerFactory.getLogger(EditMessageBuilder.class);
 

@@ -128,12 +128,12 @@ public final class BotContext {
         );
     }
 
-    public DocumentBuilder document(SendDocumentRequest.Builder builder) {
+    public DocumentBuilder document(String documentUrl) {
         return new DocumentBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                documentUrl
         );
     }
 

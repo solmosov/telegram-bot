@@ -3,30 +3,28 @@ package io.github.shahbozolmosov.telegrambot.context.builder;
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
+import io.github.shahbozolmosov.telegrambot.request.message.AbstractRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentUploadRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DocumentUploadBuilder {
+public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentUploadBuilder.class);
-    private final TelegramClient client;
-    private final Long updateId;
-    private final SendDocumentUploadRequest.Builder reqBuilder;
 
-    private String chatId;
+    private final SendDocumentUploadRequest.Builder reqBuilder;
 
 
     public DocumentUploadBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
-            SendDocumentUploadRequest.Builder reqBuilder
+            String defaultChatId
     ) {
-        this.client = client;
-        this.updateId = updateId;
-        this.chatId = chatId;
-        this.reqBuilder = reqBuilder;
+        super(client, updateId);
+
+        this.reqBuilder = SendDocumentUploadRequest.builder()
+                .chatId(defaultChatId);
     }
 
     public DocumentUploadBuilder toChat(String chatId) {

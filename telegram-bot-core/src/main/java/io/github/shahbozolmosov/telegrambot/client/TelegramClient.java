@@ -10,6 +10,7 @@ import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionReq
 import io.github.shahbozolmosov.telegrambot.request.message.caption.*;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
@@ -203,10 +204,10 @@ public final class TelegramClient {
 
     // --------------------- Edit Message ---------------------
     public TelegramResponse<Message> editMessage(
-            EditMessageRequest requestBody
+            EditMessageTextRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
 

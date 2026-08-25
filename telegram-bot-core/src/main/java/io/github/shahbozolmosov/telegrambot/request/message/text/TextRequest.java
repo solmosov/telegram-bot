@@ -25,7 +25,7 @@ abstract class TextRequest extends AbstractRequest {
         this.replyMarkup = builder.replyMarkup;
     }
 
-    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<Builder<T>> {
+    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<T> {
         private String text;
         private ParseMode parseMode;
         private ReplyMarkup replyMarkup;

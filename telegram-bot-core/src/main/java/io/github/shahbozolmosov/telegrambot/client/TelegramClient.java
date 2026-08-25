@@ -328,7 +328,7 @@ public final class TelegramClient {
             SendDocumentRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
@@ -350,7 +350,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendDocument(
             SendDocumentUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
@@ -370,7 +370,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendPhoto(
             SendPhotoRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
@@ -392,7 +392,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendPhoto(
             SendPhotoUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
@@ -415,7 +415,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 
@@ -438,7 +438,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 

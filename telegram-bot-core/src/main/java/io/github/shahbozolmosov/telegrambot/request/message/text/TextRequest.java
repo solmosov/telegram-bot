@@ -1,10 +1,12 @@
 package io.github.shahbozolmosov.telegrambot.request.message.text;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 import io.github.shahbozolmosov.telegrambot.request.message.AbstractRequest;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 abstract class TextRequest extends AbstractRequest {
     @JsonProperty("text")
     final String text;

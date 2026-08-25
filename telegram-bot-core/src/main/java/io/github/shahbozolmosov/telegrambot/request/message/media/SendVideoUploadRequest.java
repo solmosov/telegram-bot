@@ -1,12 +1,12 @@
 package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 
 public final class SendVideoUploadRequest extends MediaRequest {
 
     @JsonProperty("video")
-    private final InputFIle video;
+    private final InputFile video;
 
     @JsonProperty("duration")
     private final Integer duration;
@@ -39,7 +39,7 @@ public final class SendVideoUploadRequest extends MediaRequest {
 
     public static final class Builder extends MediaRequest.Builder<Builder> {
 
-        private InputFIle video;
+        private InputFile video;
         private Integer duration;
         private Integer width;
         private Integer height;
@@ -49,7 +49,7 @@ public final class SendVideoUploadRequest extends MediaRequest {
         private Builder() {
         }
 
-        public Builder video(InputFIle file) {
+        public Builder video(InputFile file) {
             this.video = file;
             return this;
         }

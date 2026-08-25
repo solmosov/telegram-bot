@@ -1,12 +1,12 @@
 package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 
 public final class SendDocumentUploadRequest extends MediaRequest {
 
     @JsonProperty("document")
-    private final InputFIle document;
+    private final InputFile document;
 
     @JsonProperty("disable_content_type_detection")
     private final Boolean disableContentTypeDetection;
@@ -22,14 +22,14 @@ public final class SendDocumentUploadRequest extends MediaRequest {
     }
 
     public static final class Builder extends MediaRequest.Builder<Builder> {
-        private InputFIle document;
+        private InputFile document;
         private Boolean disableContentTypeDetection;
 
 
         private Builder() {
         }
 
-        public Builder document(InputFIle document){
+        public Builder document(InputFile document){
             this.document = document;
             return this;
         }

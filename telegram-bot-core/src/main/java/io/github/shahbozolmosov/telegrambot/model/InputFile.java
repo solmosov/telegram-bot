@@ -1,16 +1,16 @@
 package io.github.shahbozolmosov.telegrambot.model;
 
-public final class InputFIle {
+public final class InputFile {
 
     private final byte[] data;
     private final String fileName;
     private final String mimeType;
 
-    public InputFIle(byte[] data, String fileName) {
+    public InputFile(byte[] data, String fileName) {
         this(data, fileName, "application/octet-stream");
     }
 
-    public InputFIle(byte[] data, String fileName, String mimeType) {
+    public InputFile(byte[] data, String fileName, String mimeType) {
         this.data = data;
         this.fileName = fileName;
         this.mimeType = mimeType;

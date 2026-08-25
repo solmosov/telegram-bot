@@ -1,6 +1,6 @@
 package io.github.shahbozolmosov.telegrambot.media;
 
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentUploadRequest;
 
@@ -14,12 +14,12 @@ public final class Document {
     }
 
     public static SendDocumentUploadRequest.Builder file(byte[] file, String name){
-        var inputFile = new InputFIle(file, name);
+        var inputFile = new InputFile(file, name);
         return SendDocumentUploadRequest.builder().document(inputFile);
     }
 
     public static SendDocumentUploadRequest.Builder file(byte[] file, String name, String mimeType){
-        var inputFile = new InputFIle(file, name, mimeType);
+        var inputFile = new InputFile(file, name, mimeType);
         return SendDocumentUploadRequest.builder().document(inputFile);
     }
 }

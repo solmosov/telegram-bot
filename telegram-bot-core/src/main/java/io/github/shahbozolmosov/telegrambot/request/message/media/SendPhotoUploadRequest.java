@@ -1,12 +1,12 @@
 package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 
 public class SendPhotoUploadRequest extends MediaRequest {
 
     @JsonProperty("photo")
-    private final InputFIle photo;
+    private final InputFile photo;
 
     @JsonProperty("has_spoiler")
     private final Boolean hasSpoiler;
@@ -26,14 +26,14 @@ public class SendPhotoUploadRequest extends MediaRequest {
     }
 
     public static class Builder extends MediaRequest.Builder<Builder> {
-        private InputFIle photo;
+        private InputFile photo;
         private Boolean hasSpoiler;
         private Boolean showCaptionAboveMedia;
 
         private Builder() {
         }
 
-        public Builder photo(InputFIle photo) {
+        public Builder photo(InputFile photo) {
             this.photo = photo;
             return this;
         }

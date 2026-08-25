@@ -1,6 +1,6 @@
 package io.github.shahbozolmosov.telegrambot.media;
 
-import io.github.shahbozolmosov.telegrambot.model.InputFIle;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoUploadRequest;
 
@@ -15,13 +15,13 @@ public final class Photo {
     }
 
     public static SendPhotoUploadRequest.Builder file(byte[] photo, String name) {
-        InputFIle inputFIle = new InputFIle(photo, name);
+        InputFile inputFIle = new InputFile(photo, name);
         return SendPhotoUploadRequest.builder()
                 .photo(inputFIle);
     }
 
     public static SendPhotoUploadRequest.Builder file(byte[] photo, String name, String mimeType) {
-        InputFIle inputFIle = new InputFIle(photo, name, mimeType);
+        InputFile inputFIle = new InputFile(photo, name, mimeType);
         return SendPhotoUploadRequest.builder()
                 .photo(inputFIle);
     }

@@ -20,15 +20,23 @@ public record SendMessageRequest(
         ReplyMarkup replyMarkup,
 
         @JsonProperty("disable_web_page_preview")
-        Boolean disableWebPagePreview
+        Boolean disableWebPagePreview,
+
+        @JsonProperty("protect_content")
+        Boolean protectContent,
+
+        @JsonProperty("disable_notification")
+        Boolean disableNotification
 ) {
     /*------------------------------- Remove Keyboard --------------------------------------------*/
-    public static SendMessageRequest removeReplyKeyboard(String chatId, String text){
+    public static SendMessageRequest removeReplyKeyboard(String chatId, String text) {
         return new SendMessageRequest(
                 chatId,
                 text,
                 null,
                 ReplyKeyboardMarkup.remove(),
+                null,
+                null,
                 null
         );
     }

@@ -56,6 +56,13 @@ public final class BotContext {
         return message().messageId();
     }
 
+    public ChatActionBuilder chatAction() {
+        return new ChatActionBuilder(
+                client,
+                update.updateId(),
+                message().chatId()
+        );
+    }
 
     public MessageBuilder reply(String textContext) {
         return new MessageBuilder(

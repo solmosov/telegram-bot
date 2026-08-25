@@ -21,6 +21,8 @@ public class MessageBuilder {
     private ParseMode parseMode;
     private ReplyMarkup replyMarkup;
     private Boolean disableWebPagePreview;
+    private Boolean protectContent;
+    private Boolean disableNotification;
 
     public MessageBuilder(
             TelegramClient client,
@@ -64,6 +66,16 @@ public class MessageBuilder {
         return this;
     }
 
+    public MessageBuilder protectContent(Boolean value){
+        this.protectContent = value;
+        return this;
+    }
+
+    public MessageBuilder disableNotification(Boolean value){
+        this.disableNotification = value;
+        return this;
+    }
+
     public TelegramResponse<Message> send() {
         log.debug("Sending message to updateId: {} chatId: {}", updateId == null ? "-" : updateId, targetChatId);
 
@@ -72,7 +84,9 @@ public class MessageBuilder {
                 textContent,
                 parseMode,
                 replyMarkup,
-                disableWebPagePreview
+                disableWebPagePreview,
+                protectContent,
+                disableNotification
         );
 
         return client.sendMessage(request);

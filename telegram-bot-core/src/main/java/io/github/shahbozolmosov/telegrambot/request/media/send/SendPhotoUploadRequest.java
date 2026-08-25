@@ -11,10 +11,14 @@ public class SendPhotoUploadRequest extends SendMediaRequest {
     @JsonProperty("has_spoiler")
     private final Boolean hasSpoiler;
 
+    @JsonProperty("show_caption_above_media")
+    private final Boolean showCaptionAboveMedia;
+
     private SendPhotoUploadRequest(Builder builder) {
         super(builder);
         this.photo = builder.photo;
         this.hasSpoiler = builder.hasSpoiler;
+        this.showCaptionAboveMedia = builder.showCaptionAboveMedia;
     }
 
     public static Builder builder() {
@@ -24,6 +28,7 @@ public class SendPhotoUploadRequest extends SendMediaRequest {
     public static class Builder extends SendMediaRequest.Builder<Builder> {
         private InputFIle photo;
         private Boolean hasSpoiler;
+        private Boolean showCaptionAboveMedia;
 
         private Builder() {
         }
@@ -33,8 +38,13 @@ public class SendPhotoUploadRequest extends SendMediaRequest {
             return this;
         }
 
-        public Builder hasSpoiler(boolean hasSpoiler) {
-            this.hasSpoiler = hasSpoiler;
+        public Builder hasSpoiler(boolean value) {
+            this.hasSpoiler = value;
+            return this;
+        }
+
+        public Builder showCaptionAboveMedia(boolean value) {
+            this.showCaptionAboveMedia = value;
             return this;
         }
 

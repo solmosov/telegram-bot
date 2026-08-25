@@ -22,12 +22,12 @@ public class PhotoBuilder extends AbstractMessageBuilder<Message> {
     public PhotoBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
+            String defaultChatId,
             String photoUrl
     ) {
         super(client, updateId);
         this.reqBuilder = SendPhotoRequest.builder()
-                .chatId(chatId)
+                .chatId(defaultChatId)
                 .photo(photoUrl);
     }
 

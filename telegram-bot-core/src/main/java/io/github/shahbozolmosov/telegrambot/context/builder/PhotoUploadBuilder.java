@@ -19,12 +19,11 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
 
     private final SendPhotoUploadRequest.Builder reqBuilder;
 
-    private String chatId;
 
     public PhotoUploadBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
+            String defaultChatId,
             byte[] file,
             String fileName,
             String mimeType
@@ -33,7 +32,7 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
 
         InputFile inputFile = new InputFile(file, fileName, mimeType);
         this.reqBuilder = SendPhotoUploadRequest.builder()
-                .chatId(chatId)
+                .chatId(defaultChatId)
                 .photo(inputFile);
     }
 
@@ -59,12 +58,9 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
 
 
     public TelegramResponse<Message> send() {
-        log.debug("Send upload photo to updateId: {} chatId: {}", updateId == null ? "-" : updateId, chatId);
+        SendPhotoUploadRequest request = reqBuilder.build();
 
-        SendPhotoUploadRequest request = reqBuilder
-                .chatId(chatId)
-                .build();
-
+        log.debug("Send upload photo to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendPhoto(request);
     }

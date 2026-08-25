@@ -7,7 +7,7 @@ import io.github.shahbozolmosov.telegrambot.request.message.options.LinkPreviewO
 import java.util.function.Consumer;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractRequest {
+public abstract class AbstractMessageRequest {
 
     @JsonProperty("chat_id")
     protected final String chatId;
@@ -24,7 +24,7 @@ public abstract class AbstractRequest {
     @JsonProperty("link_preview_options")
     protected final LinkPreviewOptions linkPreviewOptions;
 
-    public AbstractRequest(Builder<?> builder) {
+    public AbstractMessageRequest(Builder<?> builder) {
         this.chatId = builder.chatId;
         this.allowPaidBroadcast = builder.allowPaidBroadcast;
         this.protectContent = builder.protectContent;
@@ -94,6 +94,6 @@ public abstract class AbstractRequest {
             return self();
         }
 
-        public abstract AbstractRequest build();
+        public abstract AbstractMessageRequest build();
     }
 }

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
-import io.github.shahbozolmosov.telegrambot.request.message.AbstractRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.AbstractMessageRequest;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-abstract class TextRequest extends AbstractRequest {
+abstract class TextRequest extends AbstractMessageRequest {
     @JsonProperty("text")
     final String text;
 
@@ -25,7 +25,7 @@ abstract class TextRequest extends AbstractRequest {
         this.replyMarkup = builder.replyMarkup;
     }
 
-    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<T> {
+    public abstract static class Builder<T extends Builder<T>> extends AbstractMessageRequest.Builder<T> {
         private String text;
         private ParseMode parseMode;
         private ReplyMarkup replyMarkup;

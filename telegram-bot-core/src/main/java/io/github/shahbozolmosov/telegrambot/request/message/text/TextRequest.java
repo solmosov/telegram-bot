@@ -7,16 +7,57 @@ import io.github.shahbozolmosov.telegrambot.request.message.AbstractRequest;
 
 abstract class TextRequest extends AbstractRequest {
     @JsonProperty("text")
-    private String text;
+    final String text;
 
     @JsonProperty("parse_mode")
-    private ParseMode parseMode;
+    final ParseMode parseMode;
 
     @JsonProperty("reply_markup")
-    private ReplyMarkup replyMarkup;
+    final ReplyMarkup replyMarkup;
 
 
-    public TextRequest(String chatId, Boolean allowPaidBroadcast, Boolean protectContent, Boolean disableNotification) {
-        super(chatId, allowPaidBroadcast, protectContent, disableNotification);
+    public TextRequest(Builder<?> builder) {
+        super(builder);
+        this.text = builder.text;
+        this.parseMode = builder.parseMode;
+        this.replyMarkup = builder.replyMarkup;
+    }
+
+    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<Builder<T>> {
+        private String text;
+        private ParseMode parseMode;
+        private ReplyMarkup replyMarkup;
+
+        @SuppressWarnings("unchecked")
+        protected T self() {
+            return (T) this;
+        }
+
+        public T text(String text) {
+            this.text = text;
+            return self();
+        }
+
+        public T html() {
+            this.parseMode = ParseMode.HTML;
+            return self();
+        }
+
+        public T markdown() {
+            this.parseMode = ParseMode.MARKDOWN;
+            return self();
+        }
+
+        public T markdownV2() {
+            this.parseMode = ParseMode.MARKDOWN_V2;
+            return self();
+        }
+
+        public T replyMarkup(ReplyMarkup replyMarkup) {
+            this.replyMarkup = replyMarkup;
+            return self();
+        }
+
+        public abstract TextRequest build();
     }
 }

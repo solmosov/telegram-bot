@@ -2,35 +2,34 @@ package io.github.shahbozolmosov.telegrambot.request.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.shahbozolmosov.telegrambot.request.message.options.LinkPreviewOptions;
+
+import java.util.function.Consumer;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractRequest {
 
     @JsonProperty("chat_id")
-    String chatId;
+    protected final String chatId;
 
     @JsonProperty("allow_paid_broadcast")
-    Boolean allowPaidBroadcast;
+    protected final Boolean allowPaidBroadcast;
 
     @JsonProperty("protect_content")
-    Boolean protectContent;
+    protected final Boolean protectContent;
 
     @JsonProperty("disable_notification")
-    Boolean disableNotification;
+    protected final Boolean disableNotification;
 
     @JsonProperty("link_preview_options")
-    LinkPreviewOptions linkPreviewOptions;
+    protected final LinkPreviewOptions linkPreviewOptions;
 
-    public AbstractRequest(
-            String chatId,
-            Boolean allowPaidBroadcast,
-            Boolean protectContent,
-            Boolean disableNotification
-    ) {
-        this.chatId = chatId;
-        this.allowPaidBroadcast = allowPaidBroadcast;
-        this.protectContent = protectContent;
-        this.disableNotification = disableNotification;
+    public AbstractRequest(Builder<?> builder) {
+        this.chatId = builder.chatId;
+        this.allowPaidBroadcast = builder.allowPaidBroadcast;
+        this.protectContent = builder.protectContent;
+        this.disableNotification = builder.disableNotification;
+        this.linkPreviewOptions = builder.linkPreviewOptions;
     }
 
     public String getChatId() {
@@ -49,56 +48,52 @@ public abstract class AbstractRequest {
         return disableNotification;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class LinkPreviewOptions {
+    public LinkPreviewOptions getLinkPreviewOptions() {
+        return linkPreviewOptions;
+    }
 
-        @JsonProperty("is_disabled")
-        Boolean isDisabled;
+    public abstract static class Builder<T extends Builder<T>> {
+        private String chatId;
+        private Boolean allowPaidBroadcast;
+        private Boolean protectContent;
+        private Boolean disableNotification;
+        private LinkPreviewOptions linkPreviewOptions;
 
-        @JsonProperty("url")
-        String url;
-
-        @JsonProperty("prefer_small_media")
-        Boolean preferSmallMedia;
-
-        @JsonProperty("prefer_large_media")
-        Boolean preferLargeMedia;
-
-        @JsonProperty("show_above_text")
-        Boolean showAboveText;
-
-        public LinkPreviewOptions(
-                Boolean isDisabled,
-                String url,
-                Boolean preferSmallMedia,
-                Boolean preferLargeMedia,
-                Boolean showAboveText
-        ) {
-            this.isDisabled = isDisabled;
-            this.url = url;
-            this.preferSmallMedia = preferSmallMedia;
-            this.preferLargeMedia = preferLargeMedia;
-            this.showAboveText = showAboveText;
+        @SuppressWarnings("unchecked")
+        protected T self() {
+            return (T) this;
         }
 
-        public Boolean getIsDisabled() {
-            return isDisabled;
+        public T chatId(String chatId) {
+            this.chatId = chatId;
+            return self();
         }
 
-        public String getUrl() {
-            return url;
+        public T allowPAidBroadcast(Boolean value) {
+            this.allowPaidBroadcast = value;
+            return self();
         }
 
-        public Boolean getPreferSmallMedia() {
-            return preferSmallMedia;
+        public T protectContent(Boolean value) {
+            this.protectContent = value;
+            return self();
         }
 
-        public Boolean getPreferLargeMedia() {
-            return preferLargeMedia;
+        public T disableNotification(Boolean value) {
+            this.disableNotification = value;
+            return self();
         }
 
-        public Boolean getShowAboveText() {
-            return showAboveText;
+        public T linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
+            LinkPreviewOptions.Builder builder = LinkPreviewOptions.builder();
+
+            consumer.accept(builder);
+
+            this.linkPreviewOptions = builder.build();
+
+            return self();
         }
+
+        public abstract AbstractRequest build();
     }
 }

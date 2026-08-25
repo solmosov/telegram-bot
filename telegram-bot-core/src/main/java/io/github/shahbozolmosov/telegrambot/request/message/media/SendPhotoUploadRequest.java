@@ -1,11 +1,12 @@
-package io.github.shahbozolmosov.telegrambot.request.message.caption;
+package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.shahbozolmosov.telegrambot.model.InputFIle;
 
-public final class SendPhotoRequest extends SendMediaRequest {
+public class SendPhotoUploadRequest extends SendMediaRequest {
 
     @JsonProperty("photo")
-    private final String photo;
+    private final InputFIle photo;
 
     @JsonProperty("has_spoiler")
     private final Boolean hasSpoiler;
@@ -13,7 +14,7 @@ public final class SendPhotoRequest extends SendMediaRequest {
     @JsonProperty("show_caption_above_media")
     private final Boolean showCaptionAboveMedia;
 
-    private SendPhotoRequest(Builder builder) {
+    private SendPhotoUploadRequest(Builder builder) {
         super(builder);
         this.photo = builder.photo;
         this.hasSpoiler = builder.hasSpoiler;
@@ -24,17 +25,15 @@ public final class SendPhotoRequest extends SendMediaRequest {
         return new Builder();
     }
 
-    public static final class Builder extends SendMediaRequest.Builder<Builder> {
-
-        private String photo;
+    public static class Builder extends SendMediaRequest.Builder<Builder> {
+        private InputFIle photo;
         private Boolean hasSpoiler;
         private Boolean showCaptionAboveMedia;
-
 
         private Builder() {
         }
 
-        public Builder photo(String photo) {
+        public Builder photo(InputFIle photo) {
             this.photo = photo;
             return this;
         }
@@ -50,8 +49,8 @@ public final class SendPhotoRequest extends SendMediaRequest {
         }
 
         @Override
-        public SendPhotoRequest build() {
-            return new SendPhotoRequest(this);
+        public SendPhotoUploadRequest build() {
+            return new SendPhotoUploadRequest(this);
         }
     }
 }

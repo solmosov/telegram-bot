@@ -1,8 +1,8 @@
 package io.github.shahbozolmosov.telegrambot.media;
 
 import io.github.shahbozolmosov.telegrambot.model.InputFIle;
-import io.github.shahbozolmosov.telegrambot.request.message.caption.SendPhotoRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.caption.SendPhotoUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoUploadRequest;
 
 public final class Photo {
 

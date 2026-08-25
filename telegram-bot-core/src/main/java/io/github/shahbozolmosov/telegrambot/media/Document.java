@@ -1,8 +1,8 @@
 package io.github.shahbozolmosov.telegrambot.media;
 
 import io.github.shahbozolmosov.telegrambot.model.InputFIle;
-import io.github.shahbozolmosov.telegrambot.request.message.caption.SendDocumentRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.caption.SendDocumentUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentUploadRequest;
 
 public final class Document {
 

@@ -1,15 +1,14 @@
-package io.github.shahbozolmosov.telegrambot.request.message.text;
+package io.github.shahbozolmosov.telegrambot.request.message.media;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 import io.github.shahbozolmosov.telegrambot.request.message.AbstractRequest;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-abstract class TextRequest extends AbstractRequest {
-    @JsonProperty("text")
-    final String text;
+abstract class MediaRequest extends AbstractRequest {
+
+    @JsonProperty("caption")
+    final String caption;
 
     @JsonProperty("parse_mode")
     final ParseMode parseMode;
@@ -17,26 +16,24 @@ abstract class TextRequest extends AbstractRequest {
     @JsonProperty("reply_markup")
     final ReplyMarkup replyMarkup;
 
-
-    public TextRequest(Builder<?> builder) {
+    public MediaRequest(Builder<?> builder) {
         super(builder);
-        this.text = builder.text;
+        this.caption = builder.caption;
         this.parseMode = builder.parseMode;
         this.replyMarkup = builder.replyMarkup;
     }
 
-    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<Builder<T>> {
-        private String text;
+    public abstract static class Builder<T extends Builder<T>> extends AbstractRequest.Builder<Builder<T>>{
+        private String caption;
         private ParseMode parseMode;
         private ReplyMarkup replyMarkup;
 
-        @SuppressWarnings("unchecked")
-        protected T self() {
+        public T self(){
             return (T) this;
         }
 
-        public T text(String text) {
-            this.text = text;
+        public T caption(String caption){
+            this.caption = caption;
             return self();
         }
 
@@ -60,6 +57,6 @@ abstract class TextRequest extends AbstractRequest {
             return self();
         }
 
-        public abstract TextRequest build();
+        public abstract MediaRequest build();
     }
 }

@@ -1,11 +1,12 @@
-package io.github.shahbozolmosov.telegrambot.request.message.caption;
+package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.shahbozolmosov.telegrambot.model.InputFIle;
 
-public final class SendVideoRequest extends SendMediaRequest {
+public final class SendVideoUploadRequest extends SendMediaRequest {
 
     @JsonProperty("video")
-    private final String video;
+    private final InputFIle video;
 
     @JsonProperty("duration")
     private final Integer duration;
@@ -22,7 +23,7 @@ public final class SendVideoRequest extends SendMediaRequest {
     @JsonProperty("show_caption_above_media")
     private final boolean showCaptionAboveMedia;
 
-    private SendVideoRequest(Builder builder) {
+    private SendVideoUploadRequest(Builder builder) {
         super(builder);
         this.video = builder.video;
         this.duration = builder.duration;
@@ -38,7 +39,7 @@ public final class SendVideoRequest extends SendMediaRequest {
 
     public static final class Builder extends SendMediaRequest.Builder<Builder> {
 
-        private String video;
+        private InputFIle video;
         private Integer duration;
         private Integer width;
         private Integer height;
@@ -48,8 +49,8 @@ public final class SendVideoRequest extends SendMediaRequest {
         private Builder() {
         }
 
-        public Builder video(String url) {
-            this.video = url;
+        public Builder video(InputFIle file) {
+            this.video = file;
             return this;
         }
 
@@ -79,8 +80,8 @@ public final class SendVideoRequest extends SendMediaRequest {
         }
 
         @Override
-        public SendVideoRequest build() {
-            return new SendVideoRequest(this);
+        public SendVideoUploadRequest build() {
+            return new SendVideoUploadRequest(this);
         }
     }
 }

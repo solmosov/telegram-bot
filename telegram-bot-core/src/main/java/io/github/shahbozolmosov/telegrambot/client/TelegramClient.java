@@ -7,7 +7,7 @@ import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientExcep
 import io.github.shahbozolmosov.telegrambot.model.*;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.caption.*;
+import io.github.shahbozolmosov.telegrambot.request.message.media.*;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;

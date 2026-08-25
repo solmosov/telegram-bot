@@ -5,7 +5,7 @@ import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 
-public abstract class AbstractMessageBuilder<T extends AbstractMessageBuilder<T, R>, R> {
+public abstract class AbstractMessageBuilder<R> {
     protected final TelegramClient client;
     private final Long updateId;
 

@@ -1,44 +1,60 @@
 package io.github.shahbozolmosov.telegrambot.context.builder;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
+import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendVideoRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendVideoUploadRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VideoUploadBuilder {
+import java.util.function.Consumer;
+
+public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(VideoUploadBuilder.class);
-    private final TelegramClient client;
-    private final Long updateId;
-    private final SendVideoUploadRequest.Builder reqBuilder;
 
-    private String chatId;
+    private final SendVideoUploadRequest.Builder reqBuilder;
 
     public VideoUploadBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
-            SendVideoUploadRequest.Builder reqBuilder
+            String defaultChatId,
+            byte[] file,
+            String fileName,
+            String mimeType
     ) {
-        this.client = client;
-        this.updateId = updateId;
-        this.chatId = chatId;
-        this.reqBuilder = reqBuilder;
+        super(client, updateId);
+
+        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        this.reqBuilder = SendVideoUploadRequest.builder()
+                .chatId(defaultChatId)
+                .video(inputFile);
     }
 
     public VideoUploadBuilder toChat(String chatId) {
-        this.chatId = chatId;
+        reqBuilder.chatId(chatId);
+        return this;
+    }
+
+    public VideoUploadBuilder options(Consumer<SendVideoUploadRequest.Builder> consumer){
+        consumer.accept(reqBuilder);
+        return this;
+    }
+
+    public VideoUploadBuilder keyboard(ReplyMarkup replyMarkup){
+        reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
     public TelegramResponse<Message> send() {
-        log.debug("Send upload video to updateId: {} chatId: {}", updateId == null ? "-" : updateId, chatId);
 
-        SendVideoUploadRequest request = reqBuilder
-                .chatId(chatId)
-                .build();
+        SendVideoUploadRequest request = reqBuilder.build();
+
+        log.debug("Send upload video to updateId: {} chatId: {}",getUpdateId(), request.getChatId());
 
         return client.sendVideo(request);
     }

@@ -112,21 +112,23 @@ public final class BotContext {
         );
     }
 
-    public VideoBuilder video(SendVideoRequest.Builder builder) {
+    public VideoBuilder video(String videoUrl) {
         return new VideoBuilder(
                 client,
                 update().updateId(),
                 message().chatId(),
-                builder
+                videoUrl
         );
     }
 
-    public VideoUploadBuilder video(SendVideoUploadRequest.Builder builder) {
+    public VideoUploadBuilder video(byte[] file, String fileName, String mimeType) {
         return new VideoUploadBuilder(
                 client,
                 update().updateId(),
                 message().chatId(),
-                builder
+                file,
+                fileName,
+                mimeType
         );
     }
 

@@ -24,6 +24,9 @@ public abstract class AbstractRequest {
     @JsonProperty("link_preview_options")
     protected final LinkPreviewOptions linkPreviewOptions;
 
+    @JsonProperty("reply_parameters")
+
+
     public AbstractRequest(Builder<?> builder) {
         this.chatId = builder.chatId;
         this.allowPaidBroadcast = builder.allowPaidBroadcast;

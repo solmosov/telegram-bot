@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class SendVideoRequest extends SendMediaRequest {
+public final class SendVideoRequest extends MediaRequest {
 
     @JsonProperty("video")
     private final String video;
@@ -36,7 +36,7 @@ public final class SendVideoRequest extends SendMediaRequest {
         return new Builder();
     }
 
-    public static final class Builder extends SendMediaRequest.Builder<Builder> {
+    public static final class Builder extends MediaRequest.Builder<Builder> {
 
         private String video;
         private Integer duration;

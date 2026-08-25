@@ -2,7 +2,7 @@ package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class SendPhotoRequest extends SendMediaRequest {
+public final class SendPhotoRequest extends MediaRequest {
 
     @JsonProperty("photo")
     private final String photo;
@@ -24,7 +24,7 @@ public final class SendPhotoRequest extends SendMediaRequest {
         return new Builder();
     }
 
-    public static final class Builder extends SendMediaRequest.Builder<Builder> {
+    public static final class Builder extends MediaRequest.Builder<Builder> {
 
         private String photo;
         private Boolean hasSpoiler;

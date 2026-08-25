@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.telegrambot.request.message.media;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class SendDocumentRequest extends SendMediaRequest {
+public final class SendDocumentRequest extends MediaRequest {
 
     @JsonProperty("document")
     private final String document;
@@ -21,7 +21,7 @@ public final class SendDocumentRequest extends SendMediaRequest {
         return new Builder();
     }
 
-    public static final class Builder extends SendMediaRequest.Builder<Builder> {
+    public static final class Builder extends MediaRequest.Builder<Builder> {
         private String document;
         private Boolean disableContentTypeDetection;
 

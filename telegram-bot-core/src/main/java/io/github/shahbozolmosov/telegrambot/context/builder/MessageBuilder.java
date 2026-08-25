@@ -1,17 +1,21 @@
 package io.github.shahbozolmosov.telegrambot.context.builder;
 
 import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
+import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
+import io.github.shahbozolmosov.telegrambot.request.message.options.LinkPreviewOptions;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 public class MessageBuilder extends AbstractMessageBuilder<MessageBuilder, Message> {
 
     private static final Logger log = LoggerFactory.getLogger(MessageBuilder.class);
 
-    private final String textContent;
+    private final SendMessageRequest.Builder reqBuilder;
 
     public MessageBuilder(
             TelegramClient client,
@@ -21,25 +25,34 @@ public class MessageBuilder extends AbstractMessageBuilder<MessageBuilder, Messa
     ) {
         super(
                 client,
-                updateId,
-                defaultChatId
+                updateId
         );
-        this.textContent = textContent;
+
+        this.reqBuilder = SendMessageRequest.builder()
+                .chatId(defaultChatId)
+                .text(textContent);
+    }
+
+    public MessageBuilder options(Consumer<SendMessageRequest.Builder> consumer){
+        consumer.accept(reqBuilder);
+        return this;
+    }
+
+    public MessageBuilder keyboard(ReplyMarkup replyMarkup){
+        reqBuilder.replyMarkup(replyMarkup);
+        return this;
+    }
+
+    public MessageBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+        reqBuilder.linkPreviewOptions(consumer);
+        return this;
     }
 
     @Override
     public TelegramResponse<Message> send() {
-        log.debug("Sending message to updateId: {} chatId: {}", getUpdateId(), targetChatId);
+        SendMessageRequest request = reqBuilder.build();
 
-        SendMessageRequest request = new SendMessageRequest(
-                targetChatId,
-                textContent,
-                parseMode,
-                replyMarkup,
-                disableWebPagePreview,
-                protectContent,
-                disableNotification
-        );
+        log.debug("Sending message to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendMessage(request);
     }

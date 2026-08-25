@@ -9,48 +9,14 @@ public abstract class AbstractMessageBuilder<T extends AbstractMessageBuilder<T,
     protected final TelegramClient client;
     private final Long updateId;
 
-    protected String targetChatId;
-    protected ParseMode parseMode;
-    protected ReplyMarkup replyMarkup;
-    protected Boolean disableWebPagePreview;
-    protected Boolean protectContent;
-    protected Boolean disableNotification;
 
     public AbstractMessageBuilder(
             TelegramClient client,
-            Long updateId,
-            String chatId
+            Long updateId
     ) {
         this.client = client;
         this.updateId = updateId;
-        this.targetChatId = chatId;
     }
-
-    @SuppressWarnings("unchecked")
-    private T self() {
-        return (T) this;
-    }
-
-    public T toChat(String chatId) {
-        this.targetChatId = chatId;
-        return self();
-    }
-
-    public T html() {
-        this.parseMode = ParseMode.HTML;
-        return self();
-    }
-
-    public T markdown() {
-        this.parseMode = ParseMode.MARKDOWN;
-        return self();
-    }
-
-    public T markdownV2() {
-        this.parseMode = ParseMode.MARKDOWN_V2;
-        return self();
-    }
-
 
     public abstract TelegramResponse<R> send();
 

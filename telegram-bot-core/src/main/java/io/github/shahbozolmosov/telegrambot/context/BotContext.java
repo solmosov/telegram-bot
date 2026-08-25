@@ -137,12 +137,14 @@ public final class BotContext {
         );
     }
 
-    public DocumentUploadBuilder document(SendDocumentUploadRequest.Builder builder) {
+    public DocumentUploadBuilder document(byte[] file, String fileName, String mimeType) {
         return new DocumentUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                builder
+                file,
+                fileName,
+                mimeType
         );
     }
 

@@ -44,8 +44,8 @@ public final class SendPhotoRequest extends MediaRequest {
             return this;
         }
 
-        public Builder showCaptionAboveMedia(boolean value) {
-            this.showCaptionAboveMedia = value;
+        public Builder showCaptionAboveMedia() {
+            this.showCaptionAboveMedia = true;
             return this;
         }
 

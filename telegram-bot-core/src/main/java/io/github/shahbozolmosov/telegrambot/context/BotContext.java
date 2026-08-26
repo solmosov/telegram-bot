@@ -4,13 +4,10 @@ import io.github.shahbozolmosov.telegrambot.client.TelegramClient;
 import io.github.shahbozolmosov.telegrambot.context.builder.*;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 
-import java.util.Map;
-
 public final class BotContext {
 
     private final TelegramClient client;
     private final Update update;
-    private Map<String, Object> callbackParams;
     private String deepLinkParams;
 
 
@@ -176,16 +173,6 @@ public final class BotContext {
     // --------------------- Callback Query ---------------------
     public CallbackQueryContext callbackQuery() {
         return callbackQueryContext;
-    }
-
-
-    // --------------------- Callback Params ---------------------
-    public void setCallbackParams(Map<String, Object> callbackParams) {
-        this.callbackParams = callbackParams;
-    }
-
-    public Map<String, Object> callbackParams() {
-        return callbackParams;
     }
 
     // --------------------- Depp Link Params ---------------------

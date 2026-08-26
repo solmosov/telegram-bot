@@ -6,10 +6,13 @@ import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 
+import java.util.Map;
+
 public final class CallbackQueryContext {
 
     private final TelegramClient telegramClient;
     private final CallbackQuery callbackQuery;
+    private Map<String, Object> callbackParams;
 
     public CallbackQueryContext(
             TelegramClient telegramClient,
@@ -29,6 +32,14 @@ public final class CallbackQueryContext {
 
     public String data() {
         return callbackQuery.data();
+    }
+
+    public void setCallbackParams(Map<String, Object> callbackParams) {
+        this.callbackParams = callbackParams;
+    }
+
+    public Map<String, Object> callbackParams() {
+        return callbackParams;
     }
 
     public TelegramResponse<Boolean> answerCallbackQuery() {

@@ -21,23 +21,18 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             String defaultChatId,
-            String defaultMessageId,
+            String messageId,
             String caption
     ) {
         super(client, updateId);
         this.reqBuilder = EditMessageCaptionRequest.builder()
                 .chatId(defaultChatId)
-                .messageId(defaultMessageId)
+                .messageId(messageId)
                 .caption(caption);
     }
 
     public EditMessageCaptionBuilder chatId(String chatId){
         reqBuilder.chatId(chatId);
-        return this;
-    }
-
-    public EditMessageCaptionBuilder messageId(String messageId){
-        reqBuilder.messageId(messageId);
         return this;
     }
 
@@ -59,6 +54,8 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
     @Override
     public TelegramResponse<Message> send() {
         EditMessageCaptionRequest request = reqBuilder.build();
+
+        log.debug("Sending edit message caption to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.editMessageCaption(request);
     }

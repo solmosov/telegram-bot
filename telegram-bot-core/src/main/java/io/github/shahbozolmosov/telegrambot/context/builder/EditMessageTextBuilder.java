@@ -21,23 +21,18 @@ public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             String defaultChatId,
-            String defaultMessageId,
+            String messageId,
             String textContent
     ) {
         super(client, updateId);
         reqBuilder = EditMessageTextRequest.builder()
                 .chatId(defaultChatId)
                 .text(textContent)
-                .messageId(defaultMessageId);
+                .messageId(messageId);
     }
 
     public EditMessageTextBuilder chatId(String chatId){
         reqBuilder.chatId(chatId);
-        return this;
-    }
-
-    public EditMessageTextBuilder messageId(String messageId) {
-        reqBuilder.messageId(messageId);
         return this;
     }
 

@@ -72,22 +72,22 @@ public final class BotContext {
         );
     }
 
-    public EditMessageTextBuilder editMessage(String textContent) {
+    public EditMessageTextBuilder editMessage(String messageId, String textContent) {
         return new EditMessageTextBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                messageId(),
+                messageId,
                 textContent
         );
     }
 
-    public EditMessageTextBuilder editMessageCaption(String caption) {
+    public EditMessageTextBuilder editMessageCaption(String messageId, String caption) {
         return new EditMessageTextBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                messageId(),
+                messageId,
                 caption
         );
     }

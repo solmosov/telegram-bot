@@ -16,9 +16,6 @@ public class DocumentBuilder extends AbstractMessageBuilder<Message> {
     private static final Logger log = LoggerFactory.getLogger(DocumentBuilder.class);
     private final SendDocumentRequest.Builder reqBuilder;
 
-    private String chatId;
-
-
     public DocumentBuilder(
             TelegramClient client,
             Long updateId,
@@ -26,14 +23,18 @@ public class DocumentBuilder extends AbstractMessageBuilder<Message> {
             String documentUrl
     ) {
         super(client, updateId);
-        this.chatId = chatId;
         this.reqBuilder = SendDocumentRequest.builder()
                 .document(documentUrl)
                 .chatId(chatId);
     }
 
     public DocumentBuilder toChat(String chatId) {
-        this.chatId = chatId;
+        reqBuilder.chatId(chatId);
+        return this;
+    }
+
+    public DocumentBuilder caption(String caption){
+        reqBuilder.caption(caption);
         return this;
     }
 
@@ -53,11 +54,9 @@ public class DocumentBuilder extends AbstractMessageBuilder<Message> {
     }
 
     public TelegramResponse<Message> send() {
-        log.debug("Sending  to document to updateId: {} chatId: {}", getUpdateId(), chatId);
+        SendDocumentRequest request = reqBuilder.build();
 
-        SendDocumentRequest request = reqBuilder
-                .chatId(chatId)
-                .build();
+        log.debug("Sending  to document to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendDocument(request);
     }

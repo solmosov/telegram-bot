@@ -59,7 +59,7 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
     public TelegramResponse<Message> send() {
         SendDocumentUploadRequest request = reqBuilder.build();
 
-        log.debug("Send upload document to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
+        log.debug("Sending  upload document to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendDocument(request);
     }

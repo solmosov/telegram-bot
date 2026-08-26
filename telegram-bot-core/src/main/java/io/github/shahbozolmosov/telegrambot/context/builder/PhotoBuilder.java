@@ -55,7 +55,7 @@ public class PhotoBuilder extends AbstractMessageBuilder<Message> {
 
         SendPhotoRequest request = reqBuilder.build();
 
-        log.debug("Send photo message to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
+        log.debug("Sending  photo message to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendPhoto(request);
     }

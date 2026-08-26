@@ -60,7 +60,7 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
     public TelegramResponse<Message> send() {
         SendPhotoUploadRequest request = reqBuilder.build();
 
-        log.debug("Send upload photo to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
+        log.debug("Sending  upload photo to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendPhoto(request);
     }

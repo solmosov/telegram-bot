@@ -35,7 +35,7 @@ public class DeleteMessageBuilder extends AbstractMessageBuilder<Boolean> {
     }
 
     public TelegramResponse<Boolean> send() {
-        log.debug("Send delete message to updateId: {} chatId: {} messageId: {}", getUpdateId(), chatId, messageId);
+        log.debug("Sending  delete message to updateId: {} chatId: {} messageId: {}", getUpdateId(), chatId, messageId);
 
         DeleteMessageRequest request = new DeleteMessageRequest(
                 chatId,

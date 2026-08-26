@@ -58,7 +58,7 @@ public class VideoBuilder extends AbstractMessageBuilder<Message>{
         SendVideoRequest request = reqBuilder.build();
 
 
-        log.debug("Send video to uploadId: {} chatId: {}", getUpdateId(), request.getChatId());
+        log.debug("Sending  video to uploadId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendVideo(request);
     }

@@ -53,7 +53,7 @@ public class DocumentBuilder extends AbstractMessageBuilder<Message> {
     }
 
     public TelegramResponse<Message> send() {
-        log.debug("Send to document to updateId: {} chatId: {}", getUpdateId(), chatId);
+        log.debug("Sending  to document to updateId: {} chatId: {}", getUpdateId(), chatId);
 
         SendDocumentRequest request = reqBuilder
                 .chatId(chatId)

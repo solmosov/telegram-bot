@@ -78,7 +78,7 @@ public class ChatActionBuilder extends AbstractMessageBuilder<Boolean> {
     }
 
     public TelegramResponse<Boolean> send() {
-        log.debug("Send chat action to updateId: {} chatId: {}", getUpdateId(), chatId);
+        log.debug("Sending  chat action to updateId: {} chatId: {}", getUpdateId(), chatId);
 
         SendChatActionRequest request = new SendChatActionRequest(
                 chatId,

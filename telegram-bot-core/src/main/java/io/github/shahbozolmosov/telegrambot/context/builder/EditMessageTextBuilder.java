@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
-public class EditMessageBuilder extends AbstractMessageBuilder<Message> {
+public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
 
-    private final static Logger log = LoggerFactory.getLogger(EditMessageBuilder.class);
+    private final static Logger log = LoggerFactory.getLogger(EditMessageTextBuilder.class);
 
     private final EditMessageTextRequest.Builder reqBuilder;
 
-    public EditMessageBuilder(
+    public EditMessageTextBuilder(
             TelegramClient client,
             Long updateId,
             String defaultChatId,
@@ -31,22 +31,27 @@ public class EditMessageBuilder extends AbstractMessageBuilder<Message> {
                 .messageId(defaultMessageId);
     }
 
-    public EditMessageBuilder messageId(String messageId) {
+    public EditMessageTextBuilder chatId(String chatId){
+        reqBuilder.chatId(chatId);
+        return this;
+    }
+
+    public EditMessageTextBuilder messageId(String messageId) {
         reqBuilder.messageId(messageId);
         return this;
     }
 
-    public EditMessageBuilder options(Consumer<EditMessageTextRequest.Builder> consumer) {
+    public EditMessageTextBuilder options(Consumer<EditMessageTextRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public EditMessageBuilder keyboard(ReplyMarkup replyMarkup) {
+    public EditMessageTextBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public EditMessageBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
+    public EditMessageTextBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
         reqBuilder.linkPreviewOptions(consumer);
         return this;
     }

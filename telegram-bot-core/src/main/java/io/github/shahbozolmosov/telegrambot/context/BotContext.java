@@ -73,8 +73,8 @@ public final class BotContext {
         );
     }
 
-    public EditMessageBuilder editMessage(String textContent) {
-        return new EditMessageBuilder(
+    public EditMessageTextBuilder editMessage(String textContent) {
+        return new EditMessageTextBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),

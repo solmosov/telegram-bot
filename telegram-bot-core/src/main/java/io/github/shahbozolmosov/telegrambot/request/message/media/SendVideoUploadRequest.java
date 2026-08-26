@@ -43,8 +43,8 @@ public final class SendVideoUploadRequest extends MediaRequest {
         private Integer duration;
         private Integer width;
         private Integer height;
-        private boolean hasSpoiler;
-        private boolean showCaptionAboveMedia;
+        private Boolean hasSpoiler;
+        private Boolean showCaptionAboveMedia;
 
         private Builder() {
         }
@@ -74,8 +74,8 @@ public final class SendVideoUploadRequest extends MediaRequest {
             return this;
         }
 
-        public Builder showCaptionAboveMedia(boolean value) {
-            this.showCaptionAboveMedia = value;
+        public Builder showCaptionAboveMedia() {
+            this.showCaptionAboveMedia = true;
             return this;
         }
 

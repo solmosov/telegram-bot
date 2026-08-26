@@ -4,6 +4,7 @@ import io.github.shahbozolmosov.telegrambot.annotation.BotAuthorize;
 import io.github.shahbozolmosov.telegrambot.annotation.BotHandler;
 import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
+import io.github.shahbozolmosov.telegrambot.handler.argument.HandlerArgumentResolverComposite;
 import io.github.shahbozolmosov.telegrambot.registry.Registry;
 import io.github.shahbozolmosov.telegrambot.scanner.resolver.HandlerAnnotationResolver;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public final class HandlerRegistrar {
     private final ClassInstanceFactory factory;
     private final Registry registry;
     private final List<HandlerAnnotationResolver> resolvers;
+    private final HandlerArgumentResolverComposite argumentResolver;
 
     private final String botName;
 
@@ -29,12 +31,14 @@ public final class HandlerRegistrar {
             ClassInstanceFactory factory,
             Registry registry,
             List<HandlerAnnotationResolver> resolvers,
+            HandlerArgumentResolverComposite argumentResolver,
             String botName
     ) {
         this.scanner = scanner;
         this.factory = factory;
         this.registry = registry;
         this.resolvers = resolvers;
+        this.argumentResolver = argumentResolver;
         this.botName = botName;
     }
 
@@ -60,7 +64,7 @@ public final class HandlerRegistrar {
             throw new TelegramBotException("@BotHandler bot name is required");
         }
 
-        if(!botName.equals(botNameOfHandler)){
+        if (!botName.equals(botNameOfHandler)) {
             return;
         }
 
@@ -78,15 +82,19 @@ public final class HandlerRegistrar {
     }
 
 
-    private static Handler getHandler(Method method, Object instance) {
+    private Handler getHandler(Method method, Object instance) {
         BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
+
         return new Handler(
                 context -> {
                     try {
-                        method.invoke(instance, context);
+                        Object[] arguments = argumentResolver.resolve(method, context);
+
+                        method.invoke(instance, arguments);
+
                     } catch (InvocationTargetException ex) {
                         Throwable cause = ex.getCause();
-                        log.error("Handler execution failed for update: " + cause);
+                        log.error("Handler execution failed for update", cause);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }

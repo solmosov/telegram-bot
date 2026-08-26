@@ -173,7 +173,7 @@ public final class BotContext {
     }
 
 
-    // --------------------- Answer Callback Query Context ---------------------
+    // --------------------- Callback Query ---------------------
     public CallbackQueryContext callbackQuery() {
         return callbackQueryContext;
     }

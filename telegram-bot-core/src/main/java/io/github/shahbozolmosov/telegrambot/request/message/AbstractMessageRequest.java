@@ -69,18 +69,18 @@ public abstract class AbstractMessageRequest {
             return self();
         }
 
-        public T allowPaidBroadcast(Boolean value) {
-            this.allowPaidBroadcast = value;
+        public T allowPaidBroadcast() {
+            this.allowPaidBroadcast = true;
             return self();
         }
 
-        public T protectContent(Boolean value) {
-            this.protectContent = value;
+        public T protectContent() {
+            this.protectContent = true;
             return self();
         }
 
-        public T disableNotification(Boolean value) {
-            this.disableNotification = value;
+        public T disableNotification() {
+            this.disableNotification = true;
             return self();
         }
 

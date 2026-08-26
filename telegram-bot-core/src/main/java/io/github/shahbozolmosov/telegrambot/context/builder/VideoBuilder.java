@@ -38,6 +38,11 @@ public class VideoBuilder extends AbstractMessageBuilder<Message>{
         return this;
     }
 
+    public VideoBuilder caption(String caption){
+        reqBuilder.caption(caption);
+        return this;
+    }
+
     public VideoBuilder options(Consumer<SendVideoRequest.Builder> consumer){
         consumer.accept(reqBuilder);
         return this;

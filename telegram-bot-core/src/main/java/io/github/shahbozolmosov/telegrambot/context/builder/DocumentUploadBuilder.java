@@ -41,6 +41,11 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
         return this;
     }
 
+    public DocumentUploadBuilder caption(String caption){
+        reqBuilder.caption(caption);
+        return this;
+    }
+
     public DocumentUploadBuilder options(Consumer<SendDocumentUploadRequest.Builder> consumer){
         consumer.accept(reqBuilder);
         return this;

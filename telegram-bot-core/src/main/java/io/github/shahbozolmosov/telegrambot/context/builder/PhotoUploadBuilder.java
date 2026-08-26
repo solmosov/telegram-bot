@@ -41,6 +41,11 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
         return this;
     }
 
+    public PhotoUploadBuilder caption(String caption){
+        reqBuilder.caption(caption);
+        return this;
+    }
+
     public PhotoUploadBuilder options(Consumer<SendPhotoUploadRequest.Builder> consumer){
         consumer.accept(reqBuilder);
         return this;

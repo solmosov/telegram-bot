@@ -55,7 +55,7 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
     public TelegramResponse<Message> send() {
         EditMessageCaptionRequest request = reqBuilder.build();
 
-        log.debug("Sending edit message caption to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
+        log.debug("Sending edit message caption to updateId: {} chatId: {} messageId: {}", getUpdateId(), request.getChatId(), request.getMessageId());
 
         return client.editMessageCaption(request);
     }

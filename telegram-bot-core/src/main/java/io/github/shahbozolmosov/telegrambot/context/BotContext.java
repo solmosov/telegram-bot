@@ -82,8 +82,9 @@ public final class BotContext {
         );
     }
 
-    public EditMessageTextBuilder editMessageCaption(String messageId, String caption) {
-        return new EditMessageTextBuilder(
+    public EditMessageCaptionBuilder editMessageCaption(String messageId, String caption) {
+        System.out.println("render-------------- in BotContext.editMessageCaption");
+        return new EditMessageCaptionBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),

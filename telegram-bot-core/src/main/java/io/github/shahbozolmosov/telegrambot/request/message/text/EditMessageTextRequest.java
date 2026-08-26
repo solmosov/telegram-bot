@@ -14,6 +14,10 @@ public class EditMessageTextRequest extends TextRequest {
         this.messageId = builder.messageId;
     }
 
+    public String getMessageId(){
+        return messageId;
+    }
+
     public static Builder builder() {
         return new Builder();
     }

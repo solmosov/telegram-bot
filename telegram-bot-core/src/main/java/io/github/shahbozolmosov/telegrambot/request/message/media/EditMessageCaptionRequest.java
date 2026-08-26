@@ -16,6 +16,10 @@ public class EditMessageCaptionRequest extends MediaRequest {
         this.messageId = builder.messageId;
     }
 
+    public String getMessageId(){
+        return messageId;
+    }
+
     public static Builder builder() {
         return new Builder();
     }

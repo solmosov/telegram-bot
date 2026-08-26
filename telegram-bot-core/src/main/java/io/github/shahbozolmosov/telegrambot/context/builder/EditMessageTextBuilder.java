@@ -55,7 +55,7 @@ public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
     public TelegramResponse<Message> send() {
         EditMessageTextRequest request = reqBuilder.build();
 
-        log.debug("Sending edit message to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
+        log.debug("Sending edit message to updateId: {} chatId: {} messageId: {}", getUpdateId(), request.getChatId(), request.getMessageId());
 
         return client.editMessage(request);
     }

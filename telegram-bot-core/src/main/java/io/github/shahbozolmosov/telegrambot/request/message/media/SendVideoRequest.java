@@ -17,10 +17,10 @@ public final class SendVideoRequest extends MediaRequest {
     private final Integer height;
 
     @JsonProperty("has_spoiler")
-    private final boolean hasSpoiler;
+    private final Boolean hasSpoiler;
 
     @JsonProperty("show_caption_above_media")
-    private final boolean showCaptionAboveMedia;
+    private final Boolean showCaptionAboveMedia;
 
     private SendVideoRequest(Builder builder) {
         super(builder);

@@ -226,6 +226,29 @@ public final class TelegramClient {
         );
     }
 
+    public TelegramResponse<Message> editMessageCaption(
+            EditMessageCaptionRequest requestBody
+    ) {
+
+        acquirePermit(requestBody.getChatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/editMessageCaption";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
     // --------------------- Edit Message Reply Markup ----------
     public TelegramResponse<Message> editMessageReplyMarkup(
             EditMessageReplyMarkupRequest requestBody

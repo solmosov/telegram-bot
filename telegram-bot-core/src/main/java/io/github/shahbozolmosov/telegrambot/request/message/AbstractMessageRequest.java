@@ -69,7 +69,7 @@ public abstract class AbstractMessageRequest {
             return self();
         }
 
-        public T allowPAidBroadcast(Boolean value) {
+        public T allowPaidBroadcast(Boolean value) {
             this.allowPaidBroadcast = value;
             return self();
         }

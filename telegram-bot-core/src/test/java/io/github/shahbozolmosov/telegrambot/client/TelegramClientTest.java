@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
+import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -400,6 +401,151 @@ class TelegramClientTest {
 
     }
 
+
+    @Nested
+    @DisplayName("editMessage")
+    class EditMessage {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                    {
+                      "ok": true,
+                      "result": {
+                        "message_id": 123,
+                        "chat": {
+                          "id": 456
+                        },
+                        "text": "Edited message"
+                      }
+                    }
+                    """);
+
+            EditMessageTextRequest request = EditMessageTextRequest.builder()
+                    .chatId(456L)
+                    .messageId(123L)
+                    .text("Edited message")
+                    .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.editMessage(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+            assertEquals("Edited message", response.result().text());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                    {
+                      "ok": true,
+                      "result": {
+                        "message_id": 123,
+                        "chat": {
+                          "id": 456
+                        },
+                        "text": "Edited message"
+                      }
+                    }
+                    """);
+
+            EditMessageTextRequest request = EditMessageTextRequest.builder()
+                    .chatId(456L)
+                    .messageId(123L)
+                    .text("Edited message")
+                    .build();
+
+            telegramClient.editMessage(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/editMessageText",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+        }
+
+        @Test
+        void shouldThrowTelegramApiException_whenTelegramReturnsError()
+                throws Exception {
+
+            mockResponse("""
+                    {
+                      "ok": false,
+                      "error_code": 400,
+                      "description": "Bad Request: message to edit not found"
+                    }
+                    """);
+
+            EditMessageTextRequest request = EditMessageTextRequest.builder()
+                    .chatId(456L)
+                    .messageId(123L)
+                    .text("Edited message")
+                    .build();
+
+            TelegramApiException exception = assertThrows(
+                    TelegramApiException.class,
+                    () -> telegramClient.editMessage(request)
+            );
+
+            assertEquals(400, exception.getErrorCode());
+            assertEquals(
+                    "Bad Request: message to edit not found",
+                    exception.getMessage()
+            );
+        }
+
+        @Test
+        void shouldThrowTelegramClientException_whenHttpClientFails()
+                throws Exception {
+
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenThrow(new IOException("Connection failed"));
+
+            EditMessageTextRequest request = EditMessageTextRequest.builder()
+                    .chatId(456L)
+                    .messageId(123L)
+                    .text("Edited message")
+                    .build();
+
+            TelegramClientException exception = assertThrows(
+                    TelegramClientException.class,
+                    () -> telegramClient.editMessage(request)
+            );
+
+            assertEquals(
+                    "Failed to communicate with Telegram API",
+                    exception.getMessage()
+            );
+
+            assertInstanceOf(
+                    IOException.class,
+                    exception.getCause()
+            );
+        }
+    }
 
     private void mockResponse(String json) throws IOException, InterruptedException {
         when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));

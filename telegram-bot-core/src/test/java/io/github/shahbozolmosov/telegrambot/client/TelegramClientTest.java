@@ -1445,6 +1445,145 @@ class TelegramClientTest {
         }
     }
 
+    @Nested
+    @DisplayName("sendVideo upload")
+    class SendVideoUpload {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            InputFile video = new InputFile(
+                    "fake video data".getBytes(StandardCharsets.UTF_8),
+                    "video.mp4",
+                    "video/mp4"
+            );
+
+            SendVideoUploadRequest request =
+                    SendVideoUploadRequest.builder()
+                            .chatId(456L)
+                            .video(video)
+                            .duration(120)
+                            .width(1920)
+                            .height(1080)
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .caption("Test video")
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendVideo(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectMultipartRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            byte[] videoData =
+                    "fake video data".getBytes(StandardCharsets.UTF_8);
+
+            InputFile video = new InputFile(
+                    videoData,
+                    "video.mp4",
+                    "video/mp4"
+            );
+
+            SendVideoUploadRequest request =
+                    SendVideoUploadRequest.builder()
+                            .chatId(456L)
+                            .video(video)
+                            .duration(120)
+                            .width(1920)
+                            .height(1080)
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .caption("Test video")
+                            .build();
+
+            telegramClient.sendVideo(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendVideo",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            String contentType = httpRequest.headers()
+                    .firstValue("Content-Type")
+                    .orElseThrow();
+
+            assertTrue(
+                    contentType.startsWith("multipart/form-data; boundary=")
+            );
+
+            String body = readRequestBody(httpRequest);
+
+            assertTrue(body.contains("name=\"chat_id\""));
+            assertTrue(body.contains("456"));
+
+            assertTrue(body.contains("name=\"duration\""));
+            assertTrue(body.contains("120"));
+
+            assertTrue(body.contains("name=\"width\""));
+            assertTrue(body.contains("1920"));
+
+            assertTrue(body.contains("name=\"height\""));
+            assertTrue(body.contains("1080"));
+
+            assertTrue(body.contains("name=\"has_spoiler\""));
+            assertTrue(body.contains("true"));
+
+            assertTrue(
+                    body.contains("name=\"show_caption_above_media\"")
+            );
+            assertTrue(body.contains("true"));
+
+            assertTrue(body.contains("name=\"caption\""));
+            assertTrue(body.contains("Test video"));
+
+            assertTrue(body.contains("name=\"video\""));
+            assertTrue(body.contains("filename=\"video.mp4\""));
+            assertTrue(body.contains("Content-Type: video/mp4"));
+            assertTrue(body.contains("fake video data"));
+        }
+    }
+
     private String readRequestBody(HttpRequest request) {
         return new String(
                 readRequestBodyBytes(request),

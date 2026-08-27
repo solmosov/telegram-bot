@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EditMessageTextRequest extends TextRequest {
     @JsonProperty("message_id")
-    private final String messageId;
+    private final long messageId;
 
     public EditMessageTextRequest(Builder builder) {
         super(builder);
@@ -14,7 +14,7 @@ public class EditMessageTextRequest extends TextRequest {
         this.messageId = builder.messageId;
     }
 
-    public String getMessageId(){
+    public long getMessageId(){
         return messageId;
     }
 
@@ -24,9 +24,9 @@ public class EditMessageTextRequest extends TextRequest {
 
     public static class Builder extends TextRequest.Builder<Builder> {
 
-        private String messageId;
+        private long messageId;
 
-        public Builder messageId(String messageId) {
+        public Builder messageId(long messageId) {
             this.messageId = messageId;
             return this;
         }

@@ -21,7 +21,7 @@ public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             Long defaultChatId,
-            String messageId,
+            long messageId,
             String textContent
     ) {
         super(client, updateId);

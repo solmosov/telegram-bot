@@ -21,7 +21,7 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             Long defaultChatId,
-            String messageId,
+            long messageId,
             String caption
     ) {
         super(client, updateId);

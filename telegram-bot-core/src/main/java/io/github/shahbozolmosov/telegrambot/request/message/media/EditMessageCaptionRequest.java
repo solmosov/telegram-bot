@@ -9,14 +9,14 @@ import io.github.shahbozolmosov.telegrambot.model.ParseMode;
 public class EditMessageCaptionRequest extends MediaRequest {
 
     @JsonProperty("message_id")
-    private final String messageId;
+    private final long messageId;
 
     public EditMessageCaptionRequest(Builder builder) {
         super(builder);
         this.messageId = builder.messageId;
     }
 
-    public String getMessageId(){
+    public long getMessageId(){
         return messageId;
     }
 
@@ -26,12 +26,12 @@ public class EditMessageCaptionRequest extends MediaRequest {
 
     public static class Builder extends MediaRequest.Builder<Builder> {
 
-        private String messageId;
+        private long messageId;
 
         private Builder() {
         }
 
-        public Builder messageId(String messageId) {
+        public Builder messageId(long messageId) {
             this.messageId = messageId;
             return this;
         }

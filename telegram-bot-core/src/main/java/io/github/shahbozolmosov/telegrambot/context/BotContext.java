@@ -79,7 +79,7 @@ public final class BotContext {
         );
     }
 
-    public EditMessageCaptionBuilder editMessageCaption(String messageId, String caption) {
+    public EditMessageCaptionBuilder editMessageCaption(long messageId, String caption) {
         return new EditMessageCaptionBuilder(
                 client,
                 update.updateId(),

@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -51,217 +52,221 @@ class TelegramClientTest {
         );
     }
 
-    @Test
-    void getUpdates_shouldReturnUpdates() throws IOException, InterruptedException {
-        String json = """
-                {
-                  "ok": true,
-                  "result": [
+    @Nested
+    @DisplayName("getUpdates")
+    class GetUpdates {
+        @Test
+        void getUpdates_shouldReturnUpdates() throws IOException, InterruptedException {
+            String json = """
                     {
-                      "update_id": 123
+                      "ok": true,
+                      "result": [
+                        {
+                          "update_id": 123
+                        }
+                      ]
                     }
-                  ]
-                }
-                """;
+                    """;
 
-        when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
+            when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
 
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenReturn(httpResponse);
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenReturn(httpResponse);
 
-        TelegramResponse<List<Update>> response = telegramClient.getUpdates(100);
+            TelegramResponse<List<Update>> response = telegramClient.getUpdates(100);
 
-        assertNotNull(response);
-        assertTrue(response.ok());
-        assertNotNull(response.result());
-        assertEquals(1, response.result().size());
-        assertEquals(123, response.result().getFirst().updateId());
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(1, response.result().size());
+            assertEquals(123, response.result().getFirst().updateId());
 
-        verify(httpClient).send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        );
-    }
-
-    @Test
-    void getUpdates_shouldSendCorrectRequest() throws IOException, InterruptedException {
-        String json = """
-                {
-                    "ok": true,
-                    "result": []
-                }
-                """;
-
-        when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenReturn(httpResponse);
-
-        telegramClient.getUpdates(123);
-
-        var captor = ArgumentCaptor.forClass(HttpRequest.class);
-
-        verify(httpClient).send(
-                captor.capture(),
-                any(HttpResponse.BodyHandler.class)
-        );
-
-        HttpRequest request = captor.getValue();
-
-        assertEquals(
-                "https://api.telegram.org/bottest-token/getUpdates?offset=123&timeout=30",
-                request.uri().toString()
-        );
-
-        assertEquals("GET", request.method());
-    }
-
-    @Test
-    void getUpdates_shouldRejectMoreThan100Updates() throws Exception {
-        StringBuilder updates = new StringBuilder("[");
-
-        for (int i = 0; i < 101; i++) {
-            if (i > 0) {
-                updates.append(",");
-            }
-
-            updates.append("""
-                    {
-                      "update_id": %d
-                    }
-                    """.formatted(i));
+            verify(httpClient).send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            );
         }
 
-        updates.append("]");
+        @Test
+        void getUpdates_shouldSendCorrectRequest() throws IOException, InterruptedException {
+            String json = """
+                    {
+                        "ok": true,
+                        "result": []
+                    }
+                    """;
 
-        String json = """
-                {
-                  "ok": true,
-                  "result": %s
+            when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenReturn(httpResponse);
+
+            telegramClient.getUpdates(123);
+
+            var captor = ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest request = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/getUpdates?offset=123&timeout=30",
+                    request.uri().toString()
+            );
+
+            assertEquals("GET", request.method());
+        }
+
+        @Test
+        void getUpdates_shouldRejectMoreThan100Updates() throws Exception {
+            StringBuilder updates = new StringBuilder("[");
+
+            for (int i = 0; i < 101; i++) {
+                if (i > 0) {
+                    updates.append(",");
                 }
-                """.formatted(updates);
 
-        when(httpResponse.body())
-                .thenReturn(json.getBytes(StandardCharsets.UTF_8));
+                updates.append("""
+                        {
+                          "update_id": %d
+                        }
+                        """.formatted(i));
+            }
 
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenReturn(httpResponse);
+            updates.append("]");
 
-        assertThrows(
-                TelegramClientException.class,
-                () -> telegramClient.getUpdates(0)
-        );
-    }
+            String json = """
+                    {
+                      "ok": true,
+                      "result": %s
+                    }
+                    """.formatted(updates);
 
-    @Test
-    void getUpdates_shouldReturnEmptyList_whenNoUpdatesAvailable()
-            throws Exception {
+            when(httpResponse.body())
+                    .thenReturn(json.getBytes(StandardCharsets.UTF_8));
 
-        String json = """
-                {
-                  "ok": true,
-                  "result": []
-                }
-                """;
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenReturn(httpResponse);
 
-        when(httpResponse.body())
-                .thenReturn(json.getBytes(StandardCharsets.UTF_8));
+            assertThrows(
+                    TelegramClientException.class,
+                    () -> telegramClient.getUpdates(0)
+            );
+        }
 
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenReturn(httpResponse);
+        @Test
+        void getUpdates_shouldReturnEmptyList_whenNoUpdatesAvailable()
+                throws Exception {
 
-        TelegramResponse<List<Update>> response =
-                telegramClient.getUpdates(0);
+            String json = """
+                    {
+                      "ok": true,
+                      "result": []
+                    }
+                    """;
 
-        assertTrue(response.ok());
-        assertNotNull(response.result());
-        assertTrue(response.result().isEmpty());
-    }
+            when(httpResponse.body())
+                    .thenReturn(json.getBytes(StandardCharsets.UTF_8));
+
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenReturn(httpResponse);
+
+            TelegramResponse<List<Update>> response =
+                    telegramClient.getUpdates(0);
+
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertTrue(response.result().isEmpty());
+        }
 
 
-    @Test
-    void getUpdates_shouldThrowTelegramClientException_whenHttpClientFails()
-            throws Exception {
+        @Test
+        void getUpdates_shouldThrowTelegramClientException_whenHttpClientFails()
+                throws Exception {
 
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenThrow(new IOException("Connection failed"));
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenThrow(new IOException("Connection failed"));
 
-        assertThrows(
-                TelegramClientException.class,
-                () -> telegramClient.getUpdates(0)
-        );
-    }
+            assertThrows(
+                    TelegramClientException.class,
+                    () -> telegramClient.getUpdates(0)
+            );
+        }
 
-    @Test
-    void getUpdates_shouldThrowTelegramApiException_whenTelegramReturnsError()
-            throws Exception {
+        @Test
+        void getUpdates_shouldThrowTelegramApiException_whenTelegramReturnsError()
+                throws Exception {
 
-        String json = """
-                {
-                  "ok": false,
-                  "error_code": 400,
-                  "description": "Bad Request"
-                }
-                """;
+            String json = """
+                    {
+                      "ok": false,
+                      "error_code": 400,
+                      "description": "Bad Request"
+                    }
+                    """;
 
-        when(httpResponse.body())
-                .thenReturn(json.getBytes(StandardCharsets.UTF_8));
+            when(httpResponse.body())
+                    .thenReturn(json.getBytes(StandardCharsets.UTF_8));
 
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenReturn(httpResponse);
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenReturn(httpResponse);
 
-        TelegramApiException exception = assertThrows(
-                TelegramApiException.class,
-                () -> telegramClient.getUpdates(0)
-        );
+            TelegramApiException exception = assertThrows(
+                    TelegramApiException.class,
+                    () -> telegramClient.getUpdates(0)
+            );
 
-        assertEquals(400, exception.getErrorCode());
-        assertEquals("Bad Request", exception.getMessage());
-    }
+            assertEquals(400, exception.getErrorCode());
+            assertEquals("Bad Request", exception.getMessage());
+        }
 
-    @Test
-    void getUpdates_shouldThrowTelegramClientException_whenResponseIsInvalidJson()
-            throws Exception {
+        @Test
+        void getUpdates_shouldThrowTelegramClientException_whenResponseIsInvalidJson()
+                throws Exception {
 
-        String invalidJson = """
-                {
-                  "ok": true,
-                  "result":
-                """;
+            String invalidJson = """
+                    {
+                      "ok": true,
+                      "result":
+                    """;
 
-        when(httpResponse.body())
-                .thenReturn(invalidJson.getBytes(StandardCharsets.UTF_8));
+            when(httpResponse.body())
+                    .thenReturn(invalidJson.getBytes(StandardCharsets.UTF_8));
 
-        when(httpClient.send(
-                any(),
-                any(HttpResponse.BodyHandler.class)
-        )).thenReturn(httpResponse);
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenReturn(httpResponse);
 
-        TelegramClientException exception = assertThrows(
-                TelegramClientException.class,
-                () -> telegramClient.getUpdates(0)
-        );
+            TelegramClientException exception = assertThrows(
+                    TelegramClientException.class,
+                    () -> telegramClient.getUpdates(0)
+            );
 
-        assertEquals(
-                "Failed to parse Telegram API response.",
-                exception.getMessage()
-        );
+            assertEquals(
+                    "Failed to parse Telegram API response.",
+                    exception.getMessage()
+            );
 
-        assertInstanceOf(
-                JacksonException.class,
-                exception.getCause()
-        );
+            assertInstanceOf(
+                    JacksonException.class,
+                    exception.getCause()
+            );
+        }
     }
 
 }

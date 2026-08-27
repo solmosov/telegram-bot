@@ -42,12 +42,6 @@ public final class CallbackQueryContext {
         return callbackParams;
     }
 
-    public TelegramResponse<Boolean> answerCallbackQuery() {
-        return telegramClient.answerCallbackQuery(
-                callbackQuery.id()
-        );
-    }
-
     public TelegramResponse<Boolean> answerCallbackQuery(String text) {
         return telegramClient.answerCallbackQuery(
                 new AnswerCallbackRequest(

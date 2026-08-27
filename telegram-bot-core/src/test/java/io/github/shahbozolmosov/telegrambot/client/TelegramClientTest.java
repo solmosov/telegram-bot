@@ -3,8 +3,10 @@ package io.github.shahbozolmosov.telegrambot.client;
 import io.github.shahbozolmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
+import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
+import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -237,6 +240,167 @@ class TelegramClientTest {
     }
 
 
+    @Nested
+    @DisplayName("sendMessage")
+    class SendMessage {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            String json = """
+                        {
+                            "ok": true,
+                            "result": {
+                                "message_id": 123,
+                                "chat": {
+                                  "id": 456
+                                },
+                                "text": "Hello"
+                            }
+                        }
+                    """;
+
+            mockResponse(json);
+
+            SendMessageRequest request = SendMessageRequest.builder()
+                    .chatId(456)
+                    .text("Hello")
+                    .build();
+
+            TelegramResponse<Message> response = telegramClient.sendMessage(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+            assertEquals("Hello", response.result().text());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                    {
+                      "ok": true,
+                      "result": {
+                        "message_id": 123,
+                        "chat": {
+                          "id": 456
+                        },
+                        "text": "Hello"
+                      }
+                    }
+                    """);
+
+            SendMessageRequest request = SendMessageRequest.builder()
+                    .chatId(456)
+                    .text("Hello")
+                    .build();
+
+            telegramClient.sendMessage(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendMessage",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+
+            assertTrue(httpRequest.bodyPublisher().isPresent());
+
+            String body = new String(
+                    httpRequest.bodyPublisher()
+                            .orElseThrow()
+                            .contentLength() > 0
+                            ? readBody(httpRequest)
+                            : new byte[0],
+                    StandardCharsets.UTF_8
+            );
+
+            assertEquals(
+                    """
+                            {"chat_id":456,"text":"Hello"}""",
+                    body
+            );
+        }
+
+        @Test
+        void shouldThrowTelegramApiException_whenTelegramReturnsError()
+                throws Exception {
+
+            mockResponse("""
+                    {
+                      "ok": false,
+                      "error_code": 400,
+                      "description": "Bad Request: chat not found"
+                    }
+                    """);
+
+            SendMessageRequest request = SendMessageRequest.builder()
+                    .chatId(456L)
+                    .text("Hello")
+                    .build();
+
+            TelegramApiException exception = assertThrows(
+                    TelegramApiException.class,
+                    () -> telegramClient.sendMessage(request)
+            );
+
+            assertEquals(400, exception.getErrorCode());
+            assertEquals(
+                    "Bad Request: chat not found",
+                    exception.getMessage()
+            );
+        }
+
+        @Test
+        void shouldThrowTelegramClientException_whenHttpClientFails()
+                throws Exception {
+
+            when(httpClient.send(
+                    any(),
+                    any(HttpResponse.BodyHandler.class)
+            )).thenThrow(new IOException("Connection failed"));
+
+            SendMessageRequest request = SendMessageRequest.builder()
+                    .chatId(456L)
+                    .text("Hello")
+                    .build();
+
+            TelegramClientException exception = assertThrows(
+                    TelegramClientException.class,
+                    () -> telegramClient.sendMessage(request)
+            );
+
+            assertEquals(
+                    "Failed to communicate with Telegram API",
+                    exception.getMessage()
+            );
+
+            assertInstanceOf(
+                    IOException.class,
+                    exception.getCause()
+            );
+        }
+        
+    }
+
+
     private void mockResponse(String json) throws IOException, InterruptedException {
         when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
 
@@ -244,5 +408,44 @@ class TelegramClientTest {
                 any(),
                 any(HttpResponse.BodyHandler.class)
         )).thenReturn(httpResponse);
+    }
+
+    private byte[] readBody(HttpRequest request) {
+        var output = new java.io.ByteArrayOutputStream();
+
+        request.bodyPublisher()
+                .orElseThrow()
+                .subscribe(new java.util.concurrent.Flow.Subscriber<>() {
+
+                    private java.util.concurrent.Flow.Subscription subscription;
+
+                    @Override
+                    public void onSubscribe(
+                            java.util.concurrent.Flow.Subscription subscription
+                    ) {
+                        this.subscription = subscription;
+                        subscription.request(Long.MAX_VALUE);
+                    }
+
+                    @Override
+                    public void onNext(ByteBuffer item) {
+                        try {
+                            output.write(item.array());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throw new RuntimeException(throwable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+
+        return output.toByteArray();
     }
 }

@@ -68,12 +68,7 @@ class TelegramClientTest {
                     }
                     """;
 
-            when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
-
-            when(httpClient.send(
-                    any(),
-                    any(HttpResponse.BodyHandler.class)
-            )).thenReturn(httpResponse);
+            mockResponse(json);
 
             TelegramResponse<List<Update>> response = telegramClient.getUpdates(100);
 
@@ -98,11 +93,7 @@ class TelegramClientTest {
                     }
                     """;
 
-            when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
-            when(httpClient.send(
-                    any(),
-                    any(HttpResponse.BodyHandler.class)
-            )).thenReturn(httpResponse);
+            mockResponse(json);
 
             telegramClient.getUpdates(123);
 
@@ -148,13 +139,7 @@ class TelegramClientTest {
                     }
                     """.formatted(updates);
 
-            when(httpResponse.body())
-                    .thenReturn(json.getBytes(StandardCharsets.UTF_8));
-
-            when(httpClient.send(
-                    any(),
-                    any(HttpResponse.BodyHandler.class)
-            )).thenReturn(httpResponse);
+            mockResponse(json);
 
             assertThrows(
                     TelegramClientException.class,
@@ -173,13 +158,7 @@ class TelegramClientTest {
                     }
                     """;
 
-            when(httpResponse.body())
-                    .thenReturn(json.getBytes(StandardCharsets.UTF_8));
-
-            when(httpClient.send(
-                    any(),
-                    any(HttpResponse.BodyHandler.class)
-            )).thenReturn(httpResponse);
+            mockResponse(json);
 
             TelegramResponse<List<Update>> response =
                     telegramClient.getUpdates(0);
@@ -217,13 +196,7 @@ class TelegramClientTest {
                     }
                     """;
 
-            when(httpResponse.body())
-                    .thenReturn(json.getBytes(StandardCharsets.UTF_8));
-
-            when(httpClient.send(
-                    any(),
-                    any(HttpResponse.BodyHandler.class)
-            )).thenReturn(httpResponse);
+            mockResponse(json);
 
             TelegramApiException exception = assertThrows(
                     TelegramApiException.class,
@@ -244,13 +217,7 @@ class TelegramClientTest {
                       "result":
                     """;
 
-            when(httpResponse.body())
-                    .thenReturn(invalidJson.getBytes(StandardCharsets.UTF_8));
-
-            when(httpClient.send(
-                    any(),
-                    any(HttpResponse.BodyHandler.class)
-            )).thenReturn(httpResponse);
+            mockResponse(invalidJson);
 
             TelegramClientException exception = assertThrows(
                     TelegramClientException.class,
@@ -269,4 +236,13 @@ class TelegramClientTest {
         }
     }
 
+
+    private void mockResponse(String json) throws IOException, InterruptedException {
+        when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
+
+        when(httpClient.send(
+                any(),
+                any(HttpResponse.BodyHandler.class)
+        )).thenReturn(httpResponse);
+    }
 }

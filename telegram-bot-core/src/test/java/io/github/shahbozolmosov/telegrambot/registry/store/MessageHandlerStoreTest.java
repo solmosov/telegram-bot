@@ -29,13 +29,13 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 handler
         ));
 
         List<Handler> result = store.find(
                 MessageType.TEXT,
-                "hello"
+                BOT_NAME + "hello"
         );
 
         assertEquals(List.of(handler), result);
@@ -45,7 +45,7 @@ class MessageHandlerStoreTest {
     void shouldReturnEmptyListWhenTypeIsNotRegistered() {
         List<Handler> result = store.find(
                 MessageType.TEXT,
-                "hello"
+                BOT_NAME + "hello"
         );
 
         assertTrue(result.isEmpty());
@@ -57,7 +57,7 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 handler
         ));
 
@@ -75,13 +75,13 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 handler
         ));
 
         List<Handler> result = store.find(
                 MessageType.COMMAND,
-                "hello"
+                BOT_NAME + "hello"
         );
 
         assertTrue(result.isEmpty());
@@ -99,7 +99,7 @@ class MessageHandlerStoreTest {
 
         List<Handler> result = store.find(
                 MessageType.TEXT,
-                "hello"
+                BOT_NAME + "hello"
         );
 
         assertEquals(List.of(globalHandler), result);
@@ -112,7 +112,7 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 exactHandler
         ));
 
@@ -124,7 +124,7 @@ class MessageHandlerStoreTest {
 
         List<Handler> result = store.find(
                 MessageType.TEXT,
-                "hello"
+                BOT_NAME + "hello"
         );
 
         assertEquals(
@@ -139,13 +139,13 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 exactHandler
         ));
 
         List<Handler> result = store.find(
                 MessageType.TEXT,
-                "hello"
+                BOT_NAME + "hello"
         );
 
         assertEquals(List.of(exactHandler), result);
@@ -158,7 +158,7 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 firstHandler
         ));
 
@@ -166,7 +166,7 @@ class MessageHandlerStoreTest {
                 HandlerRegistrationException.class,
                 () -> store.register(new MessageHandlerRegistration(
                         MessageType.TEXT,
-                        "hello",
+                        BOT_NAME + "hello",
                         secondHandler
                 ))
         );
@@ -184,24 +184,24 @@ class MessageHandlerStoreTest {
 
         store.register(new MessageHandlerRegistration(
                 MessageType.TEXT,
-                "hello",
+                BOT_NAME + "hello",
                 textHandler
         ));
 
         store.register(new MessageHandlerRegistration(
                 MessageType.COMMAND,
-                "hello",
+                BOT_NAME + "hello",
                 commandHandler
         ));
 
         assertEquals(
                 List.of(textHandler),
-                store.find(MessageType.TEXT, "hello")
+                store.find(MessageType.TEXT, BOT_NAME + "hello")
         );
 
         assertEquals(
                 List.of(commandHandler),
-                store.find(MessageType.COMMAND, "hello")
+                store.find(MessageType.COMMAND, BOT_NAME + "hello")
         );
     }
 

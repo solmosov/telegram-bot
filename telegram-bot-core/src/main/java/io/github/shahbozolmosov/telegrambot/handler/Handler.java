@@ -5,12 +5,13 @@ import io.github.shahbozolmosov.telegrambot.context.BotContext;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public final class Handler {
 
     private final BiConsumer<Update, BotContext> executor;
     private final BotAuthorize authorization;
+
+    private String callbackPattern;
 
     public Handler(
             BiConsumer<Update, BotContext> executor,
@@ -29,5 +30,13 @@ public final class Handler {
 
     public BotAuthorize authorization() {
         return authorization;
+    }
+
+    public void setCallbackPattern(String pattern){
+        this.callbackPattern = pattern;
+    }
+
+    public String getCallbackPattern(){
+        return callbackPattern;
     }
 }

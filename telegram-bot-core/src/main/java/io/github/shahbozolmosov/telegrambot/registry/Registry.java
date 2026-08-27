@@ -42,7 +42,7 @@ public final class Registry {
         callbackRegistry.register(registration);
     }
 
-    public List<CallbackHandlerStore.CallbackHandlerGroup> findCallbackQuery(String key) {
+    public List<Handler> findCallbackQuery(String key) {
         return callbackRegistry.find(key);
     }
 

@@ -31,6 +31,7 @@ public class CallbackHandlerResolver implements HandlerAnnotationResolver {
                 handler
         );
 
+        handler.setCallbackPattern(methodKey);
         registry.registerCallbackQuery(registration);
     }
 }

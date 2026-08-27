@@ -12,7 +12,7 @@ import java.util.Map;
 public final class CallbackHandlerStore {
 
     private final String botName;
-    private final Map<String, List<CallbackHandlerGroup>> handlers = new HashMap<>();
+    private final Map<String, List<Handler>> handlers = new HashMap<>();
 
     public CallbackHandlerStore(
             String botName
@@ -25,21 +25,21 @@ public final class CallbackHandlerStore {
     ) {
         String mapKey = CallbackParamResolver.callbackKey(registration.key());
         handlers.computeIfAbsent(mapKey, k -> new ArrayList<>())
-                .add(new CallbackHandlerGroup(registration.key(), registration.handler()));
+                .add(registration.handler());
     }
 
-    public List<CallbackHandlerGroup> find(String key) {
+    public List<Handler> find(String key) {
         String mapKey = CallbackParamResolver.updateKey(key);
 
 
-        List<CallbackHandlerGroup> result = new ArrayList<>();
+        List<Handler> result = new ArrayList<>();
 
-        List<CallbackHandlerGroup> exactHandlers = handlers.get(key);
+        List<Handler> exactHandlers = handlers.get(key);
 
         if (exactHandlers != null) {
             result.addAll(exactHandlers);
         } else {
-            List<CallbackHandlerGroup> paramHandlers = handlers.get(mapKey);
+            List<Handler> paramHandlers = handlers.get(mapKey);
             if (paramHandlers != null) {
                 result.addAll(paramHandlers);
             }
@@ -47,7 +47,7 @@ public final class CallbackHandlerStore {
 
 
         if (key != null) {
-            List<CallbackHandlerGroup> globalHandlers = handlers.get(null);
+            List<Handler> globalHandlers = handlers.get(null);
 
             if (globalHandlers != null) {
                 result.addAll(globalHandlers);
@@ -55,12 +55,5 @@ public final class CallbackHandlerStore {
         }
 
         return result;
-    }
-
-
-    public static record CallbackHandlerGroup(
-            String callbackPattern,
-            Handler handler
-    ) {
     }
 }

@@ -8,10 +8,7 @@ import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.media.EditMessageCaptionRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentUploadRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.*;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
@@ -1203,6 +1200,137 @@ class TelegramClientTest {
             assertTrue(
                     body.get("show_caption_above_media").asBoolean()
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("sendPhoto upload")
+    class SendPhotoUpload {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            InputFile photo = new InputFile(
+                    "fake image data".getBytes(StandardCharsets.UTF_8),
+                    "photo.jpg",
+                    "image/jpeg"
+            );
+
+            SendPhotoUploadRequest request =
+                    SendPhotoUploadRequest.builder()
+                            .chatId(456L)
+                            .photo(photo)
+                            .caption("Test photo")
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendPhoto(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectMultipartRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            byte[] photoData =
+                    "fake image data".getBytes(StandardCharsets.UTF_8);
+
+            InputFile photo = new InputFile(
+                    photoData,
+                    "photo.jpg",
+                    "image/jpeg"
+            );
+
+            SendPhotoUploadRequest request =
+                    SendPhotoUploadRequest.builder()
+                            .chatId(456L)
+                            .photo(photo)
+                            .caption("Test photo")
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .build();
+
+            telegramClient.sendPhoto(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendPhoto",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            String contentType = httpRequest.headers()
+                    .firstValue("Content-Type")
+                    .orElseThrow();
+
+            assertTrue(
+                    contentType.startsWith("multipart/form-data; boundary=")
+            );
+
+            byte[] body = readRequestBodyBytes(httpRequest);
+
+            String bodyString = new String(
+                    body,
+                    StandardCharsets.UTF_8
+            );
+
+            assertTrue(bodyString.contains("name=\"chat_id\""));
+            assertTrue(bodyString.contains("456"));
+
+            assertTrue(bodyString.contains("name=\"caption\""));
+            assertTrue(bodyString.contains("Test photo"));
+
+            assertTrue(
+                    bodyString.contains("name=\"has_spoiler\"")
+            );
+            assertTrue(bodyString.contains("true"));
+
+            assertTrue(
+                    bodyString.contains("name=\"show_caption_above_media\"")
+            );
+            assertTrue(bodyString.contains("true"));
+
+            assertTrue(bodyString.contains("name=\"photo\""));
+            assertTrue(bodyString.contains("filename=\"photo.jpg\""));
+            assertTrue(bodyString.contains("Content-Type: image/jpeg"));
+            assertTrue(bodyString.contains("fake image data"));
         }
     }
 

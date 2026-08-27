@@ -43,14 +43,12 @@ public final class Dispatcher {
     }
 
     private void dispatchUpdateHandlers(Update update, BotContext botContext) {
-        List<Handler> handlers = registry.getUpdateHandlers(botName);
+        Handler handler = registry.getUpdateHandler(botName);
 
-        for (Handler handler : handlers) {
-            AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);
-            if (!decision.isGranted()) {
-                throw new AccessDeniedException();
-            }
-            handler.handle(update, botContext);
+        AuthorizationDecision decision = authorizationManager.authorize(botContext, handler);
+        if (!decision.isGranted()) {
+            throw new AccessDeniedException();
         }
+        handler.handle(update, botContext);
     }
 }

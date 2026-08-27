@@ -5,7 +5,7 @@ import io.github.shahbozolmosov.telegrambot.keyboard.ReplyMarkup;
 
 public record EditMessageReplyMarkupRequest(
         @JsonProperty("chat_id")
-        String chatId,
+        long chatId,
 
         @JsonProperty("message_id")
         long messageId,

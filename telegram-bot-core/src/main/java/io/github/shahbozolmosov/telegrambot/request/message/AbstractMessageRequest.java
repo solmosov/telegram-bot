@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public abstract class AbstractMessageRequest {
 
     @JsonProperty("chat_id")
-    protected final String chatId;
+    protected final long chatId;
 
     @JsonProperty("allow_paid_broadcast")
     protected final Boolean allowPaidBroadcast;
@@ -32,7 +32,7 @@ public abstract class AbstractMessageRequest {
         this.linkPreviewOptions = builder.linkPreviewOptions;
     }
 
-    public String getChatId() {
+    public long getChatId() {
         return chatId;
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractMessageRequest {
     }
 
     public abstract static class Builder<T extends Builder<T>> {
-        private String chatId;
+        private long chatId;
         private Boolean allowPaidBroadcast;
         private Boolean protectContent;
         private Boolean disableNotification;
@@ -64,7 +64,7 @@ public abstract class AbstractMessageRequest {
             return (T) this;
         }
 
-        public T chatId(String chatId) {
+        public T chatId(long chatId) {
             this.chatId = chatId;
             return self();
         }

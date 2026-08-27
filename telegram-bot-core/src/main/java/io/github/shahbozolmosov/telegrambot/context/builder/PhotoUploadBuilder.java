@@ -23,7 +23,7 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
     public PhotoUploadBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
+            Long defaultChatId,
             byte[] file,
             String fileName,
             String mimeType
@@ -36,7 +36,7 @@ public class PhotoUploadBuilder extends AbstractMessageBuilder<Message> {
                 .photo(inputFile);
     }
 
-    public PhotoUploadBuilder toChat(String chatId) {
+    public PhotoUploadBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

@@ -20,7 +20,7 @@ public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
     public EditMessageTextBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
+            Long defaultChatId,
             String messageId,
             String textContent
     ) {
@@ -31,7 +31,7 @@ public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
                 .messageId(messageId);
     }
 
-    public EditMessageTextBuilder chatId(String chatId){
+    public EditMessageTextBuilder chatId(long chatId){
         reqBuilder.chatId(chatId);
         return this;
     }

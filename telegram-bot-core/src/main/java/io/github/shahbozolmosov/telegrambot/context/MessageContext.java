@@ -20,8 +20,8 @@ public final class MessageContext {
         return message().messageId();
     }
 
-    public String chatId() {
-        return String.valueOf(message.chat().id());
+    public Long chatId() {
+        return message.chat().id();
     }
 
     public From from() {

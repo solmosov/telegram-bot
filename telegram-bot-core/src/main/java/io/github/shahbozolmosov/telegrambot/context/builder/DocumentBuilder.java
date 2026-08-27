@@ -19,16 +19,16 @@ public class DocumentBuilder extends AbstractMessageBuilder<Message> {
     public DocumentBuilder(
             TelegramClient client,
             Long updateId,
-            String chatId,
+            Long defaultChatId,
             String documentUrl
     ) {
         super(client, updateId);
         this.reqBuilder = SendDocumentRequest.builder()
                 .document(documentUrl)
-                .chatId(chatId);
+                .chatId(defaultChatId);
     }
 
-    public DocumentBuilder toChat(String chatId) {
+    public DocumentBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

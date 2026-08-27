@@ -23,7 +23,7 @@ public class VideoBuilder extends AbstractMessageBuilder<Message>{
     public VideoBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
+            Long defaultChatId,
             String videoUrl
     ) {
         super(client, updateId);
@@ -33,7 +33,7 @@ public class VideoBuilder extends AbstractMessageBuilder<Message>{
                 .video(videoUrl);
     }
 
-    public VideoBuilder toChat(String chatId) {
+    public VideoBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

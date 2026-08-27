@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public record SendChatActionRequest(
         @JsonProperty("chat_id")
-        String chatId,
+        long chatId,
 
         Action action
 ) {

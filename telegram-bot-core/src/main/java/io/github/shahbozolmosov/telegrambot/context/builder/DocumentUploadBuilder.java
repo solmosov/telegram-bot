@@ -22,7 +22,7 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
     public DocumentUploadBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
+            Long defaultChatId,
             byte[] file,
             String fileName,
             String mimeType
@@ -36,7 +36,7 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
                 .document(inputFile);
     }
 
-    public DocumentUploadBuilder toChat(String chatId) {
+    public DocumentUploadBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

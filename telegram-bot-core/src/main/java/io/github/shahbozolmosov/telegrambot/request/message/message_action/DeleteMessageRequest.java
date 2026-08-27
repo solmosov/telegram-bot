@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record DeleteMessageRequest(
         @JsonProperty("chat_id")
-        String chatId,
+        long chatId,
 
         @JsonProperty("message_id")
-        String messageId
+        long messageId
 ) {
 }

@@ -89,7 +89,7 @@ public final class BotContext {
         );
     }
 
-    public DeleteMessageBuilder deleteMessage(String messageId) {
+    public DeleteMessageBuilder deleteMessage(long messageId) {
         return new DeleteMessageBuilder(
                 client,
                 update.updateId(),

@@ -560,9 +560,9 @@ public final class TelegramClient {
         }
     }
 
-    private void acquirePermit(String chatId) {
+    private void acquirePermit(long chatId) {
         try {
-            rateLimiter.acquire(Long.parseLong(chatId));
+            rateLimiter.acquire(chatId);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new TelegramClientException("Interrupted while waiting for limiter", ex);

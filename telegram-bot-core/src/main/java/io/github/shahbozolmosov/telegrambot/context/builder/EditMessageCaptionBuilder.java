@@ -20,7 +20,7 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
     public EditMessageCaptionBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
+            Long defaultChatId,
             String messageId,
             String caption
     ) {
@@ -31,7 +31,7 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
                 .caption(caption);
     }
 
-    public EditMessageCaptionBuilder chatId(String chatId){
+    public EditMessageCaptionBuilder toChat(long chatId){
         reqBuilder.chatId(chatId);
         return this;
     }

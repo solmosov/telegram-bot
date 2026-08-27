@@ -22,7 +22,7 @@ public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
     public VideoUploadBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
+            Long defaultChatId,
             byte[] file,
             String fileName,
             String mimeType
@@ -35,7 +35,7 @@ public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
                 .video(inputFile);
     }
 
-    public VideoUploadBuilder toChat(String chatId) {
+    public VideoUploadBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

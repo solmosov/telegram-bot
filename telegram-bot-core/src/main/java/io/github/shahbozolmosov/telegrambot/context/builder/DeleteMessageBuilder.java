@@ -10,26 +10,26 @@ public class DeleteMessageBuilder extends AbstractMessageBuilder<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(DeleteMessageBuilder.class);
 
-    private String chatId;
-    private String messageId;
+    private long chatId;
+    private long messageId;
 
     public DeleteMessageBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId,
-            String messageId
+            Long defaultChatId,
+            Long messageId
     ) {
         super(client, updateId);
         this.chatId = defaultChatId;
         this.messageId = messageId;
     }
 
-    public DeleteMessageBuilder toChat(String chatId) {
+    public DeleteMessageBuilder toChat(long chatId) {
         this.chatId = chatId;
         return this;
     }
 
-    public DeleteMessageBuilder messageId(String messageId) {
+    public DeleteMessageBuilder messageId(long messageId) {
         this.messageId = messageId;
         return this;
     }

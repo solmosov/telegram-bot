@@ -10,19 +10,19 @@ public class ChatActionBuilder extends AbstractMessageBuilder<Boolean> {
 
     private static final Logger log = LoggerFactory.getLogger(ChatActionBuilder.class);
 
-    private String chatId;
+    private long chatId;
     private SendChatActionRequest.Action action;
 
     public ChatActionBuilder(
             TelegramClient client,
             Long updateId,
-            String defaultChatId
+            Long defaultChatId
             ) {
         super(client, updateId);
         this.chatId = defaultChatId;
     }
 
-    public ChatActionBuilder toChat(String chatId) {
+    public ChatActionBuilder toChat(long chatId) {
         this.chatId = chatId;
         return this;
     }

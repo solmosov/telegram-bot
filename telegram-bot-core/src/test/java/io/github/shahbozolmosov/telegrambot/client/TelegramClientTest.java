@@ -3,12 +3,14 @@ package io.github.shahbozolmosov.telegrambot.client;
 import io.github.shahbozolmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
+import io.github.shahbozolmosov.telegrambot.model.InputFile;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.EditMessageCaptionRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentUploadRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
@@ -969,6 +971,126 @@ class TelegramClientTest {
                 any(),
                 any(HttpResponse.BodyHandler.class)
         )).thenReturn(httpResponse);
+    }
+
+    @Nested
+    @DisplayName("sendDocument upload")
+    class SendDocumentUpload {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            InputFile document = new InputFile(
+                    "test document".getBytes(StandardCharsets.UTF_8),
+                    "test.txt",
+                    "text/plain"
+            );
+
+            SendDocumentUploadRequest request =
+                    SendDocumentUploadRequest.builder()
+                            .chatId(456L)
+                            .document(document)
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendDocument(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectMultipartRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            byte[] fileData = "test document".getBytes(StandardCharsets.UTF_8);
+
+            InputFile document = new InputFile(
+                    fileData,
+                    "test.txt",
+                    "text/plain"
+            );
+
+            SendDocumentUploadRequest request =
+                    SendDocumentUploadRequest.builder()
+                            .chatId(456L)
+                            .document(document)
+                            .disableContentTypeDetection(true)
+                            .build();
+
+            telegramClient.sendDocument(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendDocument",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            String contentType = httpRequest.headers()
+                    .firstValue("Content-Type")
+                    .orElseThrow();
+
+            assertTrue(
+                    contentType.startsWith("multipart/form-data; boundary=")
+            );
+
+            byte[] body = readRequestBodyBytes(httpRequest);
+
+            String bodyString = new String(
+                    body,
+                    StandardCharsets.UTF_8
+            );
+
+            assertTrue(bodyString.contains("name=\"chat_id\""));
+            assertTrue(bodyString.contains("456"));
+
+            assertTrue(
+                    bodyString.contains(
+                            "name=\"disable_content_type_detection\""
+                    )
+            );
+            assertTrue(bodyString.contains("true"));
+
+            assertTrue(bodyString.contains("name=\"document\""));
+            assertTrue(bodyString.contains("filename=\"test.txt\""));
+            assertTrue(bodyString.contains("Content-Type: text/plain"));
+
+            assertTrue(bodyString.contains("test document"));
+        }
     }
 
     private String readRequestBody(HttpRequest request) {

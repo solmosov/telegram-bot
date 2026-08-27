@@ -56,7 +56,7 @@ class TelegramClientTest {
     @DisplayName("getUpdates")
     class GetUpdates {
         @Test
-        void getUpdates_shouldReturnUpdates() throws IOException, InterruptedException {
+        void shouldReturnUpdates() throws IOException, InterruptedException {
             String json = """
                     {
                       "ok": true,
@@ -90,7 +90,7 @@ class TelegramClientTest {
         }
 
         @Test
-        void getUpdates_shouldSendCorrectRequest() throws IOException, InterruptedException {
+        void shouldSendCorrectRequest() throws IOException, InterruptedException {
             String json = """
                     {
                         "ok": true,
@@ -124,7 +124,7 @@ class TelegramClientTest {
         }
 
         @Test
-        void getUpdates_shouldRejectMoreThan100Updates() throws Exception {
+        void shouldRejectMoreThan100Updates() throws Exception {
             StringBuilder updates = new StringBuilder("[");
 
             for (int i = 0; i < 101; i++) {
@@ -163,7 +163,7 @@ class TelegramClientTest {
         }
 
         @Test
-        void getUpdates_shouldReturnEmptyList_whenNoUpdatesAvailable()
+        void shouldReturnEmptyList_whenNoUpdatesAvailable()
                 throws Exception {
 
             String json = """
@@ -191,7 +191,7 @@ class TelegramClientTest {
 
 
         @Test
-        void getUpdates_shouldThrowTelegramClientException_whenHttpClientFails()
+        void shouldThrowTelegramClientException_whenHttpClientFails()
                 throws Exception {
 
             when(httpClient.send(
@@ -206,7 +206,7 @@ class TelegramClientTest {
         }
 
         @Test
-        void getUpdates_shouldThrowTelegramApiException_whenTelegramReturnsError()
+        void shouldThrowTelegramApiException_whenTelegramReturnsError()
                 throws Exception {
 
             String json = """
@@ -235,7 +235,7 @@ class TelegramClientTest {
         }
 
         @Test
-        void getUpdates_shouldThrowTelegramClientException_whenResponseIsInvalidJson()
+        void shouldThrowTelegramClientException_whenResponseIsInvalidJson()
                 throws Exception {
 
             String invalidJson = """

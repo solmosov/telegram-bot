@@ -10,7 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public final class CallbackHandlerStore {
+
+    private final String botName;
     private final Map<String, List<CallbackHandlerGroup>> handlers = new HashMap<>();
+
+    public CallbackHandlerStore(
+            String botName
+    ) {
+        this.botName = botName;
+    }
 
     public void register(
             CallbackHandlerRegistration registration

@@ -9,7 +9,16 @@ import java.util.List;
 import java.util.Map;
 
 public final class UpdateHandlerStore {
+
+    private final String botName;
     private final Map<String, List<Handler>> updateHandlers = new HashMap<>();
+
+
+    public UpdateHandlerStore(
+            String botName
+    ) {
+        this.botName = botName;
+    }
 
     public void register(UpdateHandlerRegistration registration) {
         updateHandlers

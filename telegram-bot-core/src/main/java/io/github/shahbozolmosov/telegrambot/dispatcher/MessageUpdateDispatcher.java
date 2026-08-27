@@ -46,7 +46,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
         Message message = update.message();
 
         MessageType type = resolveType(message);
-        String key = botName + "/" + resolveKey(type, message);
+        String key = botName + resolveKey(type, message);
 
         List<Handler> handlers = registry.find(type, key);
 

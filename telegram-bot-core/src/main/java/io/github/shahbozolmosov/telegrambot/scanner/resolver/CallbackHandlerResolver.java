@@ -17,7 +17,7 @@ public class CallbackHandlerResolver implements HandlerAnnotationResolver {
     public void register(String botName, Method method, Handler handler, Registry registry) {
         CallbackQueryHandler callbackQuery = method.getAnnotation(CallbackQueryHandler.class);
 
-        String key = botName + "/";
+        String key = botName;
 
         String methodKey = callbackQuery.value().isEmpty()
                 ? null

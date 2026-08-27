@@ -35,7 +35,7 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
     public void dispatch(String botName, Update update, BotContext botContext) {
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        String key = botName + "/" + callbackQuery.data();
+        String key = botName + callbackQuery.data();
 
         List<CallbackHandlerStore.CallbackHandlerGroup> handlerGroups = registry.findCallbackQuery(key);
 

@@ -11,9 +11,16 @@ import java.util.Map;
 
 public final class MessageHandlerStore {
 
+    private final String botName;
     private final Map<MessageType, Map<String, List<Handler>>> handlers = new HashMap<>();
 
-    public void register(MessageHandlerRegistration registration){
+    public MessageHandlerStore(
+            String botName
+    ) {
+        this.botName = botName;
+    }
+
+    public void register(MessageHandlerRegistration registration) {
         handlers
                 .computeIfAbsent(registration.type(), k -> new HashMap<>())
                 .computeIfAbsent(registration.key(), k -> new ArrayList<>())
@@ -40,7 +47,7 @@ public final class MessageHandlerStore {
         }
 
         if (key != null) {
-            List<Handler> globalHandlers = typeHandlers.get(null);
+            List<Handler> globalHandlers = typeHandlers.get(botName);
 
             if (globalHandlers != null) {
                 result.addAll(globalHandlers);

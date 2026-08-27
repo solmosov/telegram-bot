@@ -59,7 +59,7 @@ public final class TelegramBot {
         this.telegramClient = new TelegramClient(botToken, jsonMapper);
 
         // Registry
-        final Registry registry = new Registry();
+        final Registry registry = new Registry(name);
 
         // Authorization Manager
         final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());

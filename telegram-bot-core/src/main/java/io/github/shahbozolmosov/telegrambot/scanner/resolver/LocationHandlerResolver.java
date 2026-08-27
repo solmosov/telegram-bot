@@ -19,7 +19,7 @@ public class LocationHandlerResolver implements HandlerAnnotationResolver {
 
         LocationHandler location = method.getAnnotation(LocationHandler.class);
 
-        String key = botName + "/";
+        String key = botName;
 
         String methodKey = location.value().isEmpty()
                 ? null

@@ -22,7 +22,7 @@ public class CommandHandlerResolver implements HandlerAnnotationResolver {
                 ? null
                 : command.value();
 
-        String key = botName + "/" + methodKey;
+        String key = botName + methodKey;
 
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.COMMAND,

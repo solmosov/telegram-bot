@@ -17,10 +17,10 @@ public final class Registry {
     private final CallbackHandlerStore callbackRegistry;
     private final UpdateHandlerStore updateRegistry;
 
-    public Registry() {
-        this.messageRegistry = new MessageHandlerStore();
-        this.callbackRegistry = new CallbackHandlerStore();
-        this.updateRegistry = new UpdateHandlerStore();
+    public Registry(String botName) {
+        this.messageRegistry = new MessageHandlerStore(botName);
+        this.callbackRegistry = new CallbackHandlerStore(botName);
+        this.updateRegistry = new UpdateHandlerStore(botName);
     }
 
 

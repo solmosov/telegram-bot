@@ -18,7 +18,7 @@ public class RequestUsersHandlerResolver implements HandlerAnnotationResolver {
     public void register(String botName, Method method, Handler handler, Registry registry) {
         RequestUsersHandler requestUsersHandler = method.getAnnotation(RequestUsersHandler.class);
 
-        String key = botName + "/";
+        String key = botName;
 
         String methodKey = requestUsersHandler.value() == -1
                 ? null

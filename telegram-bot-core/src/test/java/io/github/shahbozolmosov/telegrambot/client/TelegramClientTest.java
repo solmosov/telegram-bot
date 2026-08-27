@@ -11,6 +11,7 @@ import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackReque
 import io.github.shahbozolmosov.telegrambot.request.message.media.EditMessageCaptionRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentUploadRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendPhotoRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
@@ -1090,6 +1091,118 @@ class TelegramClientTest {
             assertTrue(bodyString.contains("Content-Type: text/plain"));
 
             assertTrue(bodyString.contains("test document"));
+        }
+    }
+
+    @Nested
+    @DisplayName("sendPhoto")
+    class SendPhoto {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    },
+                    "caption": "Test photo"
+                  }
+                }
+                """);
+
+            SendPhotoRequest request =
+                    SendPhotoRequest.builder()
+                            .chatId(456L)
+                            .photo("https://example.com/AgACAgIAAxkBAAIB.png")
+                            .caption("Test photo")
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendPhoto(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            SendPhotoRequest request =
+                    SendPhotoRequest.builder()
+                            .chatId(456L)
+                            .photo("https://example.com/AgACAgIAAxkBAAIB.png")
+                            .caption("Test photo")
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .build();
+
+            telegramClient.sendPhoto(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendPhoto",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+
+            JsonNode body =
+                    jsonMapper.readTree(readRequestBody(httpRequest));
+
+            assertEquals(
+                    456,
+                    body.get("chat_id").asLong()
+            );
+
+            assertEquals(
+                    "https://example.com/AgACAgIAAxkBAAIB.png",
+                    body.get("photo").asText()
+            );
+
+            assertEquals(
+                    "Test photo",
+                    body.get("caption").asText()
+            );
+
+            assertTrue(body.get("has_spoiler").asBoolean());
+
+            assertTrue(
+                    body.get("show_caption_above_media").asBoolean()
+            );
         }
     }
 

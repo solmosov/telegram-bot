@@ -3,7 +3,7 @@ package io.github.shahbozolmosov.telegrambot.model.message;
 import io.github.shahbozolmosov.telegrambot.model.Chat;
 import io.github.shahbozolmosov.telegrambot.model.From;
 
-public final class TextMessage extends Message {
+public final class TextMessage extends AbstractMessage {
 
     private final String text;
 

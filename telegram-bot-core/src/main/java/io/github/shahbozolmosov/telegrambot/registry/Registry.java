@@ -2,10 +2,10 @@ package io.github.shahbozolmosov.telegrambot.registry;
 
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
 import io.github.shahbozolmosov.telegrambot.model.MessageType;
-import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackHandlerRegistration;
+import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackQueryHandlerRegistration;
 import io.github.shahbozolmosov.telegrambot.registry.registration.MessageHandlerRegistration;
 import io.github.shahbozolmosov.telegrambot.registry.registration.UpdateHandlerRegistration;
-import io.github.shahbozolmosov.telegrambot.registry.store.CallbackHandlerStore;
+import io.github.shahbozolmosov.telegrambot.registry.store.CallbackQueryHandlerStore;
 import io.github.shahbozolmosov.telegrambot.registry.store.MessageHandlerStore;
 import io.github.shahbozolmosov.telegrambot.registry.store.UpdateHandlerStore;
 
@@ -14,12 +14,12 @@ import java.util.List;
 public final class Registry {
 
     private final MessageHandlerStore messageRegistry;
-    private final CallbackHandlerStore callbackRegistry;
+    private final CallbackQueryHandlerStore callbackRegistry;
     private final UpdateHandlerStore updateRegistry;
 
     public Registry(String botName) {
         this.messageRegistry = new MessageHandlerStore(botName);
-        this.callbackRegistry = new CallbackHandlerStore(botName);
+        this.callbackRegistry = new CallbackQueryHandlerStore(botName);
         this.updateRegistry = new UpdateHandlerStore(botName);
     }
 
@@ -38,7 +38,7 @@ public final class Registry {
 
 
     // Callback
-    public void registerCallbackQuery(CallbackHandlerRegistration registration) {
+    public void registerCallbackQuery(CallbackQueryHandlerRegistration registration) {
         callbackRegistry.register(registration);
     }
 

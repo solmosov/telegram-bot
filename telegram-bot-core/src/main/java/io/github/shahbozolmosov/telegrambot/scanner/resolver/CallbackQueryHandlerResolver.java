@@ -3,11 +3,11 @@ package io.github.shahbozolmosov.telegrambot.scanner.resolver;
 import io.github.shahbozolmosov.telegrambot.annotation.CallbackQueryHandler;
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
 import io.github.shahbozolmosov.telegrambot.registry.Registry;
-import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackHandlerRegistration;
+import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackQueryHandlerRegistration;
 
 import java.lang.reflect.Method;
 
-public class CallbackHandlerResolver implements HandlerAnnotationResolver {
+public class CallbackQueryHandlerResolver implements HandlerAnnotationResolver {
     @Override
     public boolean supports(Method method) {
         return method.isAnnotationPresent(CallbackQueryHandler.class);
@@ -26,7 +26,7 @@ public class CallbackHandlerResolver implements HandlerAnnotationResolver {
 
         key += methodKey;
 
-        CallbackHandlerRegistration registration = new CallbackHandlerRegistration(
+        CallbackQueryHandlerRegistration registration = new CallbackQueryHandlerRegistration(
                 key,
                 handler
         );

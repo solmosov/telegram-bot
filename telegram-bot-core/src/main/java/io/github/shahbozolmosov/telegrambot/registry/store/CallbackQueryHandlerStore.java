@@ -3,26 +3,26 @@ package io.github.shahbozolmosov.telegrambot.registry.store;
 import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.CallbackParamResolver;
 import io.github.shahbozolmosov.telegrambot.exception.handler.HandlerRegistrationException;
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
-import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackHandlerRegistration;
+import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackQueryHandlerRegistration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class CallbackHandlerStore {
+public final class CallbackQueryHandlerStore {
 
     private final String botName;
     private final Map<String, Handler> handlers = new HashMap<>();
 
-    public CallbackHandlerStore(
+    public CallbackQueryHandlerStore(
             String botName
     ) {
         this.botName = botName;
     }
 
     public void register(
-            CallbackHandlerRegistration registration
+            CallbackQueryHandlerRegistration registration
     ) {
         String mapKey = CallbackParamResolver.callbackKey(registration.key());
 
@@ -30,7 +30,7 @@ public final class CallbackHandlerStore {
 
         if (previous != null) {
             throw new HandlerRegistrationException(
-                    "Handler already registered for key='%s' in bot='%s'"
+                    "CallbackQueryHandler already registered for key='%s' in bot='%s'"
                             .formatted(
                                     registration.key().replace(botName, ""),
                                     botName

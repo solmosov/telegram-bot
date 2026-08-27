@@ -52,7 +52,7 @@ public final class Registry {
 
     }
 
-    public List<Handler> getUpdateHandlers(String botName) {
-        return updateRegistry.getHandlers(botName);
+    public Handler getUpdateHandler(String botName) {
+        return updateRegistry.getHandler(botName);
     }
 }

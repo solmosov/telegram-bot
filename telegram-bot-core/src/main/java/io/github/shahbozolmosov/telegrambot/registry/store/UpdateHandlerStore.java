@@ -1,17 +1,16 @@
 package io.github.shahbozolmosov.telegrambot.registry.store;
 
+import io.github.shahbozolmosov.telegrambot.exception.handler.HandlerRegistrationException;
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
 import io.github.shahbozolmosov.telegrambot.registry.registration.UpdateHandlerRegistration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class UpdateHandlerStore {
 
     private final String botName;
-    private final Map<String, List<Handler>> updateHandlers = new HashMap<>();
+    private final Map<String, Handler> updateHandlers = new HashMap<>();
 
 
     public UpdateHandlerStore(
@@ -21,19 +20,16 @@ public final class UpdateHandlerStore {
     }
 
     public void register(UpdateHandlerRegistration registration) {
-        updateHandlers
-                .computeIfAbsent(registration.botName(), k -> new ArrayList<>())
-                .add(registration.handler());
+        Handler previous = updateHandlers.putIfAbsent(registration.botName(), registration.handler());
 
+        if (previous != null) {
+            throw new HandlerRegistrationException(
+                    "UpdateHandler already registered for bot='%s'".formatted(botName)
+            );
+        }
     }
 
-    public List<Handler> getHandlers(String botName) {
-        List<Handler> list = updateHandlers.get(botName);
-
-        if (list == null) {
-            return List.of();
-        }
-
-        return list;
+    public Handler getHandler(String botName) {
+        return updateHandlers.get(botName);
     }
 }

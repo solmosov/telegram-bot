@@ -46,10 +46,10 @@ public final class CallbackQueryHandlerStore {
 
         List<Handler> result = new ArrayList<>();
 
-        Handler exactHandlers = handlers.get(key);
+        Handler exactHandler = handlers.get(key);
 
-        if (exactHandlers != null) {
-            result.add(exactHandlers);
+        if (exactHandler != null) {
+            result.add(exactHandler);
         } else {
             Handler paramHandlers = handlers.get(mapKey);
             if (paramHandlers != null) {
@@ -58,12 +58,10 @@ public final class CallbackQueryHandlerStore {
         }
 
 
-        if (key != null) {
-            Handler globalHandlers = handlers.get(botName);
+        Handler globalHandler = handlers.get(botName);
 
-            if (globalHandlers != null) {
-                result.add(globalHandlers);
-            }
+        if (globalHandler != null) {
+            result.add(globalHandler);
         }
 
         return result;

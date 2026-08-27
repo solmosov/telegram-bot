@@ -30,10 +30,10 @@ public final class MessageHandlerStore {
 
         if(existingHandler != null){
             throw new HandlerRegistrationException(
-                    "Handler already registered for type='%s' and key='%s' in bot='%s'"
+                    "MessageHandler already registered for type='%s' and key='%s' in bot='%s'"
                             .formatted(
                                     registration.type(),
-                                    registration.key(),
+                                    registration.key().replace(botName, ""),
                                     botName
                             )
             );

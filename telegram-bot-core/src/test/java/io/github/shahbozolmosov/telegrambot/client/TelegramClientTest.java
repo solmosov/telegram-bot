@@ -8,6 +8,7 @@ import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.EditMessageCaptionRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.SendDocumentRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
@@ -20,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayOutputStream;
@@ -869,6 +871,97 @@ class TelegramClientTest {
         }
     }
 
+    @Nested
+    @DisplayName("sendDocument")
+    class SendDocument {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            SendDocumentRequest request = SendDocumentRequest.builder()
+                    .chatId(456L)
+                    .document("document-id")
+                    .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendDocument(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            SendDocumentRequest request = SendDocumentRequest.builder()
+                    .chatId(456L)
+                    .document("document-id")
+                    .build();
+
+            telegramClient.sendDocument(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendDocument",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+
+            JsonNode body =
+                    jsonMapper.readTree(readRequestBody(httpRequest));
+
+            assertEquals(
+                    456,
+                    body.get("chat_id").asLong()
+            );
+
+            assertEquals(
+                    "document-id",
+                    body.get("document").asText()
+            );
+        }
+    }
     private void mockResponse(String json) throws IOException, InterruptedException {
         when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
 

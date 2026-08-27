@@ -6,6 +6,7 @@ import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
 import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
+import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.media.EditMessageCaptionRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -28,6 +30,7 @@ import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.Flow;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -760,6 +763,112 @@ class TelegramClientTest {
         }
     }
 
+    @Nested
+    @DisplayName("answerCallbackQuery")
+    class AnswerCallbackQuery {
+
+        @Test
+        void shouldReturnTrue() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": true
+                }
+                """);
+
+            AnswerCallbackRequest request =
+                    new AnswerCallbackRequest(
+                            "callback-123",
+                            "Done!",
+                            true
+                    );
+
+            TelegramResponse<Boolean> response =
+                    telegramClient.answerCallbackQuery(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertTrue(response.result());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": true
+                }
+                """);
+
+            AnswerCallbackRequest request =
+                    new AnswerCallbackRequest(
+                            "callback-123",
+                            "Done!",
+                            true
+                    );
+
+            telegramClient.answerCallbackQuery(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/answerCallbackQuery",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+        }
+
+        @Test
+        void shouldOmitNullFields() throws Exception {
+            mockResponse("""
+            {
+              "ok": true,
+              "result": true
+            }
+            """);
+
+            AnswerCallbackRequest request =
+                    new AnswerCallbackRequest(
+                            "callback-123",
+                            null,
+                            null
+                    );
+
+            telegramClient.answerCallbackQuery(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            String body = readRequestBody(captor.getValue());
+
+            assertEquals(
+                    "{\"callback_query_id\":\"callback-123\"}",
+                    body
+            );
+        }
+    }
+
     private void mockResponse(String json) throws IOException, InterruptedException {
         when(httpResponse.body()).thenReturn(json.getBytes(StandardCharsets.UTF_8));
 
@@ -769,17 +878,26 @@ class TelegramClientTest {
         )).thenReturn(httpResponse);
     }
 
+    private String readRequestBody(HttpRequest request) {
+        return new String(
+                readRequestBodyBytes(request),
+                StandardCharsets.UTF_8
+        );
+    }
+
     private byte[] readBody(HttpRequest request) {
-        var output = new java.io.ByteArrayOutputStream();
+        return readRequestBodyBytes(request);
+    }
+
+    private byte[] readRequestBodyBytes(HttpRequest request) {
+        var output = new ByteArrayOutputStream();
 
         request.bodyPublisher()
                 .orElseThrow()
-                .subscribe(new java.util.concurrent.Flow.Subscriber<>() {
+                .subscribe(new Flow.Subscriber<>() {
 
                     @Override
-                    public void onSubscribe(
-                            java.util.concurrent.Flow.Subscription subscription
-                    ) {
+                    public void onSubscribe(Flow.Subscription subscription) {
                         subscription.request(Long.MAX_VALUE);
                     }
 

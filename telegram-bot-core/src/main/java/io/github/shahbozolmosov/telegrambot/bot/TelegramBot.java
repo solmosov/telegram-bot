@@ -10,6 +10,7 @@ import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.*;
 import io.github.shahbozolmosov.telegrambot.handler.argument.BotContextArgumentResolver;
 import io.github.shahbozolmosov.telegrambot.handler.argument.HandlerArgumentResolver;
 import io.github.shahbozolmosov.telegrambot.handler.argument.HandlerArgumentResolverComposite;
+import io.github.shahbozolmosov.telegrambot.handler.argument.MessageArgumentResolver;
 import io.github.shahbozolmosov.telegrambot.scanner.resolver.*;
 import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
 import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
@@ -100,7 +101,8 @@ public final class TelegramBot {
 
         // Handler Registrar
         List<HandlerArgumentResolver> argumentResolvers = List.of(
-                new BotContextArgumentResolver()
+                new BotContextArgumentResolver(),
+                new MessageArgumentResolver()
         );
 
         HandlerArgumentResolverComposite argumentResolverComposite = new HandlerArgumentResolverComposite(argumentResolvers);

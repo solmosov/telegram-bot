@@ -51,7 +51,7 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
                     .setCallbackParams(params);
 
             // Context
-            group.handler().handle(botContext);
+            group.handler().handle(update, botContext);
         }
     }
 }

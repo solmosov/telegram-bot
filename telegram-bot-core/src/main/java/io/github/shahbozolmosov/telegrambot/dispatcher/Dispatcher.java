@@ -33,7 +33,7 @@ public final class Dispatcher {
             Update update,
             BotContext context
     ) {
-        dispatchUpdateHandlers(context);
+        dispatchUpdateHandlers(update, context);
 
         for (UpdateTypeDispatcher typeDispatcher : updateTypeDispatchers) {
             if (typeDispatcher.supports(update.type())) {
@@ -42,7 +42,7 @@ public final class Dispatcher {
         }
     }
 
-    private void dispatchUpdateHandlers(BotContext botContext) {
+    private void dispatchUpdateHandlers(Update update, BotContext botContext) {
         List<Handler> handlers = registry.getUpdateHandlers(botName);
 
         for (Handler handler : handlers) {
@@ -50,7 +50,7 @@ public final class Dispatcher {
             if (!decision.isGranted()) {
                 throw new AccessDeniedException();
             }
-            handler.handle(botContext);
+            handler.handle(update, botContext);
         }
     }
 }

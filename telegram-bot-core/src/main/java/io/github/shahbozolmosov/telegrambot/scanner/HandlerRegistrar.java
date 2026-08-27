@@ -86,9 +86,9 @@ public final class HandlerRegistrar {
         BotAuthorize authorization = method.getAnnotation(BotAuthorize.class);
 
         return new Handler(
-                context -> {
+                (update, context) -> {
                     try {
-                        Object[] arguments = argumentResolver.resolve(method, context);
+                        Object[] arguments = argumentResolver.resolve(method, update, context);
 
                         method.invoke(instance, arguments);
 

@@ -2,6 +2,7 @@ package io.github.shahbozolmosov.telegrambot.handler.argument;
 
 import io.github.shahbozolmosov.telegrambot.context.BotContext;
 import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
+import io.github.shahbozolmosov.telegrambot.model.Update;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -18,14 +19,19 @@ public final class HandlerArgumentResolverComposite {
         this.resolvers = resolvers;
     }
 
-    public Object[] resolve(Method method, BotContext context) {
+    public Object[] resolve(
+            Method method,
+            Update update,
+            BotContext context
+    ) {
         return Arrays.stream(method.getParameters())
-                .map(param -> resolve(param, context))
+                .map(param -> resolve(param, update, context))
                 .toArray();
     }
 
     private Object resolve(
             Parameter param,
+            Update update,
             BotContext context
     ) {
         return resolvers.stream()
@@ -39,6 +45,6 @@ public final class HandlerArgumentResolverComposite {
                                 + "#"
                                 + param.getName()
                 ))
-                .resolve(param, context);
+                .resolve(param, update, context);
     }
 }

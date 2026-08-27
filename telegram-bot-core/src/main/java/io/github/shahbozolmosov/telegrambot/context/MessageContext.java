@@ -16,7 +16,7 @@ public final class MessageContext {
         return message;
     }
 
-    public String messageId() {
+    public long messageId() {
         return message().messageId();
     }
 

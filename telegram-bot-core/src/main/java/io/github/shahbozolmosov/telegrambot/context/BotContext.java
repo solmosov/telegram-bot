@@ -48,7 +48,7 @@ public final class BotContext {
         return messageContext;
     }
 
-    public String messageId() {
+    public long messageId() {
         return message().messageId();
     }
 

@@ -1334,6 +1334,117 @@ class TelegramClientTest {
         }
     }
 
+    @Nested
+    @DisplayName("sendVideo")
+    class SendVideo {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    },
+                    "caption": "Test video"
+                  }
+                }
+                """);
+
+            SendVideoRequest request =
+                    SendVideoRequest.builder()
+                            .chatId(456L)
+                            .video("https://example.com/video.mp4")
+                            .duration(120)
+                            .width(1920)
+                            .height(1080)
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .caption("Test video")
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendVideo(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": {
+                    "message_id": 123,
+                    "chat": {
+                      "id": 456
+                    }
+                  }
+                }
+                """);
+
+            SendVideoRequest request =
+                    SendVideoRequest.builder()
+                            .chatId(456L)
+                            .video("https://example.com/video.mp4")
+                            .duration(120)
+                            .width(1920)
+                            .height(1080)
+                            .hasSpoiler(true)
+                            .showCaptionAboveMedia()
+                            .caption("Test video")
+                            .build();
+
+            telegramClient.sendVideo(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendVideo",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+
+            JsonNode body =
+                    jsonMapper.readTree(readRequestBody(httpRequest));
+
+            assertEquals(456, body.get("chat_id").asLong());
+            assertEquals(
+                    "https://example.com/video.mp4",
+                    body.get("video").asText()
+            );
+            assertEquals(120, body.get("duration").asInt());
+            assertEquals(1920, body.get("width").asInt());
+            assertEquals(1080, body.get("height").asInt());
+            assertTrue(body.get("has_spoiler").asBoolean());
+            assertTrue(
+                    body.get("show_caption_above_media").asBoolean()
+            );
+            assertEquals("Test video", body.get("caption").asText());
+        }
+    }
+
     private String readRequestBody(HttpRequest request) {
         return new String(
                 readRequestBodyBytes(request),

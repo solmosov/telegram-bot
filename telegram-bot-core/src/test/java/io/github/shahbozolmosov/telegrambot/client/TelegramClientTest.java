@@ -7,6 +7,7 @@ import io.github.shahbozolmosov.telegrambot.model.Message;
 import io.github.shahbozolmosov.telegrambot.model.TelegramResponse;
 import io.github.shahbozolmosov.telegrambot.model.Update;
 import io.github.shahbozolmosov.telegrambot.request.message.media.EditMessageCaptionRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
 import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -689,6 +690,72 @@ class TelegramClientTest {
             assertInstanceOf(
                     IOException.class,
                     exception.getCause()
+            );
+        }
+    }
+
+
+    @Nested
+    @DisplayName("deleteMessage")
+    class DeleteMessage {
+
+        @Test
+        void shouldReturnTrue() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": true
+                }
+                """);
+
+            DeleteMessageRequest request =
+                    new DeleteMessageRequest(456L, 123L);
+
+            TelegramResponse<Boolean> response =
+                    telegramClient.deleteMessage(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertTrue(response.result());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+                {
+                  "ok": true,
+                  "result": true
+                }
+                """);
+
+            DeleteMessageRequest request =
+                    new DeleteMessageRequest(456L, 123L);
+
+            telegramClient.deleteMessage(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/deleteMessage",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
             );
         }
     }

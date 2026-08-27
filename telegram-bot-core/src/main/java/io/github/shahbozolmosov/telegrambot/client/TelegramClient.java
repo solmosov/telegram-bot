@@ -5,13 +5,13 @@ import io.github.shahbozolmosov.telegrambot.client.http.MultipartBodyBuilder;
 import io.github.shahbozolmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.shahbozolmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.shahbozolmosov.telegrambot.model.*;
-import io.github.shahbozolmosov.telegrambot.request.media.send.*;
-import io.github.shahbozolmosov.telegrambot.model.*;
-import io.github.shahbozolmosov.telegrambot.request.media.send.*;
-import io.github.shahbozolmosov.telegrambot.request.message.DeleteMessageRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.EditMessageReplyMarkupRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.EditMessageRequest;
-import io.github.shahbozolmosov.telegrambot.request.message.SendMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.callback.AnswerCallbackRequest;
+import io.github.shahbozolmosov.telegrambot.request.chatAction.SendChatActionRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.media.*;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.DeleteMessageRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.text.EditMessageTextRequest;
+import io.github.shahbozolmosov.telegrambot.request.message.text.SendMessageRequest;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -157,21 +157,33 @@ public final class TelegramClient {
         );
     }
 
-    // --------------------- Send Message ---------------------
-    public TelegramResponse<Message> sendMessage(
-            String chatId,
-            String text
+    // --------------------- Chat Action ---------------------
+    public TelegramResponse<Boolean> sendChatAction(
+            SendChatActionRequest requestBody
     ) {
-        return sendMessage(
-                new SendMessageRequest(chatId, text, null)
+        String url = API_BASE_URL + "/bot" + botToken + "/sendChatAction";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Boolean>>() {
+                }
         );
     }
 
+    // --------------------- Send Message ---------------------
     public TelegramResponse<Message> sendMessage(
             SendMessageRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendMessage";
 
@@ -192,22 +204,35 @@ public final class TelegramClient {
 
     // --------------------- Edit Message ---------------------
     public TelegramResponse<Message> editMessage(
-            String chatId,
-            long messageId,
-            String text
+            EditMessageTextRequest requestBody
     ) {
-        return editMessage(
-                new EditMessageRequest(chatId, messageId, text, null)
+
+        acquirePermit(requestBody.getChatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
         );
     }
 
-    public TelegramResponse<Message> editMessage(
-            EditMessageRequest requestBody
+    public TelegramResponse<Message> editMessageCaption(
+            EditMessageCaptionRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
-        String url = API_BASE_URL + "/bot" + botToken + "/editMessageText";
+        String url = API_BASE_URL + "/bot" + botToken + "/editMessageCaption";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
 
@@ -299,20 +324,14 @@ public final class TelegramClient {
     }
 
     public TelegramResponse<Boolean> answerCallbackQuery(
-            String callbackQueryId,
-            String text
+            AnswerCallbackRequest requestBody
     ) {
 
         acquirePermitGlobal();
 
         String url = API_BASE_URL + "/bot" + botToken + "/answerCallbackQuery";
 
-        String jsonBody = objectMapper.writeValueAsString(
-                Map.of(
-                        "callback_query_id", callbackQueryId,
-                        "text", text
-                )
-        );
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -332,7 +351,7 @@ public final class TelegramClient {
             SendDocumentRequest requestBody
     ) {
 
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
@@ -354,7 +373,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendDocument(
             SendDocumentUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendDocument";
 
@@ -374,7 +393,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendPhoto(
             SendPhotoRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
 
@@ -393,11 +412,33 @@ public final class TelegramClient {
         );
     }
 
+    public TelegramResponse<Message> sendPhoto(
+            SendPhotoUploadRequest requestBody
+    ) {
+        acquirePermit(requestBody.getChatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/sendPhoto";
+
+        MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", multipartBody.contentType())
+                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
     // --------------------- Send Video ---------------------
     public TelegramResponse<Message> sendVideo(
             SendVideoRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 
@@ -420,7 +461,7 @@ public final class TelegramClient {
     public TelegramResponse<Message> sendVideo(
             SendVideoUploadRequest requestBody
     ) {
-        acquirePermit(requestBody.chatId());
+        acquirePermit(requestBody.getChatId());
 
         String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
 

@@ -7,6 +7,10 @@ import io.github.shahbozolmosov.telegrambot.dispatcher.Dispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.MessageUpdateDispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.UpdateTypeDispatcher;
 import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.*;
+import io.github.shahbozolmosov.telegrambot.handler.argument.BotContextArgumentResolver;
+import io.github.shahbozolmosov.telegrambot.handler.argument.HandlerArgumentResolver;
+import io.github.shahbozolmosov.telegrambot.handler.argument.HandlerArgumentResolverComposite;
+import io.github.shahbozolmosov.telegrambot.handler.argument.MessageArgumentResolver;
 import io.github.shahbozolmosov.telegrambot.scanner.resolver.*;
 import io.github.shahbozolmosov.telegrambot.exception.TelegramBotException;
 import io.github.shahbozolmosov.telegrambot.json.ObjectMapperFactory;
@@ -95,11 +99,20 @@ public final class TelegramBot {
                 new UpdateHandlerResolver()
         );
 
+        // Handler Registrar
+        List<HandlerArgumentResolver> argumentResolvers = List.of(
+                new BotContextArgumentResolver(),
+                new MessageArgumentResolver()
+        );
+
+        HandlerArgumentResolverComposite argumentResolverComposite = new HandlerArgumentResolverComposite(argumentResolvers);
+
         this.handlerRegistrar = new HandlerRegistrar(
                 new ClassScanner(),
                 new ClassInstanceFactory(),
                 registry,
                 annotationHandlerResolvers,
+                argumentResolverComposite,
                 name
         );
 
@@ -168,7 +181,7 @@ public final class TelegramBot {
         MDC.put("bot", name);
 
         try {
-            if(config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN){
+            if (config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN) {
                 String packageName = new ApplicationPackageResolver().resolve();
 
                 handlerRegistrar.register(packageName);

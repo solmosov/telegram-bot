@@ -45,9 +45,13 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
                 throw new AccessDeniedException();
             }
 
+            // Params
             var params = CallbackParamResolver.params(group.callbackPattern(), key);
-            botContext.setCallbackParams(params);
-            group.handler().handle(botContext);
+            botContext.callbackQuery()
+                    .setCallbackParams(params);
+
+            // Context
+            group.handler().handle(update, botContext);
         }
     }
 }

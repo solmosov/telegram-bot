@@ -6,7 +6,7 @@ import java.util.List;
 
 public record Message(
         @JsonProperty("message_id")
-        long messageId,
+        String messageId,
 
         From from,
         Chat chat,

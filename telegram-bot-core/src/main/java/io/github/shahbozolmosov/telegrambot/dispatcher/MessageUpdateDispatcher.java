@@ -59,7 +59,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
             if (!decision.isGranted()) {
                 throw new AccessDeniedException();
             }
-            handler.handle(botContext);
+            handler.handle(update, botContext);
         }
     }
 

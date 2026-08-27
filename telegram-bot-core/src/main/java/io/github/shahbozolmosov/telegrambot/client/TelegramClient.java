@@ -45,10 +45,18 @@ public final class TelegramClient {
     private static final int MAX_UPDATES = 100;
 
     public TelegramClient(String botToken, JsonMapper jsonMapper) {
+        this(
+                botToken,
+                jsonMapper,
+                HttpClient.newBuilder()
+                        .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
+                        .build()
+        );
+    }
+
+    public TelegramClient(String botToken, JsonMapper jsonMapper, HttpClient httpClient) {
         this.botToken = botToken;
-        this.httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT))
-                .build();
+        this.httpClient = httpClient;
 
         this.rateLimiter = new RateLimiter(30);
         this.globalRateLimiter = new RateLimiter(30);

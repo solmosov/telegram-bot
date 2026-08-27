@@ -1,6 +1,7 @@
 package io.github.shahbozolmosov.telegrambot.registry.store;
 
 import io.github.shahbozolmosov.telegrambot.dispatcher.resolver.CallbackParamResolver;
+import io.github.shahbozolmosov.telegrambot.exception.handler.HandlerRegistrationException;
 import io.github.shahbozolmosov.telegrambot.handler.Handler;
 import io.github.shahbozolmosov.telegrambot.registry.registration.CallbackHandlerRegistration;
 
@@ -12,7 +13,7 @@ import java.util.Map;
 public final class CallbackHandlerStore {
 
     private final String botName;
-    private final Map<String, List<Handler>> handlers = new HashMap<>();
+    private final Map<String, Handler> handlers = new HashMap<>();
 
     public CallbackHandlerStore(
             String botName
@@ -24,8 +25,19 @@ public final class CallbackHandlerStore {
             CallbackHandlerRegistration registration
     ) {
         String mapKey = CallbackParamResolver.callbackKey(registration.key());
-        handlers.computeIfAbsent(mapKey, k -> new ArrayList<>())
-                .add(registration.handler());
+
+        Handler previous = handlers.putIfAbsent(mapKey, registration.handler());
+
+        if (previous != null) {
+            throw new HandlerRegistrationException(
+                    "Handler already registered for key='%s' in bot='%s'"
+                            .formatted(
+                                    registration.key().replace(botName, ""),
+                                    botName
+                            )
+            );
+        }
+
     }
 
     public List<Handler> find(String key) {
@@ -34,23 +46,23 @@ public final class CallbackHandlerStore {
 
         List<Handler> result = new ArrayList<>();
 
-        List<Handler> exactHandlers = handlers.get(key);
+        Handler exactHandlers = handlers.get(key);
 
         if (exactHandlers != null) {
-            result.addAll(exactHandlers);
+            result.add(exactHandlers);
         } else {
-            List<Handler> paramHandlers = handlers.get(mapKey);
+            Handler paramHandlers = handlers.get(mapKey);
             if (paramHandlers != null) {
-                result.addAll(paramHandlers);
+                result.add(paramHandlers);
             }
         }
 
 
         if (key != null) {
-            List<Handler> globalHandlers = handlers.get(null);
+            Handler globalHandlers = handlers.get(botName);
 
             if (globalHandlers != null) {
-                result.addAll(globalHandlers);
+                result.add(globalHandlers);
             }
         }
 

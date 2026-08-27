@@ -1,4 +1,4 @@
-package io.github.shahbozolmosov.telegrambot.exception.handler;
+package io.github.shahbozolmosov.telegrambot.handler;
 
 import io.github.shahbozolmosov.telegrambot.context.BotContext;
 import io.github.shahbozolmosov.telegrambot.exception.GlobalExceptionHandler;

@@ -1,7 +1,7 @@
 package io.github.shahbozolmosov.telegrambot.bot;
 
 import io.github.shahbozolmosov.telegrambot.authorization.AuthorizationProvider;
-import io.github.shahbozolmosov.telegrambot.exception.handler.DefaultGlobalExceptionHandler;
+import io.github.shahbozolmosov.telegrambot.handler.DefaultGlobalExceptionHandler;
 import io.github.shahbozolmosov.telegrambot.exception.GlobalExceptionHandler;
 
 public class TelegramBotConfig {

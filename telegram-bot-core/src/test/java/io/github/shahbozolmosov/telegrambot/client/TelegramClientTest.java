@@ -397,7 +397,7 @@ class TelegramClientTest {
                     exception.getCause()
             );
         }
-        
+
     }
 
 
@@ -417,13 +417,10 @@ class TelegramClientTest {
                 .orElseThrow()
                 .subscribe(new java.util.concurrent.Flow.Subscriber<>() {
 
-                    private java.util.concurrent.Flow.Subscription subscription;
-
                     @Override
                     public void onSubscribe(
                             java.util.concurrent.Flow.Subscription subscription
                     ) {
-                        this.subscription = subscription;
                         subscription.request(Long.MAX_VALUE);
                     }
 

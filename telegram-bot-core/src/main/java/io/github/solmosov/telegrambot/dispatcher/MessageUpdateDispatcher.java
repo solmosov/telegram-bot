@@ -80,6 +80,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
             case COMMAND -> message.text().split(" ")[0];
             case LOCATION -> message.replyToMessage().text();
             case USERS_SHARED -> String.valueOf(message.usersShared().requestId());
+            case PHOTO -> message.caption();
             default -> message.text();
         };
     }

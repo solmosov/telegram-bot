@@ -17,11 +17,9 @@ public class PhotoHandlerResolver implements HandlerAnnotationResolver {
     @Override
     public void register(String botName, Method method, Handler handler, Registry registry) {
 
-        String key = botName;
-
         MessageHandlerRegistration registration = new MessageHandlerRegistration(
                 MessageType.PHOTO,
-                key,
+                botName, // key
                 handler
         );
 

@@ -8,13 +8,10 @@ import java.util.List;
 
 public final class UpdateCountValidator {
     private final int maxUpdates;
-    private final ObjectMapper objectMapper;
 
     public UpdateCountValidator(
-            ObjectMapper objectMapper,
             int maxUpdates
     ) {
-        this.objectMapper = objectMapper;
         this.maxUpdates = maxUpdates;
     }
 

@@ -67,7 +67,7 @@ public final class TelegramClient {
         // Json Mapper
         this.objectMapper = jsonMapper;
 
-        this.updateCountValidator = new UpdateCountValidator(objectMapper, MAX_UPDATES);
+        this.updateCountValidator = new UpdateCountValidator(MAX_UPDATES);
 
         this.multipartBodyBuilder = new MultipartBodyBuilder(objectMapper);
     }

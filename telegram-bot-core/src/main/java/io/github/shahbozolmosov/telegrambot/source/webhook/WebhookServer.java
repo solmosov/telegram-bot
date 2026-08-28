@@ -218,10 +218,11 @@ public class WebhookServer {
         long chatId = extractChatId(update);
 
         try {
+            processUpdates.put(updateId, System.currentTimeMillis());
+
             updateExecutor.submit(chatId, () -> {
                 MDC.put("bot", botName);
                 try {
-                    processUpdates.put(updateId, System.currentTimeMillis());
 
                     BotContext context = new BotContext(telegramClient, update);
 

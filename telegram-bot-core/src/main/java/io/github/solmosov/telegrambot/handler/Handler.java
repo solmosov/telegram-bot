@@ -11,7 +11,7 @@ public final class Handler {
     private final BiConsumer<Update, BotContext> executor;
     private final BotAuthorize authorization;
 
-    private String callbackPattern;
+    private String callbackPattern = "";
 
     public Handler(
             BiConsumer<Update, BotContext> executor,

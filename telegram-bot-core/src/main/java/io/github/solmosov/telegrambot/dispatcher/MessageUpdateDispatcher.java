@@ -78,9 +78,10 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
     private String resolveKey(MessageType type, Message message) {
         return switch (type) {
             case COMMAND -> message.text().split(" ")[0];
+            case PHOTO -> message.caption();
+            // Reply Keyboard actions
             case LOCATION -> message.replyToMessage().text();
             case USERS_SHARED -> String.valueOf(message.usersShared().requestId());
-            case PHOTO -> message.caption();
             default -> message.text();
         };
     }

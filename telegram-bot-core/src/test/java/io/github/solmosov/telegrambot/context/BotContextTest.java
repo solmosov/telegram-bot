@@ -2,6 +2,7 @@ package io.github.solmosov.telegrambot.context;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.context.builder.ChatActionBuilder;
+import io.github.solmosov.telegrambot.context.builder.MessageBuilder;
 import io.github.solmosov.telegrambot.model.CallbackQuery;
 import io.github.solmosov.telegrambot.model.Chat;
 import io.github.solmosov.telegrambot.model.Message;
@@ -174,7 +175,37 @@ class BotContextTest {
 
     @Nested
     class ReplyTests {
-        // reply()
+        @Test
+        void shouldCreateMessageBuilder() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(
+                            100L,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    )
+            );
+
+            Update update = new Update(
+                    123L,
+                    message,
+                    null
+            );
+
+            BotContext context = new BotContext(client, update);
+
+            // when
+            MessageBuilder result = context.reply("Hello");
+
+            // then
+            assertNotNull(result);
+        }
     }
 
     @Nested

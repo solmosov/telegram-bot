@@ -171,6 +171,8 @@ public final class TelegramClient {
     public TelegramResponse<Boolean> sendChatAction(
             SendChatActionRequest requestBody
     ) {
+        acquirePermit(requestBody.chatId());
+
         String url = API_BASE_URL + "/bot" + botToken + "/sendChatAction";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);

@@ -20,7 +20,7 @@ public class CallbackQueryHandlerResolver implements HandlerAnnotationResolver {
         String key = botName;
 
         String methodKey = callbackQuery.value().isEmpty()
-                ? null
+                ? ""
                 : callbackQuery.value();
 
 

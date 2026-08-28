@@ -75,7 +75,37 @@ class BotContextTest {
 
     @Nested
     class UpdateTests {
-        // update()
+        @Test
+        void shouldReturnCurrentUpdate() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+            Message message = mock(Message.class);
+            Update update = new Update(1L, message, null);
+
+            BotContext context = new BotContext(client, update);
+
+            // when
+            Update result = context.update();
+
+            // then
+            assertSame(update, result);
+        }
+
+        @Test
+        void shouldReturnMessageContext() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+            Message message = mock(Message.class);
+            Update update = new Update(1L, message, null);
+
+            BotContext context = new BotContext(client, update);
+
+            // when
+            MessageContext result = context.message();
+
+            // then
+            assertNotNull(result);
+        }
     }
 
     @Nested

@@ -208,7 +208,6 @@ public final class TelegramBot {
             throw new TelegramBotException("Bot '%s' already been started".formatted(name));
         }
 
-        started = true;
 
         MDC.put("bot", name);
 
@@ -220,6 +219,8 @@ public final class TelegramBot {
             }
 
             updateSource.start();
+
+            started = true;
 
             Runtime.getRuntime().addShutdownHook(new Thread(this::stopBot));
 

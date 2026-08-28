@@ -108,7 +108,7 @@ public final class TelegramBot {
                 new PhotoHandlerResolver(),
                 new LocationHandlerResolver(),
                 new ContactHandlerResolver(),
-                new RequestUsersHandlerResolver(),
+                new UsersSharedHandlerResolver(),
 
                 new MessageHandlerResolver(),
 

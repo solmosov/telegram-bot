@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RequestUsersHandler {
-    int value() default -1;
+public @interface UsersSharedHandler {
+    int value() default -1; // request_id
 }

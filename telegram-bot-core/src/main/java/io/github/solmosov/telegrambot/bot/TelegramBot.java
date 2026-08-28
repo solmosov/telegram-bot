@@ -42,6 +42,7 @@ public final class TelegramBot {
     private final HandlerRegistrar handlerRegistrar;
     private final JsonMapper jsonMapper;
     private UpdateSource updateSource;
+    private ApplicationPackageResolver applicationPackageResolver;
 
     private boolean started;
 
@@ -52,14 +53,25 @@ public final class TelegramBot {
     }
 
     public TelegramBot(String name, String botToken, TelegramBotConfig config) {
-        this(name, botToken, config, null, null);
+        this(name, botToken, config, null, null, null);
     }
 
     TelegramBot(String name, String botToken, TelegramBotConfig config, UpdateSource updateSource) {
-        this(name, botToken, config, updateSource, null);
+        this(name, botToken, config, updateSource, null, null);
     }
 
     TelegramBot(String name, String botToken, TelegramBotConfig config, UpdateSource updateSource, HandlerRegistrar handlerRegistrar) {
+        this(name, botToken, config, updateSource, handlerRegistrar, null);
+    }
+
+    TelegramBot(
+            String name,
+            String botToken,
+            TelegramBotConfig config,
+            UpdateSource updateSource,
+            HandlerRegistrar handlerRegistrar,
+            ApplicationPackageResolver applicationPackageResolver
+    ) {
         this.config = config;
 
         this.name = name;
@@ -131,6 +143,10 @@ public final class TelegramBot {
                 ? handlerRegistrar
                 : defaultHandlerRegistrar;
 
+        this.applicationPackageResolver = applicationPackageResolver != null
+                ? applicationPackageResolver
+                : new ApplicationPackageResolver();
+
         // Initialize UpdateSource based on config
         if (updateSource != null) {
             this.updateSource = updateSource;
@@ -201,7 +217,7 @@ public final class TelegramBot {
 
         try {
             if (config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN) {
-                String packageName = new ApplicationPackageResolver().resolve();
+                String packageName = applicationPackageResolver.resolve();
 
                 handlerRegistrar.register(packageName);
             }

@@ -23,10 +23,14 @@ public final class BotContext {
     ) {
         this.client = telegramClient;
         this.update = update;
-        this.messageContext = update.message() != null
-                ? new MessageContext(update.message())
-                : update.callbackQuery().message() != null ? new MessageContext(update.callbackQuery().message())
-                  : null;
+
+        if(update.message() != null){
+            this.messageContext = new MessageContext(update.message());
+        }else if(update.callbackQuery() != null && update.callbackQuery().message() != null){
+            this.messageContext = new MessageContext(update.callbackQuery().message());
+        }else {
+            this.messageContext = null;
+        }
 
         this.photoContext = update.message() != null
                 ? new PhotoContext(update.message())

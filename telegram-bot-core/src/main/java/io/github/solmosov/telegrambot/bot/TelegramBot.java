@@ -51,6 +51,10 @@ public final class TelegramBot {
     }
 
     public TelegramBot(String name, String botToken, TelegramBotConfig config) {
+        this(name, botToken, config, null);
+    }
+
+    TelegramBot(String name, String botToken, TelegramBotConfig config, UpdateSource updateSource) {
         this.config = config;
 
         this.name = name;
@@ -119,7 +123,11 @@ public final class TelegramBot {
         );
 
         // Initialize UpdateSource based on config
-        initializeUpdateSource(config);
+        if (updateSource != null) {
+            this.updateSource = updateSource;
+        } else {
+            initializeUpdateSource(config);
+        }
     }
 
     public void registerHandler(Object handler) {

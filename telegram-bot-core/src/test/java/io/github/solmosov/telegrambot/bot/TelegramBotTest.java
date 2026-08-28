@@ -255,4 +255,57 @@ class TelegramBotTest {
 
         bot.stopBot();
     }
+
+    @Test
+    void shouldPropagateExceptionWhenUpdateSourceFailsToStart() {
+        UpdateSource updateSource = mock(UpdateSource.class);
+
+        RuntimeException exception = new RuntimeException("Start failed");
+
+        doThrow(exception)
+                .when(updateSource)
+                .start();
+
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token",
+                TelegramBotConfig.defaults(),
+                updateSource
+        );
+
+        assertThrows(
+                RuntimeException.class,
+                bot::start
+        );
+
+        verify(updateSource).start();
+    }
+
+    @Test
+    void shouldAllowStartAfterPreviousStartFailure() {
+        UpdateSource updateSource = mock(UpdateSource.class);
+
+        doThrow(new RuntimeException("Start failed"))
+                .doNothing()
+                .when(updateSource)
+                .start();
+
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token",
+                TelegramBotConfig.defaults(),
+                updateSource
+        );
+
+        assertThrows(
+                RuntimeException.class,
+                bot::start
+        );
+
+        bot.start();
+
+        verify(updateSource, times(2)).start();
+
+        bot.stopBot();
+    }
 }

@@ -22,7 +22,7 @@ public class LocationHandlerResolver implements HandlerAnnotationResolver {
         String key = botName;
 
         String methodKey = location.value().isEmpty()
-                ? null
+                ? ""
                 : location.value();
 
 

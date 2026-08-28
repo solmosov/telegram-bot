@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class BotContextTest {
 
@@ -110,8 +111,28 @@ class BotContextTest {
 
     @Nested
     class MessageContextTests {
-        // message()
-        // messageId()
+        @Test
+        void shouldReturnMessageId() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.messageId()).thenReturn(123L);
+
+            Update update = new Update(
+                    1L,
+                    message,
+                    null
+            );
+
+            BotContext context = new BotContext(client, update);
+
+            // when
+            long result = context.messageId();
+
+            // then
+            assertEquals(123L, result);
+        }
     }
 
     @Nested

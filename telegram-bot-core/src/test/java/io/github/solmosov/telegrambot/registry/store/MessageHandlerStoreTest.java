@@ -1,0 +1,228 @@
+package io.github.solmosov.telegrambot.registry.store;
+
+import io.github.solmosov.telegrambot.exception.handler.HandlerRegistrationException;
+import io.github.solmosov.telegrambot.handler.Handler;
+import io.github.solmosov.telegrambot.model.MessageType;
+import io.github.solmosov.telegrambot.registry.registration.MessageHandlerRegistration;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+
+class MessageHandlerStoreTest {
+
+    private static final String BOT_NAME = "myBot";
+
+    private MessageHandlerStore store;
+
+    @BeforeEach
+    void setUp() {
+        store = new MessageHandlerStore(BOT_NAME);
+    }
+
+    @Test
+    void shouldRegisterAndFindHandlerByTypeAndKey() {
+        Handler handler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                handler
+        ));
+
+        List<Handler> result = store.find(
+                MessageType.TEXT,
+                BOT_NAME + "hello"
+        );
+
+        assertEquals(List.of(handler), result);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenTypeIsNotRegistered() {
+        List<Handler> result = store.find(
+                MessageType.TEXT,
+                BOT_NAME + "hello"
+        );
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenKeyIsNotRegistered() {
+        Handler handler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                handler
+        ));
+
+        List<Handler> result = store.find(
+                MessageType.TEXT,
+                "bye"
+        );
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void shouldNotFindHandlerRegisteredForAnotherType() {
+        Handler handler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                handler
+        ));
+
+        List<Handler> result = store.find(
+                MessageType.COMMAND,
+                BOT_NAME + "hello"
+        );
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void shouldReturnGlobalHandler() {
+        Handler globalHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME,
+                globalHandler
+        ));
+
+        List<Handler> result = store.find(
+                MessageType.TEXT,
+                BOT_NAME + "hello"
+        );
+
+        assertEquals(List.of(globalHandler), result);
+    }
+
+    @Test
+    void shouldReturnExactHandlerAndGlobalHandler() {
+        Handler exactHandler = mock(Handler.class);
+        Handler globalHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                exactHandler
+        ));
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME,
+                globalHandler
+        ));
+
+        List<Handler> result = store.find(
+                MessageType.TEXT,
+                BOT_NAME + "hello"
+        );
+
+        assertEquals(
+                List.of(exactHandler, globalHandler),
+                result
+        );
+    }
+
+    @Test
+    void shouldReturnOnlyExactHandlerWhenGlobalHandlerDoesNotExist() {
+        Handler exactHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                exactHandler
+        ));
+
+        List<Handler> result = store.find(
+                MessageType.TEXT,
+                BOT_NAME + "hello"
+        );
+
+        assertEquals(List.of(exactHandler), result);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenHandlerAlreadyRegisteredForSameTypeAndKey() {
+        Handler firstHandler = mock(Handler.class);
+        Handler secondHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                firstHandler
+        ));
+
+        HandlerRegistrationException exception = assertThrows(
+                HandlerRegistrationException.class,
+                () -> store.register(new MessageHandlerRegistration(
+                        MessageType.TEXT,
+                        BOT_NAME + "hello",
+                        secondHandler
+                ))
+        );
+
+        assertEquals(
+                "MessageHandler already registered for type='TEXT' and key='hello' in bot='myBot'",
+                exception.getMessage()
+        );
+    }
+
+    @Test
+    void shouldAllowSameKeyForDifferentTypes() {
+        Handler textHandler = mock(Handler.class);
+        Handler commandHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "hello",
+                textHandler
+        ));
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.COMMAND,
+                BOT_NAME + "hello",
+                commandHandler
+        ));
+
+        assertEquals(
+                List.of(textHandler),
+                store.find(MessageType.TEXT, BOT_NAME + "hello")
+        );
+
+        assertEquals(
+                List.of(commandHandler),
+                store.find(MessageType.COMMAND, BOT_NAME + "hello")
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionWhenGlobalHandlerAlreadyRegistered() {
+        Handler firstHandler = mock(Handler.class);
+        Handler secondHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME,
+                firstHandler
+        ));
+
+        assertThrows(
+                HandlerRegistrationException.class,
+                () -> store.register(new MessageHandlerRegistration(
+                        MessageType.TEXT,
+                        BOT_NAME,
+                        secondHandler
+                ))
+        );
+    }
+}

@@ -8,7 +8,7 @@ import io.github.solmosov.telegrambot.model.MessageType;
 
 import java.lang.reflect.Method;
 
-public class MessageAnnotationResolver implements HandlerAnnotationResolver {
+public class MessageHandlerResolver implements HandlerAnnotationResolver {
     @Override
     public boolean supports(Method method) {
         return method.isAnnotationPresent(MessageHandler.class);
@@ -21,7 +21,7 @@ public class MessageAnnotationResolver implements HandlerAnnotationResolver {
         String key = botName;
 
         String methodKey = message.value().isEmpty()
-                ? null
+                ? ""
                 : message.value();
 
         key += methodKey;

@@ -110,7 +110,7 @@ public final class TelegramBot {
                 new ContactHandlerResolver(),
                 new RequestUsersHandlerResolver(),
 
-                new MessageAnnotationResolver(),
+                new MessageHandlerResolver(),
 
                 // Callback
                 new CallbackQueryHandlerResolver(),

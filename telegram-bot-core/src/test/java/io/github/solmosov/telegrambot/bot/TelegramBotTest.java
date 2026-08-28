@@ -5,6 +5,7 @@ import io.github.solmosov.telegrambot.scanner.ApplicationPackageResolver;
 import io.github.solmosov.telegrambot.scanner.HandlerRegistrar;
 import io.github.solmosov.telegrambot.source.UpdateSource;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -194,6 +195,63 @@ class TelegramBotTest {
         verify(applicationPackageResolver, never()).resolve();
         verify(handlerRegistrar, never()).register(anyString());
         verify(updateSource).start();
+
+        bot.stopBot();
+    }
+
+    @Test
+    void shouldStopUpdateSource() {
+        UpdateSource updateSource = mock(UpdateSource.class);
+
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token",
+                TelegramBotConfig.defaults(),
+                updateSource
+        );
+
+        bot.stopBot();
+
+        verify(updateSource).stop();
+        verify(updateSource).shutdown();
+    }
+
+    @Test
+    void shouldStopBeforeShutdown() {
+        UpdateSource updateSource = mock(UpdateSource.class);
+
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token",
+                TelegramBotConfig.defaults(),
+                updateSource
+        );
+
+        bot.stopBot();
+
+        InOrder inOrder = inOrder(updateSource);
+
+        inOrder.verify(updateSource).stop();
+        inOrder.verify(updateSource).shutdown();
+    }
+
+    @Test
+    void shouldAllowRestartAfterStop() {
+        UpdateSource updateSource = mock(UpdateSource.class);
+
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token",
+                TelegramBotConfig.defaults(),
+                updateSource
+        );
+
+        bot.start();
+        bot.stopBot();
+
+        bot.start();
+
+        verify(updateSource, times(2)).start();
 
         bot.stopBot();
     }

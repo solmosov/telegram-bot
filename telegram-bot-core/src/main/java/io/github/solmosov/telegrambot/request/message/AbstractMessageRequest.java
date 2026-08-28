@@ -12,8 +12,8 @@ public abstract class AbstractMessageRequest {
     @JsonProperty("chat_id")
     protected final long chatId;
 
-    @JsonProperty("allow_paid_broadcast")
-    protected final Boolean allowPaidBroadcast;
+//    @JsonProperty("allow_paid_broadcast")
+//    protected final Boolean allowPaidBroadcast;
 
     @JsonProperty("protect_content")
     protected final Boolean protectContent;
@@ -26,7 +26,7 @@ public abstract class AbstractMessageRequest {
 
     public AbstractMessageRequest(Builder<?> builder) {
         this.chatId = builder.chatId;
-        this.allowPaidBroadcast = builder.allowPaidBroadcast;
+//        this.allowPaidBroadcast = builder.allowPaidBroadcast;
         this.protectContent = builder.protectContent;
         this.disableNotification = builder.disableNotification;
         this.linkPreviewOptions = builder.linkPreviewOptions;
@@ -36,9 +36,9 @@ public abstract class AbstractMessageRequest {
         return chatId;
     }
 
-    public Boolean getAllowPaidBroadcast() {
-        return allowPaidBroadcast;
-    }
+//    public Boolean getAllowPaidBroadcast() {
+//        return allowPaidBroadcast;
+//    }
 
     public Boolean getProtectContent() {
         return protectContent;
@@ -54,7 +54,7 @@ public abstract class AbstractMessageRequest {
 
     public abstract static class Builder<T extends Builder<T>> {
         private long chatId;
-        private Boolean allowPaidBroadcast;
+//        private Boolean allowPaidBroadcast;
         private Boolean protectContent;
         private Boolean disableNotification;
         private LinkPreviewOptions linkPreviewOptions;
@@ -69,10 +69,10 @@ public abstract class AbstractMessageRequest {
             return self();
         }
 
-        public T allowPaidBroadcast() {
-            this.allowPaidBroadcast = true;
-            return self();
-        }
+//        public T allowPaidBroadcast() {
+//            this.allowPaidBroadcast = true;
+//            return self();
+//        }
 
         public T protectContent() {
             this.protectContent = true;

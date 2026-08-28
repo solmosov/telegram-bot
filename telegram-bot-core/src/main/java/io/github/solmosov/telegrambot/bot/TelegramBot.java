@@ -8,6 +8,7 @@ import io.github.solmosov.telegrambot.dispatcher.MessageUpdateDispatcher;
 import io.github.solmosov.telegrambot.dispatcher.UpdateTypeDispatcher;
 import io.github.solmosov.telegrambot.dispatcher.resolver.*;
 import io.github.solmosov.telegrambot.dispatcher.resolver.*;
+import io.github.solmosov.telegrambot.handler.Handler;
 import io.github.solmosov.telegrambot.handler.argument.BotContextArgumentResolver;
 import io.github.solmosov.telegrambot.handler.argument.HandlerArgumentResolver;
 import io.github.solmosov.telegrambot.handler.argument.HandlerArgumentResolverComposite;
@@ -51,10 +52,14 @@ public final class TelegramBot {
     }
 
     public TelegramBot(String name, String botToken, TelegramBotConfig config) {
-        this(name, botToken, config, null);
+        this(name, botToken, config, null, null);
     }
 
     TelegramBot(String name, String botToken, TelegramBotConfig config, UpdateSource updateSource) {
+        this(name, botToken, config, updateSource, null);
+    }
+
+    TelegramBot(String name, String botToken, TelegramBotConfig config, UpdateSource updateSource, HandlerRegistrar handlerRegistrar) {
         this.config = config;
 
         this.name = name;
@@ -113,7 +118,7 @@ public final class TelegramBot {
 
         HandlerArgumentResolverComposite argumentResolverComposite = new HandlerArgumentResolverComposite(argumentResolvers);
 
-        this.handlerRegistrar = new HandlerRegistrar(
+        HandlerRegistrar defaultHandlerRegistrar = new HandlerRegistrar(
                 new ClassScanner(),
                 new ClassInstanceFactory(),
                 registry,
@@ -121,6 +126,10 @@ public final class TelegramBot {
                 argumentResolverComposite,
                 name
         );
+
+        this.handlerRegistrar = handlerRegistrar != null
+                ? handlerRegistrar
+                : defaultHandlerRegistrar;
 
         // Initialize UpdateSource based on config
         if (updateSource != null) {

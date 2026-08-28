@@ -1,6 +1,7 @@
 package io.github.solmosov.telegrambot.bot;
 
 import io.github.solmosov.telegrambot.exception.TelegramBotException;
+import io.github.solmosov.telegrambot.scanner.HandlerRegistrar;
 import io.github.solmosov.telegrambot.source.UpdateSource;
 import org.junit.jupiter.api.Test;
 
@@ -107,5 +108,30 @@ class TelegramBotTest {
 
         verify(updateSource).stop();
         verify(updateSource).shutdown();
+    }
+
+    @Test
+    void shouldRegisterHandler(){
+        UpdateSource updateSource = mock(UpdateSource.class);
+        HandlerRegistrar handlerRegistrar = mock(HandlerRegistrar.class);
+
+        TelegramBotConfig config = TelegramBotConfig.builder()
+                .handlerRegistrationMode(HandlerRegistrationMode.EXTERNAL)
+                .updateMode(UpdatesMode.POLLING)
+                .build();
+
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token",
+                config,
+                updateSource,
+                handlerRegistrar
+        );
+
+        Object handler = new Object();
+
+        bot.registerHandler(handler);
+
+        verify(handlerRegistrar).register(handler);
     }
 }

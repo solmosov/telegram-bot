@@ -140,6 +140,73 @@ A framework for building Telegram bots with Java and Spring Boot.
   > **Security**: Never commit bot tokens to source control. Store them in enviroment variables or another security configuration  machanism.
 ---
 
+## Spring Boot
+The framework provides Spring Boot auto-configuration and supports multiple bots.
+  
+  - ### Configuration
+  
+    Register your bots using `TelegramBotRegistration`:
+    ```java 
+    @Configuration
+    public class TelegramBotConfiguration {
+    
+      @Bean
+      public TelegramBotRegistration myBotRegistration() {
+        return TelegramBotRegistration.builder()
+                .botName("myBot")
+                .token("bot-secret-token")
+                .build();
+      }
+    
+      @Bean
+      public TelegramBotRegistration myBot2Registration() {
+        return TelegramBotRegistration.builder()
+                .botName("myBot2")
+                .token("bot-secret-token2")
+                .build();
+      }
+    }
+    ```
+  - Bot Handlers
+  
+    Create a Spring component for each bot:
+    ```java 
+    @Component
+    @BotHandler("myBot")
+    public class MyTelegramBot {
+    
+        @CommandHandler("/start")
+        public void start(BotContext context) {
+    
+            context.reply("Welcome " + context.message().from().firstName());
+        }
+    
+        @MessageHandler("hello")
+        public void hello(BotContext context){
+                context.reply("Hello " + context.message().from().firstName());
+        }
+    ```
+    For the second bot:
+    ```java
+    @Component
+    @BotHandler("myBot2")
+    public class MyTelegramBotSecond {
+    
+        @CommandHandler("/start")
+        public void start(BotContext context) {
+    
+            context.reply("Welcome " + context.message().from().firstName());
+        }
+    
+        @MessageHandler("hello")
+        public void hello(BotContext context){
+                context.reply("Hello " + context.message().from().firstName());
+        }
+    ```
+  
+    The same handler API is used for both single-bot and multi-bot applications.
+    > **Security**: Never commit bot tokens to source control. Store them in environment variables or another secure configuration mechanism.
+---
 ## License
 
 This project is licensed under the MIT License.

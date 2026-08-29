@@ -136,7 +136,10 @@ A framework for building Telegram bots with Java and Spring Boot.
         }
     } 
     ```
-  
+  Replace the bot names and tokens with your own values
+  > **Security**: Never commit bot tokens to source control. Store them in enviroment variables or another security configuration  machanism.
+---
+
 ## License
 
 This project is licensed under the MIT License.

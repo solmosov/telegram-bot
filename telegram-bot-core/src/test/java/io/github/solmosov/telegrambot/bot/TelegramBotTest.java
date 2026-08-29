@@ -20,7 +20,7 @@ class TelegramBotTest {
                 "fake-token"
         );
 
-        assertEquals("test-bot", bot.name());
+        assertEquals("test-bot", bot.getName());
     }
 
     @Test
@@ -36,7 +36,7 @@ class TelegramBotTest {
                 config
         );
 
-        assertEquals("test-bot", bot.name());
+        assertEquals("test-bot", bot.getName());
     }
 
     @Test

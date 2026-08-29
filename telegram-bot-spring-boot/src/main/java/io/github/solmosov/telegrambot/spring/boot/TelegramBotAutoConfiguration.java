@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.List;
 
 @AutoConfiguration
-public class TelegramBotAutoConfiguration {
+class TelegramBotAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean

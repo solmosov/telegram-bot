@@ -6,7 +6,7 @@ import org.springframework.context.SmartLifecycle;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TelegramBotLifecycle implements SmartLifecycle {
+class TelegramBotLifecycle implements SmartLifecycle {
 
     private final TelegramBotApplication telegramBotApplication;
     private final AtomicBoolean running = new AtomicBoolean(false);

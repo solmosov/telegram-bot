@@ -8,7 +8,7 @@
     <parent>
         <groupId>io.github.solmosov</groupId>
         <artifactId>telegram-bot-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-beta.1</version>
     </parent>
 
     <artifactId>telegram-bot-spring-boot</artifactId>
@@ -16,13 +16,6 @@
     <name>Telegram Bot Spring Boot</name>
     <description>Spring Boot integration for the Telegram Bot framework</description>
 
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>https://opensource.org/license/mit/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
     <dependencies>
 
         <!--Core-->

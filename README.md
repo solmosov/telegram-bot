@@ -232,3 +232,5 @@ Please include:
 This software is provided "as is", without warranty of any kind.
 
 The authors and contributors are not responsible for any damages, data loss, security incidents, service interruptions, or other consequences resulting from the use of this software.
+
+Users are responsible for complying with Telegram's terms, policies, and applicable laws when using this framework.

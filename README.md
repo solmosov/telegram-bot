@@ -40,6 +40,30 @@ A framework for building Telegram bots with Java and Spring Boot.
 
 - Spring Boot 4.1.x
 
+## Installation
+- ### Core
+
+    Add the following dependency to your `pom.xml`: 
+
+    ```xml
+    <dependency>
+        <groupId>io.github.solmosov</groupId>
+        <artifactId>telegram-bot-core</artifactId>
+        <version>1.0.0-beta.1</version>
+    </dependency>
+    ``` 
+- ### Spring Boot
+    
+    For Spring Boot application, add:
+    ```xml
+  <dependency>
+        <groupId>io.github.solmosov</groupId>
+        <artifactId>telegram-bot-spring-boot</artifactId>
+        <version>1.0.0-beta.1</version>
+  </dependency>
+  ```
+
+
 ## License
 
 This project is licensed under the MIT License.

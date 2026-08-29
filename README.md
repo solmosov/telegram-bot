@@ -2,6 +2,37 @@
 
 A framework for building Telegram bots with Java and Spring Boot.
 
+## Feature
+
+- Fast and Simple way to build Telegram bots
+- Telegram Bot API integration
+- Annotation-based handlers
+- Type-safe update handling
+- Multiple bot support
+- Configurable bot settings
+- Graceful error handling
+- Graceful shutdown
+- Request validation
+- Configurable logging
+- File Upload support
+- Long polling and webhook support for receiving updates
+- Single-thread and Multi virtual-thread execution
+- Spring Boot auto-configuration
+- Custom handler registration
+- Pluggable Authorization
+- Update handling
+- Message handling
+- Command handling
+- Contact handling
+- Location handling
+- Photo handling
+- Users shared handling
+- Secure update retrieval with `getUpdates` validation and parsing
+- Automatic webhook configuration
+- Webhook security 
+- Webhook retry/idempotency protection
+- Webhook path and header security
+
 ## License
 
 This project is licensed under the MIT License.

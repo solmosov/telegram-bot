@@ -8,9 +8,9 @@ import java.util.function.Consumer;
 
 public class TelegramBotRegistration {
 
-    private String botName;
-    private String token;
-    private TelegramBotConfig config;
+    private final String botName;
+    private final String token;
+    private final TelegramBotConfig config;
 
     private TelegramBotRegistration(
             String botName,

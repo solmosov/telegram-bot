@@ -33,6 +33,13 @@ A framework for building Telegram bots with Java and Spring Boot.
 - Webhook retry/idempotency protection
 - Webhook path and header security
 
+## Requirements
+- Java 21 or higher
+- Maven 3.9 or higher
+- ### Spring Boot
+
+- Spring Boot 4.1.x
+
 ## License
 
 This project is licensed under the MIT License.

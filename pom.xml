@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.shahbozolmosov</groupId>
+    <groupId>io.github.solmosov</groupId>
     <artifactId>telegram-bot-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -12,7 +12,7 @@
 
     <name>Telegram Bot</name>
     <description>Java framework for building Telegram bots</description>
-    <url>https://github.com/shahbozolmosov/telegram-bot</url>
+    <url>https://github.com/solmosov/telegram-bot</url>
 
     <distributionManagement>
         <repository>
@@ -50,13 +50,13 @@
     <developers>
         <developer>
             <name>Shahboz Olmosov</name>
-            <url>https://github.com/shahbozolmosov</url>
+            <url>https://github.com/solmosov</url>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/shahbozolmosov/telegram-bot</connection>
-        <url>https://github.com/shahbozolmosov/telegram-bot</url>
+        <connection>scm:git:git://github.com/solmosov/telegram-bot</connection>
+        <url>https://github.com/solmosov/telegram-bot</url>
         <tag>HEAD</tag>
     </scm>
 

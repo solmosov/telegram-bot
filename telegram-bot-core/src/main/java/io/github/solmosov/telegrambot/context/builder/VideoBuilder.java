@@ -1,0 +1,68 @@
+package io.github.solmosov.telegrambot.context.builder;
+
+import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
+import io.github.solmosov.telegrambot.model.Message;
+import io.github.solmosov.telegrambot.model.TelegramResponse;
+import io.github.solmosov.telegrambot.request.message.media.SendVideoRequest;
+import io.github.solmosov.telegrambot.request.message.options.LinkPreviewOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
+
+public class VideoBuilder extends AbstractMessageBuilder<Message>{
+
+    private static final Logger log = LoggerFactory.getLogger(VideoBuilder.class);
+
+    private final SendVideoRequest.Builder reqBuilder;
+
+
+    public VideoBuilder(
+            TelegramClient client,
+            Long updateId,
+            Long defaultChatId,
+            String videoUrl
+    ) {
+        super(client, updateId);
+
+        this.reqBuilder = SendVideoRequest.builder()
+                .chatId(defaultChatId)
+                .video(videoUrl);
+    }
+
+    public VideoBuilder toChat(long chatId) {
+        reqBuilder.chatId(chatId);
+        return this;
+    }
+
+    public VideoBuilder caption(String caption){
+        reqBuilder.caption(caption);
+        return this;
+    }
+
+    public VideoBuilder options(Consumer<SendVideoRequest.Builder> consumer){
+        consumer.accept(reqBuilder);
+        return this;
+    }
+
+    public VideoBuilder keyboard(ReplyMarkup replyMarkup){
+        reqBuilder.replyMarkup(replyMarkup);
+        return this;
+    }
+
+    public VideoBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+        reqBuilder.linkPreviewOptions(consumer);
+        return this;
+    }
+
+
+    public TelegramResponse<Message> send() {
+        SendVideoRequest request = reqBuilder.build();
+
+
+        log.debug("Sending  video to uploadId: {} chatId: {}", getUpdateId(), request.getChatId());
+
+        return client.sendVideo(request);
+    }
+}

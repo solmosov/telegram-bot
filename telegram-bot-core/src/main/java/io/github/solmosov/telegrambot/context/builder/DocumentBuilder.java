@@ -1,0 +1,63 @@
+package io.github.solmosov.telegrambot.context.builder;
+
+import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
+import io.github.solmosov.telegrambot.model.Message;
+import io.github.solmosov.telegrambot.model.TelegramResponse;
+import io.github.solmosov.telegrambot.request.message.media.SendDocumentRequest;
+import io.github.solmosov.telegrambot.request.message.options.LinkPreviewOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
+
+public class DocumentBuilder extends AbstractMessageBuilder<Message> {
+
+    private static final Logger log = LoggerFactory.getLogger(DocumentBuilder.class);
+    private final SendDocumentRequest.Builder reqBuilder;
+
+    public DocumentBuilder(
+            TelegramClient client,
+            Long updateId,
+            Long defaultChatId,
+            String documentUrl
+    ) {
+        super(client, updateId);
+        this.reqBuilder = SendDocumentRequest.builder()
+                .document(documentUrl)
+                .chatId(defaultChatId);
+    }
+
+    public DocumentBuilder toChat(long chatId) {
+        reqBuilder.chatId(chatId);
+        return this;
+    }
+
+    public DocumentBuilder caption(String caption){
+        reqBuilder.caption(caption);
+        return this;
+    }
+
+    public DocumentBuilder options(Consumer<SendDocumentRequest.Builder> consumer){
+        consumer.accept(reqBuilder);
+        return this;
+    }
+
+    public DocumentBuilder keyboard(ReplyMarkup replyMarkup){
+        reqBuilder.replyMarkup(replyMarkup);
+        return this;
+    }
+
+    public DocumentBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+        reqBuilder.linkPreviewOptions(consumer);
+        return this;
+    }
+
+    public TelegramResponse<Message> send() {
+        SendDocumentRequest request = reqBuilder.build();
+
+        log.debug("Sending  to document to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
+
+        return client.sendDocument(request);
+    }
+}

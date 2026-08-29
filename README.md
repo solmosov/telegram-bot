@@ -70,6 +70,28 @@ A framework for building Telegram bots with Java and Spring Boot.
     TelegramBot bot = new TelegramBot("myBot", "bot-secret-token");
     bot.start(); 
    ```
+    Create a handler for your bot:
+    ```java
+
+    @BotHandler("myBot")
+    public class MyTelegramBot {
+    
+        @CommandHandler("/start")
+        public void start(BotContext context) {
+    
+            context.reply("Welcome " + context.message().from().firstName());
+        }
+    
+        @MessageHandler("hello")
+        public void hello(BotContext context) {
+            context.reply("Hello " + context.message().from().firstName());
+        }
+    } 
+    ```
+    Now your bot responds
+    - `/start` -> `Welcome [first name]` 
+    - `hello` -> `Hello [first name]` 
+
 - ### Multiple Bots
     To run multiple bots with a single application, use `TelegramBotApplication`
     ```java
@@ -81,7 +103,40 @@ A framework for building Telegram bots with Java and Spring Boot.
 
     application.start();
     ```
+    The same `@BotHandler` approach is used for each registered bot:
+    ```java
 
+    @BotHandler("myBot")
+    public class MyTelegramBotFirst {
+    
+        @CommandHandler("/start")
+        public void start(BotContext context) {
+    
+            context.reply("Welcome " + context.message().from().firstName());
+        }
+    
+        @MessageHandler("hello")
+        public void hello(BotContext context) {
+            context.reply("Hello " + context.message().from().firstName());
+        }
+    }
+  
+    @BotHandler("myBot2")
+    public class MyTelegramBotSecond {
+    
+        @CommandHandler("/start")
+        public void start(BotContext context) {
+    
+            context.reply("Welcome " + context.message().from().firstName());
+        }
+    
+        @MessageHandler("hello")
+        public void hello(BotContext context) {
+            context.reply("Hello " + context.message().from().firstName());
+        }
+    } 
+    ```
+  
 ## License
 
 This project is licensed under the MIT License.

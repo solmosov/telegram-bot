@@ -4,7 +4,7 @@ import io.github.solmosov.telegrambot.bot.TelegramBotApplication;
 
 import java.util.List;
 
-public class TelegramBotApplicationFactory {
+class TelegramBotApplicationFactory {
 
     private final List<TelegramBotRegistration> registrations;
 

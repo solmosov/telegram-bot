@@ -5,7 +5,7 @@ import io.github.solmosov.telegrambot.bot.TelegramBotApplication;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 
-public class SpringBotHandlerRegistrar implements SmartInitializingSingleton {
+class SpringBotHandlerRegistrar implements SmartInitializingSingleton {
 
     private final ListableBeanFactory beanFactory;
     private final TelegramBotApplication telegramBotApplication;

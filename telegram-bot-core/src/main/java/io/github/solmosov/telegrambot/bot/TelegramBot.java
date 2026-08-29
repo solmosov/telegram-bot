@@ -34,6 +34,7 @@ public final class TelegramBot {
     private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
 
     private final String name;
+    private final String token;
     private final TelegramClient telegramClient;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
@@ -72,6 +73,7 @@ public final class TelegramBot {
         this.config = config;
 
         this.name = name;
+        this.token = botToken;
 
         // Object Mapper
         this.jsonMapper = ObjectMapperFactory.create();
@@ -199,8 +201,12 @@ public final class TelegramBot {
     }
 
 
-    public String name() {
+    public String getName() {
         return this.name;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public void start() {

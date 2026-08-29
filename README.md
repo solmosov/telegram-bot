@@ -63,6 +63,24 @@ A framework for building Telegram bots with Java and Spring Boot.
   </dependency>
   ```
 
+## Quick Start
+- ### Single Bot
+    Create a `TelegramBot` instance and start it:
+    ```java
+    TelegramBot bot = new TelegramBot("myBot", "bot-secret-token");
+    bot.start(); 
+   ```
+- ### Multiple Bots
+    To run multiple bots with a single application, use `TelegramBotApplication`
+    ```java
+    TelegramBotApplication application = new TelegramBotApplication();
+
+    application
+            .register("myBot", "bot-secret-token")
+            .register("myBot2", "bot-secret-token2");
+
+    application.start();
+    ```
 
 ## License
 

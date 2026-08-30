@@ -28,6 +28,7 @@ import org.slf4j.MDC;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
+import java.util.Map;
 
 public final class TelegramBot {
 
@@ -131,7 +132,12 @@ public final class TelegramBot {
 
         HandlerRegistrar defaultHandlerRegistrar = new HandlerRegistrar(
                 new ClassScanner(),
-                new ClassInstanceFactory(),
+                new ClassInstanceFactory(
+                        Map.of(
+                                TelegramBot.class, this,
+                                TelegramClient.class, telegramClient
+                        )
+                ),
                 registry,
                 annotationHandlerResolvers,
                 argumentResolverComposite,

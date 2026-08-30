@@ -8,6 +8,7 @@
     <artifactId>telegram-bot-parent</artifactId>
     <version>1.0.0-beta.2</version>
 
+
     <packaging>pom</packaging>
 
     <name>Telegram Bot</name>

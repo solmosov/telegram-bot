@@ -2,7 +2,7 @@ package io.github.solmosov.telegrambot.client;
 
 import java.util.concurrent.*;
 
-public class RateLimiter {
+final class RateLimiter {
 
     private final Semaphore globalPermits;
     private final int globalCapacity;

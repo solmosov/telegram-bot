@@ -7,8 +7,7 @@ import io.github.solmosov.telegrambot.source.UpdateSource;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class TelegramBotTest {
@@ -307,5 +306,15 @@ class TelegramBotTest {
         verify(updateSource, times(2)).start();
 
         bot.stopBot();
+    }
+
+    @Test
+    void shouldProvideTelegramMessaging() {
+        TelegramBot bot = new TelegramBot(
+                "test-bot",
+                "fake-token"
+        );
+
+        assertNotNull(bot.messaging());
     }
 }

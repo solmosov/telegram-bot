@@ -13,6 +13,7 @@ import io.github.solmosov.telegrambot.handler.argument.HandlerArgumentResolver;
 import io.github.solmosov.telegrambot.handler.argument.HandlerArgumentResolverComposite;
 import io.github.solmosov.telegrambot.handler.argument.MessageArgumentResolver;
 import io.github.solmosov.telegrambot.json.ObjectMapperFactory;
+import io.github.solmosov.telegrambot.messaging.TelegramMessaging;
 import io.github.solmosov.telegrambot.registry.Registry;
 import io.github.solmosov.telegrambot.scanner.ApplicationPackageResolver;
 import io.github.solmosov.telegrambot.scanner.ClassInstanceFactory;
@@ -28,6 +29,7 @@ import org.slf4j.MDC;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
+import java.util.Map;
 
 public final class TelegramBot {
 
@@ -36,11 +38,12 @@ public final class TelegramBot {
     private final String name;
     private final String token;
     private final TelegramClient telegramClient;
+    private final TelegramMessaging messaging;
     private final Dispatcher dispatcher;
     private final HandlerRegistrar handlerRegistrar;
     private final JsonMapper jsonMapper;
+    private final ApplicationPackageResolver applicationPackageResolver;
     private UpdateSource updateSource;
-    private ApplicationPackageResolver applicationPackageResolver;
 
     private boolean started;
 
@@ -79,6 +82,7 @@ public final class TelegramBot {
         this.jsonMapper = ObjectMapperFactory.create();
 
         this.telegramClient = new TelegramClient(botToken, jsonMapper);
+        this.messaging = new TelegramMessaging(telegramClient);
 
         // Registry
         final Registry registry = new Registry(name);
@@ -131,7 +135,13 @@ public final class TelegramBot {
 
         HandlerRegistrar defaultHandlerRegistrar = new HandlerRegistrar(
                 new ClassScanner(),
-                new ClassInstanceFactory(),
+                new ClassInstanceFactory(
+                        Map.of(
+                                TelegramBot.class, this,
+                                TelegramClient.class, telegramClient,
+                                TelegramMessaging.class, messaging
+                        )
+                ),
                 registry,
                 annotationHandlerResolvers,
                 argumentResolverComposite,
@@ -207,6 +217,14 @@ public final class TelegramBot {
 
     public String getToken() {
         return token;
+    }
+
+    public TelegramClient client() {
+        return this.telegramClient;
+    }
+
+    public TelegramMessaging messaging() {
+        return messaging;
     }
 
     public void start() {

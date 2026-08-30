@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.context.builder;
+package io.github.solmosov.telegrambot.messaging.builder;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
@@ -36,27 +36,41 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
                 .document(inputFile);
     }
 
+    public DocumentUploadBuilder(
+            TelegramClient client,
+            byte[] file,
+            String fileName,
+            String mimeType
+    ) {
+        super(client, null);
+
+        InputFile inputFile = new InputFile(file, fileName, mimeType);
+
+        this.reqBuilder = SendDocumentUploadRequest.builder()
+                .document(inputFile);
+    }
+
     public DocumentUploadBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }
 
-    public DocumentUploadBuilder caption(String caption){
+    public DocumentUploadBuilder caption(String caption) {
         reqBuilder.caption(caption);
         return this;
     }
 
-    public DocumentUploadBuilder options(Consumer<SendDocumentUploadRequest.Builder> consumer){
+    public DocumentUploadBuilder options(Consumer<SendDocumentUploadRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public DocumentUploadBuilder keyboard(ReplyMarkup replyMarkup){
+    public DocumentUploadBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public DocumentUploadBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+    public DocumentUploadBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
         reqBuilder.linkPreviewOptions(consumer);
         return this;
     }

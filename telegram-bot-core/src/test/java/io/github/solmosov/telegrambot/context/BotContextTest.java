@@ -1,7 +1,7 @@
 package io.github.solmosov.telegrambot.context;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
-import io.github.solmosov.telegrambot.context.builder.*;
+import io.github.solmosov.telegrambot.messaging.builder.*;
 import io.github.solmosov.telegrambot.model.CallbackQuery;
 import io.github.solmosov.telegrambot.model.Chat;
 import io.github.solmosov.telegrambot.model.Message;

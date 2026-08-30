@@ -3,8 +3,13 @@ package io.github.solmosov.telegrambot.spring.boot;
 import io.github.solmosov.telegrambot.bot.TelegramBotApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
@@ -150,4 +155,40 @@ class TelegramBotAutoConfigurationTest {
                     );
                 });
     }
+
+    @Test
+    void shouldRegisterSpringBotBeanDefinitionRegistrar() {
+        try (var context = new AnnotationConfigApplicationContext(TestConfiguration.class)) {
+
+            SpringBotBeanDefinitionRegistrar registrar =
+                    context.getBean(SpringBotBeanDefinitionRegistrar.class);
+
+            assertThat(registrar).isNotNull();
+        }
+    }
+
+    @Test
+    void shouldInjectConfigurableListableBeanFactory() {
+        try (var context = new AnnotationConfigApplicationContext()) {
+
+            SpringBotBeanDefinitionRegistrar registrar =
+                    TelegramBotAutoConfiguration.springBotBeanDefinitionRegistrar(
+                            context.getBeanFactory()
+                    );
+
+            assertThat(registrar).isNotNull();
+        }
+    }
+
+    @Configuration
+    static class TestConfiguration {
+
+        @Bean
+        static SpringBotBeanDefinitionRegistrar springBotBeanDefinitionRegistrar(
+                org.springframework.beans.factory.config.ConfigurableListableBeanFactory beanFactory
+        ) {
+            return new SpringBotBeanDefinitionRegistrar(beanFactory);
+        }
+    }
+
 }

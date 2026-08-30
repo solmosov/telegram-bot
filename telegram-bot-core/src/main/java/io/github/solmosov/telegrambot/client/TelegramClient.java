@@ -1,7 +1,5 @@
 package io.github.solmosov.telegrambot.client;
 
-import io.github.solmosov.telegrambot.client.http.MultipartBody;
-import io.github.solmosov.telegrambot.client.http.MultipartBodyBuilder;
 import io.github.solmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.solmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.solmosov.telegrambot.model.*;

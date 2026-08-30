@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.context.builder;
+package io.github.solmosov.telegrambot.messaging.builder;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.model.TelegramResponse;
@@ -21,6 +21,11 @@ public class DeleteMessageBuilder extends AbstractMessageBuilder<Boolean> {
     ) {
         super(client, updateId);
         this.chatId = defaultChatId;
+        this.messageId = messageId;
+    }
+
+    public DeleteMessageBuilder(TelegramClient client, long messageId) {
+        super(client, null);
         this.messageId = messageId;
     }
 

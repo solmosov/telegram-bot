@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.context.builder;
+package io.github.solmosov.telegrambot.messaging.builder;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
@@ -31,7 +31,18 @@ public class EditMessageTextBuilder extends AbstractMessageBuilder<Message> {
                 .messageId(messageId);
     }
 
-    public EditMessageTextBuilder chatId(long chatId){
+    public EditMessageTextBuilder(
+            TelegramClient client,
+            long messageId,
+            String textContent
+    ) {
+        super(client, null);
+        reqBuilder = EditMessageTextRequest.builder()
+                .messageId(messageId)
+                .text(textContent);
+    }
+
+    public EditMessageTextBuilder chatId(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

@@ -6,7 +6,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
-public final class UpdateCountValidator {
+final class UpdateCountValidator {
     private final int maxUpdates;
 
     public UpdateCountValidator(

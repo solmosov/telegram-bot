@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.context.builder;
+package io.github.solmosov.telegrambot.messaging.builder;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
-public class VideoBuilder extends AbstractMessageBuilder<Message>{
+public class VideoBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(VideoBuilder.class);
 
@@ -31,27 +31,37 @@ public class VideoBuilder extends AbstractMessageBuilder<Message>{
                 .video(videoUrl);
     }
 
+    public VideoBuilder(
+            TelegramClient client,
+            String videoUrl
+    ) {
+        super(client, null);
+
+        this.reqBuilder = SendVideoRequest.builder()
+                .video(videoUrl);
+    }
+
     public VideoBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }
 
-    public VideoBuilder caption(String caption){
+    public VideoBuilder caption(String caption) {
         reqBuilder.caption(caption);
         return this;
     }
 
-    public VideoBuilder options(Consumer<SendVideoRequest.Builder> consumer){
+    public VideoBuilder options(Consumer<SendVideoRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public VideoBuilder keyboard(ReplyMarkup replyMarkup){
+    public VideoBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public VideoBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+    public VideoBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
         reqBuilder.linkPreviewOptions(consumer);
         return this;
     }

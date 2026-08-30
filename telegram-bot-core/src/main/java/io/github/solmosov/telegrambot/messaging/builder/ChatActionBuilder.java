@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.context.builder;
+package io.github.solmosov.telegrambot.messaging.builder;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.model.TelegramResponse;
@@ -20,6 +20,10 @@ public class ChatActionBuilder extends AbstractMessageBuilder<Boolean> {
             ) {
         super(client, updateId);
         this.chatId = defaultChatId;
+    }
+
+    public ChatActionBuilder(TelegramClient client) {
+        super(client, null);
     }
 
     public ChatActionBuilder toChat(long chatId) {

@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.client.http;
+package io.github.solmosov.telegrambot.client;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public final class MultipartBodyBuilder {
+final class MultipartBodyBuilder {
 
     private static final String LINE = "\r\n";
 

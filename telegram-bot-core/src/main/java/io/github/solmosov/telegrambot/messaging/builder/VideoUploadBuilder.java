@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.context.builder;
+package io.github.solmosov.telegrambot.messaging.builder;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
@@ -33,22 +33,35 @@ public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
                 .video(inputFile);
     }
 
+    public VideoUploadBuilder(
+            TelegramClient client,
+            byte[] file,
+            String fileName,
+            String mimeType
+    ) {
+        super(client, null);
+
+        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        this.reqBuilder = SendVideoUploadRequest.builder()
+                .video(inputFile);
+    }
+
     public VideoUploadBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }
 
-    public VideoUploadBuilder caption(String caption){
+    public VideoUploadBuilder caption(String caption) {
         reqBuilder.caption(caption);
         return this;
     }
 
-    public VideoUploadBuilder options(Consumer<SendVideoUploadRequest.Builder> consumer){
+    public VideoUploadBuilder options(Consumer<SendVideoUploadRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public VideoUploadBuilder keyboard(ReplyMarkup replyMarkup){
+    public VideoUploadBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
@@ -57,7 +70,7 @@ public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
 
         SendVideoUploadRequest request = reqBuilder.build();
 
-        log.debug("Sending  upload video to updateId: {} chatId: {}",getUpdateId(), request.getChatId());
+        log.debug("Sending  upload video to updateId: {} chatId: {}", getUpdateId(), request.getChatId());
 
         return client.sendVideo(request);
     }

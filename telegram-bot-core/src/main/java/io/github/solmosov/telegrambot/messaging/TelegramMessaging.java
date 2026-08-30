@@ -80,4 +80,19 @@ public final class TelegramMessaging {
         );
     }
 
+    public DocumentBuilder document(String documentUrl){
+        return new DocumentBuilder(
+                client,
+                documentUrl
+        );
+    }
+
+    public DocumentUploadBuilder document(byte[] file, String fileName, String mimeType){
+        return new DocumentUploadBuilder(
+                client,
+                file,
+                fileName,
+                mimeType
+        );
+    }
 }

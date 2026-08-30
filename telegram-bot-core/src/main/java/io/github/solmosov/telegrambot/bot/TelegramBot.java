@@ -219,6 +219,10 @@ public final class TelegramBot {
         return token;
     }
 
+    public TelegramMessaging messaging() {
+        return messaging;
+    }
+
     public void start() {
         if (started) {
             throw new TelegramBotException("Bot '%s' already been started".formatted(name));

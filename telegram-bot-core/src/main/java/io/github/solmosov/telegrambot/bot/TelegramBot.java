@@ -219,6 +219,10 @@ public final class TelegramBot {
         return token;
     }
 
+    public TelegramClient client() {
+        return this.telegramClient;
+    }
+
     public TelegramMessaging messaging() {
         return messaging;
     }

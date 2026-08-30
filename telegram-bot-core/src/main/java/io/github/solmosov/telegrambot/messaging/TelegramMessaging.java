@@ -64,4 +64,20 @@ public final class TelegramMessaging {
         );
     }
 
+    public VideoBuilder video(String videoUrl){
+        return new VideoBuilder(
+                client,
+                videoUrl
+        );
+    }
+
+    public VideoUploadBuilder video(byte[] file, String fileName, String mimeType){
+        return new VideoUploadBuilder(
+                client,
+                file,
+                fileName,
+                mimeType
+        );
+    }
+
 }

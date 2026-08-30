@@ -24,6 +24,11 @@ public class DeleteMessageBuilder extends AbstractMessageBuilder<Boolean> {
         this.messageId = messageId;
     }
 
+    public DeleteMessageBuilder(TelegramClient client, long messageId) {
+        super(client, null);
+        this.messageId = messageId;
+    }
+
     public DeleteMessageBuilder toChat(long chatId) {
         this.chatId = chatId;
         return this;

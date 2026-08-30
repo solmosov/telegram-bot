@@ -1,6 +1,6 @@
-package io.github.solmosov.telegrambot.client.http;
+package io.github.solmosov.telegrambot.client;
 
-public final class MultipartBody {
+final class MultipartBody {
 
     private final String boundary;
     private final byte[] body;

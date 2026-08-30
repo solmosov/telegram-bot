@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow;
 
-public class LimitedBodySubscriber implements HttpResponse.BodySubscriber<byte[]> {
+final class LimitedBodySubscriber implements HttpResponse.BodySubscriber<byte[]> {
 
     private final long maxBytes;
     private final ByteArrayOutputStream outputStream;

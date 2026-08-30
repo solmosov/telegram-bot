@@ -4,7 +4,7 @@ import io.github.solmosov.telegrambot.exception.client.TelegramClientException;
 
 import java.net.http.HttpResponse;
 
-public class LimitedBodyHandler implements HttpResponse.BodyHandler<byte[]> {
+final class LimitedBodyHandler implements HttpResponse.BodyHandler<byte[]> {
 
     private final long maxBytes;
 

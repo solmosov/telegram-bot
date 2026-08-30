@@ -2,6 +2,7 @@ package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
 import io.github.solmosov.telegrambot.messaging.builder.ChatActionBuilder;
+import io.github.solmosov.telegrambot.messaging.builder.EditMessageTextBuilder;
 import io.github.solmosov.telegrambot.messaging.builder.MessageBuilder;
 
 public final class TelegramMessaging {
@@ -19,10 +20,18 @@ public final class TelegramMessaging {
         );
     }
 
-    public MessageBuilder message(String text) {
+    public MessageBuilder message(String textContent) {
         return new MessageBuilder(
                 client,
-                text
+                textContent
+        );
+    }
+
+    public EditMessageTextBuilder editMessage(long messageId, String textContent){
+        return new EditMessageTextBuilder(
+                client,
+                messageId,
+                textContent
         );
     }
 

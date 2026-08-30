@@ -79,12 +79,14 @@ A framework for building Telegram bots with Java and Spring Boot.
         @CommandHandler("/start")
         public void start(BotContext context) {
     
-            context.reply("Welcome " + context.message().from().firstName());
+            context.reply("Welcome " + context.message().from().firstName())
+                .send();
         }
     
         @MessageHandler("hello")
         public void hello(BotContext context) {
-            context.reply("Hello " + context.message().from().firstName());
+            context.reply("Hello " + context.message().from().firstName())
+                .send();
         }
     } 
     ```
@@ -112,12 +114,14 @@ A framework for building Telegram bots with Java and Spring Boot.
         @CommandHandler("/start")
         public void start(BotContext context) {
     
-            context.reply("Welcome " + context.message().from().firstName());
+            context.reply("Welcome " + context.message().from().firstName())
+                .send();
         }
     
         @MessageHandler("hello")
         public void hello(BotContext context) {
-            context.reply("Hello " + context.message().from().firstName());
+            context.reply("Hello " + context.message().from().firstName())
+                .send();
         }
     }
   
@@ -127,12 +131,14 @@ A framework for building Telegram bots with Java and Spring Boot.
         @CommandHandler("/start")
         public void start(BotContext context) {
     
-            context.reply("Welcome " + context.message().from().firstName());
+            context.reply("Welcome " + context.message().from().firstName())
+                .send();
         }
     
         @MessageHandler("hello")
         public void hello(BotContext context) {
-            context.reply("Hello " + context.message().from().firstName());
+            context.reply("Hello " + context.message().from().firstName())
+                .send();
         }
     } 
     ```
@@ -178,12 +184,14 @@ The framework provides Spring Boot auto-configuration and supports multiple bots
         @CommandHandler("/start")
         public void start(BotContext context) {
     
-            context.reply("Welcome " + context.message().from().firstName());
+            context.reply("Welcome " + context.message().from().firstName())
+                .send();
         }
     
         @MessageHandler("hello")
         public void hello(BotContext context){
-                context.reply("Hello " + context.message().from().firstName());
+            context.reply("Hello " + context.message().from().firstName())
+                .send();
         }
     ```
     For the second bot:
@@ -195,12 +203,14 @@ The framework provides Spring Boot auto-configuration and supports multiple bots
         @CommandHandler("/start")
         public void start(BotContext context) {
     
-            context.reply("Welcome " + context.message().from().firstName());
+            context.reply("Welcome " + context.message().from().firstName())
+                .send();
         }
     
         @MessageHandler("hello")
         public void hello(BotContext context){
-                context.reply("Hello " + context.message().from().firstName());
+            context.reply("Hello " + context.message().from().firstName())
+                .send();
         }
     ```
   

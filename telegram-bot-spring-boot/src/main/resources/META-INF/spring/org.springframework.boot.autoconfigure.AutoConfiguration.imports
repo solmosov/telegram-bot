@@ -1,1 +1,1 @@
-io.github.solmosov.telegrambot.TelegramBotAutoConfiguration
+io.github.solmosov.telegrambot.spring.boot.TelegramBotAutoConfiguration

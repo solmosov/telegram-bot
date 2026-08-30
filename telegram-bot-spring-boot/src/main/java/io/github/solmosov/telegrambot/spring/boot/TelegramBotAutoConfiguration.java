@@ -3,6 +3,7 @@ package io.github.solmosov.telegrambot.spring.boot;
 
 import io.github.solmosov.telegrambot.bot.TelegramBotApplication;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -43,5 +44,10 @@ class TelegramBotAutoConfiguration {
             TelegramBotApplication application
     ) {
         return new SpringBotHandlerRegistrar(beanFactory, application);
+    }
+
+    @Bean
+    public static SpringBotBeanDefinitionRegistrar springBotBeanDefinitionRegistrar(ConfigurableListableBeanFactory beanFactory) {
+        return new SpringBotBeanDefinitionRegistrar(beanFactory);
     }
 }

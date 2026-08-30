@@ -22,6 +22,10 @@ public class ChatActionBuilder extends AbstractMessageBuilder<Boolean> {
         this.chatId = defaultChatId;
     }
 
+    public ChatActionBuilder(TelegramClient client) {
+        super(client, null);
+    }
+
     public ChatActionBuilder toChat(long chatId) {
         this.chatId = chatId;
         return this;

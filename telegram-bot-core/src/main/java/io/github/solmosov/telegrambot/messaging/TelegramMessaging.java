@@ -1,6 +1,7 @@
 package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.messaging.builder.ChatActionBuilder;
 import io.github.solmosov.telegrambot.messaging.builder.MessageBuilder;
 
 public final class TelegramMessaging {
@@ -10,6 +11,12 @@ public final class TelegramMessaging {
 
     public TelegramMessaging(TelegramClient client) {
         this.client = client;
+    }
+
+    public ChatActionBuilder chatAction(){
+        return new ChatActionBuilder(
+                client
+        );
     }
 
     public MessageBuilder message(String text) {

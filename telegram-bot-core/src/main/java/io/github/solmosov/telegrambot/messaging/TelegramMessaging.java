@@ -55,4 +55,13 @@ public final class TelegramMessaging {
         );
     }
 
+    public PhotoUploadBuilder photo(byte[] file, String fileName, String mimeType){
+        return new PhotoUploadBuilder(
+                client,
+                file,
+                fileName,
+                mimeType
+        );
+    }
+
 }

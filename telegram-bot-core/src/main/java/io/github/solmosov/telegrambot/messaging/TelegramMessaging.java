@@ -1,10 +1,7 @@
 package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
-import io.github.solmosov.telegrambot.messaging.builder.ChatActionBuilder;
-import io.github.solmosov.telegrambot.messaging.builder.DeleteMessageBuilder;
-import io.github.solmosov.telegrambot.messaging.builder.EditMessageTextBuilder;
-import io.github.solmosov.telegrambot.messaging.builder.MessageBuilder;
+import io.github.solmosov.telegrambot.messaging.builder.*;
 
 public final class TelegramMessaging {
 
@@ -36,11 +33,20 @@ public final class TelegramMessaging {
         );
     }
 
+    public EditMessageCaptionBuilder editMessageCaption(long messageId, String caption){
+        return new EditMessageCaptionBuilder(
+                client,
+                messageId,
+                caption
+        );
+    }
+
     public DeleteMessageBuilder deleteMessage(long messageId){
         return new DeleteMessageBuilder(
                 client,
                 messageId
         );
     }
+
 
 }

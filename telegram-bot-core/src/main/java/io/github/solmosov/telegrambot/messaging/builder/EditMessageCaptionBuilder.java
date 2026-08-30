@@ -31,22 +31,29 @@ public class EditMessageCaptionBuilder extends AbstractMessageBuilder<Message> {
                 .caption(caption);
     }
 
-    public EditMessageCaptionBuilder toChat(long chatId){
+    public EditMessageCaptionBuilder(TelegramClient client, long messageId, String caption) {
+        super(client, null);
+        this.reqBuilder = EditMessageCaptionRequest.builder()
+                .messageId(messageId)
+                .caption(caption);
+    }
+
+    public EditMessageCaptionBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }
 
-    public EditMessageCaptionBuilder options(Consumer<EditMessageCaptionRequest.Builder> consumer){
+    public EditMessageCaptionBuilder options(Consumer<EditMessageCaptionRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public EditMessageCaptionBuilder keyboard(ReplyMarkup replyMarkup){
+    public EditMessageCaptionBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public EditMessageCaptionBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+    public EditMessageCaptionBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
         reqBuilder.linkPreviewOptions(consumer);
         return this;
     }

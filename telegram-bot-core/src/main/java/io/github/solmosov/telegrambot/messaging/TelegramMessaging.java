@@ -1,7 +1,7 @@
 package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
-import io.github.solmosov.telegrambot.context.builder.MessageBuilder;
+import io.github.solmosov.telegrambot.messaging.builder.MessageBuilder;
 
 public final class TelegramMessaging {
 

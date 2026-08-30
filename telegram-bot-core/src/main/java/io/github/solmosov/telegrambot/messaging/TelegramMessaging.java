@@ -48,5 +48,11 @@ public final class TelegramMessaging {
         );
     }
 
+    public PhotoBuilder photo(String photoUrl){
+        return new PhotoBuilder(
+                client,
+                photoUrl
+        );
+    }
 
 }

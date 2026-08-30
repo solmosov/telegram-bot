@@ -30,27 +30,36 @@ public class PhotoBuilder extends AbstractMessageBuilder<Message> {
                 .photo(photoUrl);
     }
 
+    public PhotoBuilder(
+            TelegramClient client,
+            String photoUrl
+    ) {
+        super(client, null);
+        this.reqBuilder = SendPhotoRequest.builder()
+                .photo(photoUrl);
+    }
+
     public PhotoBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }
 
-    public PhotoBuilder caption(String caption){
+    public PhotoBuilder caption(String caption) {
         reqBuilder.caption(caption);
         return this;
     }
 
-    public PhotoBuilder options(Consumer<SendPhotoRequest.Builder> consumer){
+    public PhotoBuilder options(Consumer<SendPhotoRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public PhotoBuilder keyboard(ReplyMarkup replyMarkup){
+    public PhotoBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public PhotoBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+    public PhotoBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
         reqBuilder.linkPreviewOptions(consumer);
         return this;
     }

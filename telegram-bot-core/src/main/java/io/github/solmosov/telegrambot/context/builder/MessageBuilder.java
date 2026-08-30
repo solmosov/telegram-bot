@@ -19,6 +19,18 @@ public class MessageBuilder extends AbstractMessageBuilder<Message> {
 
     public MessageBuilder(
             TelegramClient client,
+            String textContent
+    ) {
+        super(
+                client,
+                null
+        );
+        this.reqBuilder = SendMessageRequest.builder()
+                .text(textContent);
+    }
+
+    public MessageBuilder(
+            TelegramClient client,
             Long updateId,
             Long defaultChatId,
             String textContent
@@ -33,22 +45,22 @@ public class MessageBuilder extends AbstractMessageBuilder<Message> {
                 .text(textContent);
     }
 
-    public MessageBuilder toChat(long chatId){
+    public MessageBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }
 
-    public MessageBuilder options(Consumer<SendMessageRequest.Builder> consumer){
+    public MessageBuilder options(Consumer<SendMessageRequest.Builder> consumer) {
         consumer.accept(reqBuilder);
         return this;
     }
 
-    public MessageBuilder keyboard(ReplyMarkup replyMarkup){
+    public MessageBuilder keyboard(ReplyMarkup replyMarkup) {
         reqBuilder.replyMarkup(replyMarkup);
         return this;
     }
 
-    public MessageBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer){
+    public MessageBuilder linkPreviewOptions(Consumer<LinkPreviewOptions.Builder> consumer) {
         reqBuilder.linkPreviewOptions(consumer);
         return this;
     }

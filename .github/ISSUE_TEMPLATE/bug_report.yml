@@ -1,0 +1,100 @@
+name: 🐛 Bug Report
+description: Report a reproducible problem with the framework
+title: "[Bug]: "
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+        Please provide enough information to reproduce and investigate the problem.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clearly describe what went wrong.
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest possible example that reproduces the problem.
+      placeholder: |
+        1. Configure ...
+        2. Start ...
+        3. Send ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: input
+    id: framework-version
+    attributes:
+      label: Framework version
+      placeholder: e.g. 1.0.0-beta.1
+    validations:
+      required: true
+
+  - type: input
+    id: java-version
+    attributes:
+      label: Java version
+      placeholder: e.g. 21.0.8
+    validations:
+      required: true
+
+  - type: input
+    id: spring-boot-version
+    attributes:
+      label: Spring Boot version
+      description: Required if you are using the Spring Boot module.
+      placeholder: e.g. 4.1.0
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module
+      description: Which part of the framework is affected?
+      options:
+        - telegram-bot-core
+        - telegram-bot-spring-boot
+        - Both
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or stack trace
+      description: Paste relevant logs or stack traces here.
+      render: text
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other information, screenshots, or code that may help.

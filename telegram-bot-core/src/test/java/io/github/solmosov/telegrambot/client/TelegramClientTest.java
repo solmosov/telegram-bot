@@ -3,10 +3,7 @@ package io.github.solmosov.telegrambot.client;
 import io.github.solmosov.telegrambot.exception.api.TelegramApiException;
 import io.github.solmosov.telegrambot.exception.client.TelegramClientException;
 import io.github.solmosov.telegrambot.json.ObjectMapperFactory;
-import io.github.solmosov.telegrambot.model.InputFile;
-import io.github.solmosov.telegrambot.model.Message;
-import io.github.solmosov.telegrambot.model.TelegramResponse;
-import io.github.solmosov.telegrambot.model.Update;
+import io.github.solmosov.telegrambot.model.*;
 import io.github.solmosov.telegrambot.request.callback.AnswerCallbackRequest;
 import io.github.solmosov.telegrambot.request.message.media.*;
 import io.github.solmosov.telegrambot.request.message.media.*;
@@ -54,7 +51,7 @@ class TelegramClientTest {
     private JsonMapper jsonMapper;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         jsonMapper = ObjectMapperFactory.create();
 
         telegramClient = new TelegramClient(
@@ -248,6 +245,130 @@ class TelegramClientTest {
         }
     }
 
+    @Nested
+    @DisplayName("Webhook Tests")
+    class WebhookTests {
+
+        @Test
+        @DisplayName("should set webhook")
+        void shouldSetWebhook() throws Exception {
+            // Given
+            mockHttpResponse("""
+            {
+              "ok": true,
+              "result": true
+            }
+            """);
+
+            String webhookUrl = "https://example.com/telegram/webhook";
+            String secret = "my-secret_123";
+
+            // When
+            TelegramResponse<Boolean> response =
+                    telegramClient.setWebhook(webhookUrl, secret);
+
+            // Then
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertTrue(response.result());
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest request = captor.getValue();
+
+            assertEquals("POST", request.method());
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/setWebhook"
+                            + "?url=https%3A%2F%2Fexample.com%2Ftelegram%2Fwebhook"
+                            + "&secret_token=my-secret_123",
+                    request.uri().toString()
+            );
+        }
+
+        @Test
+        @DisplayName("should get webhook info")
+        void shouldGetWebhookInfo() throws Exception {
+            // Given
+            mockHttpResponse("""
+            {
+              "ok": true,
+              "result": {
+                "url": "https://example.com/webhook",
+                "has_custom_certificate": false,
+                "pending_update_count": 0
+              }
+            }
+            """);
+
+            // When
+            TelegramResponse<WebhookInfo> response =
+                    telegramClient.getWebhookInfo();
+
+            // Then
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest request = captor.getValue();
+
+            assertEquals("GET", request.method());
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/getWebhookInfo",
+                    request.uri().toString()
+            );
+        }
+
+        @Test
+        @DisplayName("should delete webhook")
+        void shouldDeleteWebhook() throws Exception {
+            // Given
+            mockHttpResponse("""
+            {
+              "ok": true,
+              "result": true
+            }
+            """);
+
+            // When
+            TelegramResponse<Boolean> response =
+                    telegramClient.deleteWebhook();
+
+            // Then
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertTrue(response.result());
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest request = captor.getValue();
+
+            assertEquals("POST", request.method());
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/deleteWebhook",
+                    request.uri().toString()
+            );
+        }
+    }
 
     @Nested
     @DisplayName("sendMessage")
@@ -1628,5 +1749,16 @@ class TelegramClientTest {
                 });
 
         return output.toByteArray();
+    }
+
+    private void mockHttpResponse(String responseBody) throws Exception {
+        when(httpResponse.body()).thenReturn(
+                responseBody.getBytes(StandardCharsets.UTF_8)
+        );
+
+        when(httpClient.send(
+                any(HttpRequest.class),
+                any(LimitedBodyHandler.class)
+        )).thenReturn(httpResponse);
     }
 }

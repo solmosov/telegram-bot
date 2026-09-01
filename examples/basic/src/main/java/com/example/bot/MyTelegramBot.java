@@ -2,6 +2,7 @@ package com.example.bot;
 
 import io.github.solmosov.telegrambot.annotation.BotHandler;
 import io.github.solmosov.telegrambot.annotation.CommandHandler;
+import io.github.solmosov.telegrambot.annotation.MessageHandler;
 import io.github.solmosov.telegrambot.context.BotContext;
 
 @BotHandler("myBot")
@@ -28,6 +29,12 @@ public class MyTelegramBot {
                 .options(options -> options
                         .html()
                 )
+                .send();
+    }
+
+    @MessageHandler("Hello")
+    public void hello(BotContext context){
+        context.reply("Hello World")
                 .send();
     }
 }

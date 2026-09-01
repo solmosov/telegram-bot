@@ -19,6 +19,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -112,17 +113,14 @@ public final class TelegramClient {
             String secret
     ) {
 
-        String url = API_BASE_URL + "/bot" + botToken + "/setWebhook";
-
-        String jsonBody = objectMapper.writeValueAsString(Map.of(
-                "url", webhookUrl,
-                "secret_token", secret
-        ));
+        String url = API_BASE_URL + "/bot" + botToken + "/setWebhook"
+                + "?url="+ URLEncoder.encode(webhookUrl, StandardCharsets.UTF_8)
+                + "&secret_token="+URLEncoder.encode(secret, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
         return execute(request,
@@ -153,7 +151,7 @@ public final class TelegramClient {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .header("Content-Type", "application/jsons")
+                .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 

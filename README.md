@@ -38,7 +38,7 @@ A framework for building Telegram bots with Java and Spring Boot.
 - Maven 3.9 or higher
 - ### Spring Boot
 
-- Spring Boot 4.1.x
+- Spring Boot 4.x.x
 
 ## Installation
 - ### Core

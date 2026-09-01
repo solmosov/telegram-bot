@@ -2,6 +2,8 @@
 
 A framework for building Telegram bots with Java and Spring Boot.
 
+> ⚠️ **Beta:** This project is currently in beta. APIs and features may change between releases.
+
 ## Feature
 
 - Fast and Simple way to build Telegram bots
@@ -216,7 +218,15 @@ The framework provides Spring Boot auto-configuration and supports multiple bots
   
     The same handler API is used for both single-bot and multi-bot applications.
     > **Security**: Never commit bot tokens to source control. Store them in environment variables or another secure configuration mechanism.
+
 ---
+
+## Examples
+
+See the [`examples`](./examples) directory for complete examples and common use cases.
+
+---
+
 ## License
 
 This project is licensed under the MIT License.

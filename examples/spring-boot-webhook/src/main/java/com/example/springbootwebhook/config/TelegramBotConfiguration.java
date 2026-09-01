@@ -1,5 +1,6 @@
 package com.example.springbootwebhook.config;
 
+import io.github.solmosov.telegrambot.bot.UpdatesMode;
 import io.github.solmosov.telegrambot.spring.boot.TelegramBotRegistration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,8 @@ public class TelegramBotConfiguration {
                 .botName("myBot")
                 .token(System.getenv("MY_BOT_TOKEN"))
                 .config(config -> config
-                        .webhookPort(8080)
+                        .updateMode(UpdatesMode.WEBHOOK)
+                        .webhookPort(8081)
                         .webhookPath("/webhook/telegram") // path
                         .webhookPathSecret(System.getenv("MY_BOT_WEBHOOK_PATH_SECRET")) // your secret for path protection
                         .webhookSecret(System.getenv("MY_BOT_WEBHOOK_SECRET")) // your secret for header

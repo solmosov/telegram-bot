@@ -11,10 +11,10 @@ public class Main {
         TelegramBotConfig myBotConfig = TelegramBotConfig.builder()
                 .updateMode(UpdatesMode.WEBHOOK)
                 .webhookPort(8080)
-                .webhookPath("/webhook/telegram")
-                .webhookPathSecret(System.getenv("MY_BOT_WEBHOOK_PATH_SECRET"))
-                .webhookSecret(System.getenv("MY_BOT_WEBHOOK_SECRET"))
-                .webhookUrl(System.getenv("MY_BOT_WEBHOOK_URL"))
+                .webhookPath("/webhook/telegram") // path
+                .webhookPathSecret(System.getenv("MY_BOT_WEBHOOK_PATH_SECRET")) // your secret for path protection
+                .webhookSecret(System.getenv("MY_BOT_WEBHOOK_SECRET")) // your secret for header
+                .webhookUrl(System.getenv("MY_BOT_WEBHOOK_URL")) //https://your-domain.com
                 .build();
 
         TelegramBot myBot = new TelegramBot("myBot", System.getenv("MY_BOT_TOKEN"), myBotConfig);

@@ -18,7 +18,7 @@
         <dependency>
             <groupId>io.github.solmosov</groupId>
             <artifactId>telegram-bot-core</artifactId>
-            <version>1.0.0-beta.2</version>
+            <version>1.0.0-beta.3</version>
         </dependency>
 
         <dependency>

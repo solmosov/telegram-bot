@@ -31,10 +31,10 @@ Create a new branch from `develop` for your changes
 
 Examples:
 
-feature/webhook-support
-fix/connection-timeout
-docs/update-getting-started
-test/add-webhook-tests
+- `feature/webhook-support`
+- `fix/connection-timeout`
+- `docs/update-getting-started`
+- `test/add-webhook-tests`
 
 Do not make changes directly on `master` or `develop`.
 

@@ -15,7 +15,7 @@ Minimal Telegram bot example using `telegram-bot-spring-boot` webhook mode.
 <dependency>
     <groupId>io.github.solmosov</groupId>
     <artifactId>telegram-bot-spring-boot</artifactId>
-    <version>1.0.0-beta.2</version>
+    <version>1.0.0-beta.3</version>
 </dependency>
 ```
 

@@ -9,7 +9,7 @@ import io.github.solmosov.telegrambot.request.message.message_action.EditMessage
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EditMessageReplyMarkupBuilder extends AbstractMessageBuilder<Message>{
+public class EditMessageReplyMarkupBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(EditMessageReplyMarkupBuilder.class);
     private Long chatId;
@@ -18,16 +18,31 @@ public class EditMessageReplyMarkupBuilder extends AbstractMessageBuilder<Messag
 
     public EditMessageReplyMarkupBuilder(
             TelegramClient client,
+            long messageId
+    ) {
+        this(client, null, null, messageId);
+    }
+
+    public EditMessageReplyMarkupBuilder(
+            TelegramClient client,
             Long updateId,
             Long defaultChatId,
             long messageId
-    ){
+    ) {
         super(client, updateId);
 
         this.chatId = defaultChatId;
         this.messageId = messageId;
 
         this.replyMarkup = InlineKeyboardMarkup.remove();
+    }
+
+    public EditMessageReplyMarkupBuilder(
+            TelegramClient client,
+            long messageId,
+            ReplyMarkup replyMarkup
+    ) {
+        this(client, null, null, messageId, replyMarkup);
     }
 
     public EditMessageReplyMarkupBuilder(
@@ -44,7 +59,7 @@ public class EditMessageReplyMarkupBuilder extends AbstractMessageBuilder<Messag
         this.replyMarkup = replyMarkup;
     }
 
-    public EditMessageReplyMarkupBuilder toChat(long chatId){
+    public EditMessageReplyMarkupBuilder toChat(long chatId) {
         this.chatId = chatId;
         return this;
     }

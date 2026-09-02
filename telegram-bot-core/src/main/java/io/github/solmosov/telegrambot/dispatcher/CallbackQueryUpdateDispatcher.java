@@ -46,7 +46,7 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
             }
 
             // Params
-            var params = CallbackParamResolver.params(handler.getCallbackPattern(), key);
+            var params = CallbackParamResolver.getParams(handler.getCallbackPattern(), key);
             botContext.callbackQuery()
                     .setCallbackParams(params);
 

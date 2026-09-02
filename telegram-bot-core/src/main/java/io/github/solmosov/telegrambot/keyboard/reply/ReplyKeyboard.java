@@ -2,6 +2,7 @@ package io.github.solmosov.telegrambot.keyboard.reply;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class ReplyKeyboard {
 
@@ -24,8 +25,12 @@ public final class ReplyKeyboard {
         return  ReplyKeyboardButton.contact(text);
     }
 
-    public static ReplyKeyboardButton buttonRequestUsers(String text, RequestUsers requestUsers){
-        return ReplyKeyboardButton.requestUsers(text, requestUsers);
+    public static ReplyKeyboardButton buttonRequestUsers(String text, int requestId, Consumer<RequestUsers.Builder> consumer){
+        RequestUsers.Builder requestUsersBuilder = RequestUsers.builder(requestId);
+
+        consumer.accept(requestUsersBuilder);
+
+        return ReplyKeyboardButton.requestUsers(text, requestUsersBuilder.build());
     }
 
     public static ReplyKeyboardRow row(

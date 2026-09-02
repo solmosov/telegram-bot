@@ -1,5 +1,7 @@
 package io.github.solmosov.telegrambot.dispatcher.resolver;
 
+import io.github.solmosov.telegrambot.exception.handler.HandlerRegistrationException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ public class CallbackParamResolver {
     }
 
 
-    public static String callbackKey(String callbackPattern) {
+    public static String generateKey(String callbackPattern) { // orders:{page|int}:{sort|String} -> orders:{}:{}
         if (!callbackPattern.contains("{") && !callbackPattern.contains("}")) {
             return callbackPattern;
         }
@@ -25,24 +27,24 @@ public class CallbackParamResolver {
                 key.append(":");
                 key.append("{}");
             } else {
-                key.append(":");
-                key.append(part);
+                throw new HandlerRegistrationException(
+                        "Invalid callback pattern: '" + callbackPattern + "'. " +
+                                "All segments after the first one must either be dynamic ('{}') or static. " +
+                                "For example: 'orders:page:status' or 'orders:{page}:{status}'."
+                );
             }
         }
 
         return key.toString();
     }
 
-    public static String updateKey(String value) {
+    public static String convertToPatternKey(String value) { // orders:2:desc -> orders:{}:{}
         String[] parts = value.split(":");
 
         StringBuilder key = new StringBuilder();
 
         for (int i = 0; i < parts.length; i++) {
             if (key.isEmpty()) {
-                key.append(parts[i]);
-            } else if (i % 2 != 0) {
-                key.append(":");
                 key.append(parts[i]);
             } else {
                 key.append(":");
@@ -53,7 +55,7 @@ public class CallbackParamResolver {
         return key.toString();
     }
 
-    public static Map<String, Object> params(String callbackPattern, String updateData) {
+    public static Map<String, Object> getParams(String callbackPattern, String updateData) { // orders:{page|int}:{sort|String} + orders:2:desc -> {page:2, sort:desc}
 
         String[] patternParts = callbackPattern.split(":");
         String[] dataParts = updateData.split(":");

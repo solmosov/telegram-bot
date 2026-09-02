@@ -11,12 +11,11 @@ import static org.mockito.Mockito.mock;
 
 class TelegramMessagingTest {
 
-    private TelegramClient client;
     private TelegramMessaging messaging;
 
     @BeforeEach
     void setUp() {
-        this.client = mock(TelegramClient.class);
+        TelegramClient client = mock(TelegramClient.class);
         this.messaging = new TelegramMessaging(client);
     }
 

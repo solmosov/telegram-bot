@@ -1,6 +1,7 @@
 package io.github.solmosov.telegrambot.context;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
 import io.github.solmosov.telegrambot.model.CallbackQuery;
 import io.github.solmosov.telegrambot.model.Chat;
@@ -276,6 +277,7 @@ class BotContextTest {
         }
     }
 
+
     @Nested
     class DeleteMessageTests {
         @Test
@@ -449,6 +451,77 @@ class BotContextTest {
             // when
             DocumentUploadBuilder result =
                     context.document(file, "document.pdf", "application/pdf");
+
+            // then
+            assertNotNull(result);
+        }
+    }
+
+    @Nested
+    class InlineKeyboardTests {
+
+        @Test
+        void shouldCreateEditInlineKeyboardBuilder() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(
+                            100L,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    )
+            );
+
+            Update update = new Update(
+                    123L,
+                    message,
+                    null
+            );
+
+            BotContext context = new BotContext(client, update);
+            ReplyMarkup replyMarkup = mock(ReplyMarkup.class);
+
+            // when
+            EditMessageReplyMarkupBuilder result =
+                    context.editInlineKeyboard(456L, replyMarkup);
+
+            // then
+            assertNotNull(result);
+        }
+
+        @Test
+        void shouldCreateRemoveInlineKeyboardBuilder() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(
+                            100L,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                    )
+            );
+
+            Update update = new Update(
+                    123L,
+                    message,
+                    null
+            );
+
+            BotContext context = new BotContext(client, update);
+
+            // when
+            EditMessageReplyMarkupBuilder result =
+                    context.removeInlineKeyboard(456L);
 
             // then
             assertNotNull(result);

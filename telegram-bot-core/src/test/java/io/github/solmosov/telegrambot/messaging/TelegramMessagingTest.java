@@ -1,6 +1,7 @@
 package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,11 @@ import static org.mockito.Mockito.mock;
 
 class TelegramMessagingTest {
 
-    private TelegramClient client;
     private TelegramMessaging messaging;
 
     @BeforeEach
     void setUp() {
-        this.client = mock(TelegramClient.class);
+        TelegramClient client = mock(TelegramClient.class);
         this.messaging = new TelegramMessaging(client);
     }
 
@@ -37,6 +37,29 @@ class TelegramMessagingTest {
     @Test
     void editMessageCaption_shouldReturnEditMessageCaptionBuilder() {
         assertInstanceOf(EditMessageCaptionBuilder.class, messaging.editMessageCaption(123L, "Updated caption"));
+    }
+
+    @Test
+    void shouldCreateEditInlineKeyboardBuilder() {
+        // given
+        ReplyMarkup replyMarkup = mock(ReplyMarkup.class);
+
+        // when
+        EditMessageReplyMarkupBuilder result =
+                messaging.editInlineKeyboard(456L, replyMarkup);
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    void shouldCreateRemoveInlineKeyboardBuilder() {
+        // when
+        EditMessageReplyMarkupBuilder result =
+                messaging.removeInlineKeyboard(456L);
+
+        // then
+        assertNotNull(result);
     }
 
     @Test

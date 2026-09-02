@@ -1,6 +1,7 @@
 package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
 
 public final class TelegramMessaging {
@@ -38,6 +39,21 @@ public final class TelegramMessaging {
                 client,
                 messageId,
                 caption
+        );
+    }
+
+    public EditMessageReplyMarkupBuilder editInlineKeyboard(long messageId, ReplyMarkup replyMarkup){
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                messageId,
+                replyMarkup
+        );
+    }
+
+    public EditMessageReplyMarkupBuilder removeInlineKeyboard(long messageId){
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                messageId
         );
     }
 

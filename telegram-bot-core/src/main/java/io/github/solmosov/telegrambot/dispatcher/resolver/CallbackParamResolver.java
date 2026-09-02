@@ -92,7 +92,7 @@ public class CallbackParamResolver {
             case "int" -> Integer.valueOf(dataPart);
             case "long" -> Long.valueOf(dataPart);
             case "double" -> Double.valueOf(dataPart);
-            case "flout" -> Float.valueOf(dataPart);
+            case "float" -> Float.valueOf(dataPart);
             default -> String.valueOf(dataPart);
         };
     }

@@ -1,8 +1,10 @@
 package io.github.solmosov.telegrambot.context;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
 import io.github.solmosov.telegrambot.model.Update;
+import io.github.solmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
 
 public final class BotContext {
 
@@ -90,6 +92,25 @@ public final class BotContext {
                 message().chatId(),
                 messageId,
                 caption
+        );
+    }
+
+    public EditMessageReplyMarkupBuilder editInlineKeyboard(long messageId, ReplyMarkup replyMarkup){
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                messageId,
+                replyMarkup
+        );
+    }
+
+    public EditMessageReplyMarkupBuilder removeInlineKeyboard(long messageId){
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                update().updateId(),
+                message().chatId(),
+                messageId
         );
     }
 

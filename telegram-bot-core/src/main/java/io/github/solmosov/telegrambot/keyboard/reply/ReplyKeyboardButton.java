@@ -70,7 +70,7 @@ public class ReplyKeyboardButton implements ReplyKeyboardElement {
         private RequestUsers requestUsers;
         private WebAppInfo webApp;
 
-        public Builder() {
+        private Builder() {
 
         }
 

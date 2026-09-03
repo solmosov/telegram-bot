@@ -58,6 +58,7 @@ public final class BotContext {
         return message().messageId();
     }
 
+    // --------------------- Requests ---------------------
     public ChatActionBuilder chatAction() {
         return new ChatActionBuilder(
                 client,

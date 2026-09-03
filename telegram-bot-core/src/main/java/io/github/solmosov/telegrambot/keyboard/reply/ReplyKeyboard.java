@@ -1,5 +1,7 @@
 package io.github.solmosov.telegrambot.keyboard.reply;
 
+import io.github.solmosov.telegrambot.keyboard.reply.button.RequestUsers;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -20,15 +22,31 @@ public final class ReplyKeyboard {
 
     // ---------------- Buttons ---------------
     public static ReplyKeyboardButton button(String text) {
-        return new ReplyKeyboardButton(text);
+        return ReplyKeyboardButton.builder()
+                .text(text)
+                .build();
     }
 
     public static ReplyKeyboardButton buttonLocation(String text) {
-        return new ReplyKeyboardButton(text, true);
+        return ReplyKeyboardButton.builder()
+                .requestLocation()
+                .build();
     }
 
     public static ReplyKeyboardButton buttonContact(String text) {
-        return ReplyKeyboardButton.contact(text);
+        return ReplyKeyboardButton.builder()
+                .text(text)
+                .requestContact()
+                .build();
+    }
+
+    public static ReplyKeyboardButton buttonRequestUsers(String text, int requestId) {
+        RequestUsers.Builder requestUsersBuilder = RequestUsers.builder(requestId);
+
+        return ReplyKeyboardButton.builder()
+                .text(text)
+                .requestUsers(requestUsersBuilder.build())
+                .build();
     }
 
     public static ReplyKeyboardButton buttonRequestUsers(String text, int requestId, Consumer<RequestUsers.Builder> consumer) {
@@ -36,7 +54,10 @@ public final class ReplyKeyboard {
 
         consumer.accept(requestUsersBuilder);
 
-        return ReplyKeyboardButton.requestUsers(text, requestUsersBuilder.build());
+        return ReplyKeyboardButton.builder()
+                .text(text)
+                .requestUsers(requestUsersBuilder.build())
+                .build();
     }
 
     // ---------------- Row ---------------

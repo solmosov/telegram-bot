@@ -7,7 +7,7 @@ import io.github.solmosov.telegrambot.keyboard.reply.button.RequestUsers;
 import io.github.solmosov.telegrambot.keyboard.util.WebAppInfo;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReplyKeyboardButton implements ReplyKeyboardElement {
+public final class ReplyKeyboardButton implements ReplyKeyboardElement {
     @JsonProperty("text")
     private final String text;
 
@@ -84,13 +84,13 @@ public class ReplyKeyboardButton implements ReplyKeyboardElement {
             return this;
         }
 
-        public Builder requestLocation(Boolean requestLocation) {
-            this.requestLocation = requestLocation;
+        public Builder requestLocation() {
+            this.requestLocation = true;
             return this;
         }
 
-        public Builder requestContact(Boolean requestContact) {
-            this.requestContact = requestContact;
+        public Builder requestContact() {
+            this.requestContact = true;
             return this;
         }
 

@@ -58,6 +58,10 @@ public class ReplyKeyboardButton implements ReplyKeyboardElement {
         }
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private String text;
         private Style style;
@@ -66,7 +70,11 @@ public class ReplyKeyboardButton implements ReplyKeyboardElement {
         private RequestUsers requestUsers;
         private WebAppInfo webApp;
 
-        public Builder text(String text){
+        public Builder() {
+
+        }
+
+        public Builder text(String text) {
             this.text = text;
             return this;
         }
@@ -91,7 +99,7 @@ public class ReplyKeyboardButton implements ReplyKeyboardElement {
             return this;
         }
 
-        public Builder webApp(String url){
+        public Builder webApp(String url) {
             this.webApp = new WebAppInfo(url);
             return this;
         }

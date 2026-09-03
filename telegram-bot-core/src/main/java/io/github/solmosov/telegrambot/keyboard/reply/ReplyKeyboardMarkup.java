@@ -10,25 +10,24 @@ import java.util.List;
 public record ReplyKeyboardMarkup(
         List<List<ReplyKeyboardButton>> keyboard,
 
+        @JsonProperty("is_persistent")
+        Boolean isPersistent,
+
         @JsonProperty("resize_keyboard")
         Boolean resizeKeyboard,
 
         @JsonProperty("one_time_keyboard")
         Boolean oneTimeKeyboard,
 
+        @JsonProperty("input_field_placeholder")
+        String inputFieldPlaceholder,
+
+        @JsonProperty("selective")
+        Boolean selective,
+
         @JsonProperty("remove_keyboard")
         Boolean remove_keyboard
-) implements ReplyMarkup {
-    public ReplyKeyboardMarkup(List<List<ReplyKeyboardButton>> keyboard) {
-        this(keyboard, true, true, null);
-    }
 
-    public static ReplyKeyboardMarkup remove() {
-        return new ReplyKeyboardMarkup(
-                null,
-                null,
-                null,
-                true
-        );
-    }
+) implements ReplyMarkup {
+
 }

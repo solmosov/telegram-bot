@@ -77,14 +77,17 @@ class ReplyKeyboardTest {
     }
 
     @Test
-    void buttonLocation_shouldCreateLocationButton() {
+    void buttonLocation_shouldCreateLocationButtonWithText() {
         ReplyKeyboardButton button =
                 ReplyKeyboard.buttonLocation("Location");
 
         JsonNode json = json(button);
 
-        // Current implementation ignores the text argument.
-        assertFalse(json.has("text"));
+        // text field majburiy
+        assertEquals(
+                objectMapper.valueToTree("Location"),
+                json.path("text")
+        );
 
         assertEquals(
                 objectMapper.valueToTree(true),
@@ -115,13 +118,14 @@ class ReplyKeyboardTest {
     // --------------------------------------------------
 
     @Test
-    void buttonRequestUsers_shouldSetRequestId() {
+    void buttonRequestUsers_shouldSetRequestIdAndText() {
         ReplyKeyboardButton button =
                 ReplyKeyboard.buttonRequestUsers("Users", 42);
 
         JsonNode json = json(button);
         JsonNode requestUsers = json.path("request_users");
 
+        // text field majburiy
         assertEquals(
                 objectMapper.valueToTree("Users"),
                 json.path("text")
@@ -148,8 +152,14 @@ class ReplyKeyboardTest {
                                 .maxQuantity(10)
                 );
 
-        JsonNode requestUsers =
-                json(button).path("request_users");
+        JsonNode json = json(button);
+        JsonNode requestUsers = json.path("request_users");
+
+        // text field majburiy
+        assertEquals(
+                objectMapper.valueToTree("Users"),
+                json.path("text")
+        );
 
         assertEquals(
                 objectMapper.valueToTree(42),

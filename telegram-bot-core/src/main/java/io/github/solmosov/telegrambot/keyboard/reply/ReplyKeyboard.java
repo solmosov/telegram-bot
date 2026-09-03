@@ -29,6 +29,7 @@ public final class ReplyKeyboard {
 
     public static ReplyKeyboardButton buttonLocation(String text) {
         return ReplyKeyboardButton.builder()
+                .text(text)
                 .requestLocation()
                 .build();
     }

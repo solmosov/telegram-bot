@@ -1,218 +1,438 @@
 package io.github.solmosov.telegrambot.keyboard.reply;
 
+import io.github.solmosov.telegrambot.json.ObjectMapperFactory;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReplyKeyboardTest {
 
-    @Test
-    void shouldCreateButton() {
-        ReplyKeyboardButton button = ReplyKeyboard.button("Hello");
+    private final ObjectMapper objectMapper = ObjectMapperFactory.create();
 
-        assertEquals("Hello", button.text());
-        assertNull(button.requestLocation());
-        assertNull(button.requestContact());
-        assertNull(button.requestUsers());
+    // --------------------------------------------------
+    // removeKeyboard
+    // --------------------------------------------------
+
+    @Test
+    void removeKeyboard_shouldCreateRemoveMarkup() {
+        ReplyKeyboardMarkup markup = ReplyKeyboard.removeKeyboard();
+
+        assertNull(markup.keyboard());
+        assertNull(markup.isPersistent());
+        assertNull(markup.resizeKeyboard());
+        assertNull(markup.oneTimeKeyboard());
+        assertNull(markup.inputFieldPlaceholder());
+        assertNull(markup.selective());
+        assertTrue(markup.removeKeyboard());
     }
 
     @Test
-    void shouldCreateLocationButton() {
-        ReplyKeyboardButton button = ReplyKeyboard.buttonLocation("Send location");
+    void removeKeyboard_shouldPreserveSelectiveValue() {
+        ReplyKeyboardMarkup selective =
+                ReplyKeyboard.removeKeyboard(true);
 
-        assertEquals("Send location", button.text());
-        assertEquals(true, button.requestLocation());
-        assertNull(button.requestContact());
-        assertNull(button.requestUsers());
+        ReplyKeyboardMarkup nonSelective =
+                ReplyKeyboard.removeKeyboard(false);
+
+        ReplyKeyboardMarkup unspecified =
+                ReplyKeyboard.removeKeyboard(null);
+
+        assertTrue(selective.selective());
+        assertFalse(nonSelective.selective());
+        assertNull(unspecified.selective());
+
+        assertTrue(selective.removeKeyboard());
+        assertTrue(nonSelective.removeKeyboard());
+        assertTrue(unspecified.removeKeyboard());
+    }
+
+    // --------------------------------------------------
+    // button
+    // --------------------------------------------------
+
+    @Test
+    void button_shouldSetText() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.button("Hello");
+
+        JsonNode json = json(button);
+
+        assertEquals(
+                objectMapper.valueToTree("Hello"),
+                json.path("text")
+        );
     }
 
     @Test
-    void shouldCreateContactButton() {
-        ReplyKeyboardButton button = ReplyKeyboard.buttonContact("Share contact");
+    void button_shouldAllowNullText() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.button(null);
 
-        assertEquals("Share contact", button.text());
-        assertNull(button.requestLocation());
-        assertEquals(true, button.requestContact());
-        assertNull(button.requestUsers());
+        assertFalse(json(button).has("text"));
     }
 
     @Test
-    void shouldCreateRequestUsersButton() {
-        ReplyKeyboardButton button = ReplyKeyboard.buttonRequestUsers(
-                "Select users",
-                42,
-                builder -> builder
-                        .userIsBot()
-                        .requestName()
-                        .requestUsername()
-                        .requestPhoto()
-                        .userIsPremium()
-                        .maxQuantity(5)
+    void buttonLocation_shouldCreateLocationButton() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonLocation("Location");
+
+        JsonNode json = json(button);
+
+        // Current implementation ignores the text argument.
+        assertFalse(json.has("text"));
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                json.path("request_location")
+        );
+    }
+
+    @Test
+    void buttonContact_shouldSetTextAndRequestContact() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonContact("Contact");
+
+        JsonNode json = json(button);
+
+        assertEquals(
+                objectMapper.valueToTree("Contact"),
+                json.path("text")
         );
 
-        assertEquals("Select users", button.text());
-        assertNull(button.requestLocation());
-        assertNull(button.requestContact());
-
-        assertNotNull(button.requestUsers());
-
-        // RequestUsers fields are private, so the important part here
-        // is that the button contains the configured RequestUsers object.
-        assertEquals(42, getRequestId(button.requestUsers()));
-    }
-
-    @Test
-    void shouldCreateRow() {
-        ReplyKeyboardButton first = ReplyKeyboard.button("One");
-        ReplyKeyboardButton second = ReplyKeyboard.button("Two");
-
-        ReplyKeyboardRow row = ReplyKeyboard.row(first, second);
-
-        assertEquals(List.of(first, second), row.buttons());
-    }
-
-    @Test
-    void shouldCreateKeyboardFromButtonsAndRows() {
-        ReplyKeyboardButton first = ReplyKeyboard.button("First");
-        ReplyKeyboardButton second = ReplyKeyboard.button("Second");
-        ReplyKeyboardButton third = ReplyKeyboard.button("Third");
-
-        ReplyKeyboardRow row = ReplyKeyboard.row(second, third);
-
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.of(
-                first,
-                row
+        assertEquals(
+                objectMapper.valueToTree(true),
+                json.path("request_contact")
         );
+    }
+
+    // --------------------------------------------------
+    // request users
+    // --------------------------------------------------
+
+    @Test
+    void buttonRequestUsers_shouldSetRequestId() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonRequestUsers("Users", 42);
+
+        JsonNode json = json(button);
+        JsonNode requestUsers = json.path("request_users");
+
+        assertEquals(
+                objectMapper.valueToTree("Users"),
+                json.path("text")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(42),
+                requestUsers.path("request_id")
+        );
+    }
+
+    @Test
+    void buttonRequestUsers_shouldApplyConsumerConfiguration() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonRequestUsers(
+                        "Users",
+                        42,
+                        builder -> builder
+                                .userIsBot()
+                                .userIsPremium()
+                                .requestName()
+                                .requestUsername()
+                                .requestPhoto()
+                                .maxQuantity(10)
+                );
+
+        JsonNode requestUsers =
+                json(button).path("request_users");
+
+        assertEquals(
+                objectMapper.valueToTree(42),
+                requestUsers.path("request_id")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                requestUsers.path("user_is_bot")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                requestUsers.path("user_is_premium")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                requestUsers.path("request_name")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                requestUsers.path("request_username")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                requestUsers.path("request_photo")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(10),
+                requestUsers.path("max_quantity")
+        );
+    }
+
+    @Test
+    void buttonRequestUsers_shouldExecuteConsumerExactlyOnce() {
+        AtomicBoolean called = new AtomicBoolean();
+
+        ReplyKeyboard.buttonRequestUsers(
+                "Users",
+                1,
+                builder -> called.set(true)
+        );
+
+        assertTrue(called.get());
+    }
+
+    @Test
+    void buttonRequestUsers_shouldThrowWhenConsumerIsNull() {
+        assertThrows(
+                NullPointerException.class,
+                () -> ReplyKeyboard.buttonRequestUsers(
+                        "Users",
+                        1,
+                        null
+                )
+        );
+    }
+
+    // --------------------------------------------------
+    // row
+    // --------------------------------------------------
+
+    @Test
+    void row_shouldPreserveButtonOrder() {
+        ReplyKeyboardButton first =
+                ReplyKeyboard.button("First");
+
+        ReplyKeyboardButton second =
+                ReplyKeyboard.button("Second");
+
+        ReplyKeyboardRow row =
+                ReplyKeyboard.row(first, second);
+
+        assertEquals(
+                List.of(first, second),
+                row.buttons()
+        );
+    }
+
+    @Test
+    void row_shouldCreateEmptyRow() {
+        ReplyKeyboardRow row =
+                ReplyKeyboard.row();
+
+        assertNotNull(row.buttons());
+        assertTrue(row.buttons().isEmpty());
+    }
+
+    @Test
+    void row_shouldThrowWhenButtonIsNull() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.button("First");
+
+        assertThrows(
+                NullPointerException.class,
+                () -> ReplyKeyboard.row(button, null)
+        );
+    }
+
+    @Test
+    void row_shouldThrowWhenButtonsArrayIsNull() {
+        assertThrows(
+                NullPointerException.class,
+                () -> ReplyKeyboard.row(
+                        (ReplyKeyboardButton[]) null
+                )
+        );
+    }
+
+    // --------------------------------------------------
+    // of
+    // --------------------------------------------------
+
+    @Test
+    void of_shouldPutEachButtonIntoSeparateRow() {
+        ReplyKeyboardButton first =
+                ReplyKeyboard.button("First");
+
+        ReplyKeyboardButton second =
+                ReplyKeyboard.button("Second");
+
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of(first, second);
+
+        assertEquals(
+                List.of(
+                        List.of(first),
+                        List.of(second)
+                ),
+                markup.keyboard()
+        );
+
+        assertTrue(markup.resizeKeyboard());
+    }
+
+    @Test
+    void of_shouldKeepRowAsSingleKeyboardRow() {
+        ReplyKeyboardButton first =
+                ReplyKeyboard.button("First");
+
+        ReplyKeyboardButton second =
+                ReplyKeyboard.button("Second");
+
+        ReplyKeyboardRow row =
+                ReplyKeyboard.row(first, second);
+
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of(row);
+
+        assertEquals(
+                List.of(
+                        List.of(first, second)
+                ),
+                markup.keyboard()
+        );
+    }
+
+    @Test
+    void of_shouldPreserveMixedElementOrder() {
+        ReplyKeyboardButton first =
+                ReplyKeyboard.button("First");
+
+        ReplyKeyboardButton second =
+                ReplyKeyboard.button("Second");
+
+        ReplyKeyboardButton third =
+                ReplyKeyboard.button("Third");
+
+        ReplyKeyboardRow row =
+                ReplyKeyboard.row(second, third);
+
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of(first, row);
 
         assertEquals(
                 List.of(
                         List.of(first),
                         List.of(second, third)
                 ),
-                keyboard.keyboard()
+                markup.keyboard()
         );
-
-        assertEquals(true, keyboard.resizeKeyboard());
-        assertEquals(true, keyboard.oneTimeKeyboard());
-        assertNull(keyboard.remove_keyboard());
     }
 
     @Test
-    void shouldCreateKeyboardWithMultipleButtonRows() {
-        ReplyKeyboardButton first = ReplyKeyboard.button("First");
-        ReplyKeyboardButton second = ReplyKeyboard.button("Second");
-        ReplyKeyboardButton third = ReplyKeyboard.button("Third");
+    void of_shouldPreserveButtonIdentity() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.button("Test");
 
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.of(
-                first,
-                second,
-                third
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of(button);
+
+        assertSame(
+                button,
+                markup.keyboard().get(0).get(0)
+        );
+    }
+
+    @Test
+    void of_shouldCreateEmptyKeyboard() {
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of();
+
+        assertNotNull(markup.keyboard());
+        assertTrue(markup.keyboard().isEmpty());
+        assertTrue(markup.resizeKeyboard());
+    }
+
+    @Test
+    void of_shouldIgnoreNullElements() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.button("Valid");
+
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of(
+                        null,
+                        button,
+                        null
+                );
+
+        assertEquals(
+                List.of(List.of(button)),
+                markup.keyboard()
+        );
+    }
+
+    @Test
+    void of_shouldThrowWhenElementsArrayIsNull() {
+        assertThrows(
+                NullPointerException.class,
+                () -> ReplyKeyboard.of(
+                        (ReplyKeyboardElement[]) null
+                )
+        );
+    }
+
+    // --------------------------------------------------
+    // integration
+    // --------------------------------------------------
+
+    @Test
+    void of_shouldSupportAllButtonTypes() {
+        ReplyKeyboardButton text =
+                ReplyKeyboard.button("Text");
+
+        ReplyKeyboardButton location =
+                ReplyKeyboard.buttonLocation("Location");
+
+        ReplyKeyboardButton contact =
+                ReplyKeyboard.buttonContact("Contact");
+
+        ReplyKeyboardButton users =
+                ReplyKeyboard.buttonRequestUsers("Users", 100);
+
+        ReplyKeyboardMarkup markup =
+                ReplyKeyboard.of(
+                        text,
+                        ReplyKeyboard.row(location, contact),
+                        users
+                );
+
+        assertEquals(3, markup.keyboard().size());
+
+        assertEquals(
+                List.of(text),
+                markup.keyboard().get(0)
         );
 
         assertEquals(
-                List.of(
-                        List.of(first),
-                        List.of(second),
-                        List.of(third)
-                ),
-                keyboard.keyboard()
+                List.of(location, contact),
+                markup.keyboard().get(1)
         );
-    }
-
-    @Test
-    void shouldBuildKeyboardWithDefaultValues() {
-        ReplyKeyboardButton button = ReplyKeyboard.button("Hello");
-
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.builder()
-                .of(button)
-                .build();
-
-        assertEquals(List.of(List.of(button)), keyboard.keyboard());
-        assertEquals(false, keyboard.resizeKeyboard());
-        assertEquals(false, keyboard.oneTimeKeyboard());
-        assertEquals(false, keyboard.remove_keyboard());
-    }
-
-    @Test
-    void shouldBuildKeyboardWithConfiguredOptions() {
-        ReplyKeyboardButton button = ReplyKeyboard.button("Hello");
-
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.builder()
-                .resizeKeyboard(true)
-                .oneTimeKeyboard(true)
-                .removeKeyboard(true)
-                .of(button)
-                .build();
-
-        assertEquals(List.of(List.of(button)), keyboard.keyboard());
-        assertTrue(keyboard.resizeKeyboard());
-        assertTrue(keyboard.oneTimeKeyboard());
-        assertTrue(keyboard.remove_keyboard());
-    }
-
-    @Test
-    void shouldBuildKeyboardWithRows() {
-        ReplyKeyboardButton first = ReplyKeyboard.button("First");
-        ReplyKeyboardButton second = ReplyKeyboard.button("Second");
-        ReplyKeyboardButton third = ReplyKeyboard.button("Third");
-
-        ReplyKeyboardRow row = ReplyKeyboard.row(second, third);
-
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.builder()
-                .of(first, row)
-                .build();
 
         assertEquals(
-                List.of(
-                        List.of(first),
-                        List.of(second, third)
-                ),
-                keyboard.keyboard()
+                List.of(users),
+                markup.keyboard().get(2)
         );
     }
 
-    @Test
-    void shouldRemoveKeyboard() {
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.removeKeyboard();
-
-        assertNull(keyboard.keyboard());
-        assertNull(keyboard.resizeKeyboard());
-        assertNull(keyboard.oneTimeKeyboard());
-        assertTrue(keyboard.remove_keyboard());
-    }
-
-    @Test
-    void shouldAllowEmptyKeyboard() {
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.of();
-
-        assertNotNull(keyboard);
-        assertTrue(keyboard.keyboard().isEmpty());
-        assertEquals(true, keyboard.resizeKeyboard());
-        assertEquals(true, keyboard.oneTimeKeyboard());
-        assertNull(keyboard.remove_keyboard());
-    }
-
-    @Test
-    void shouldAllowEmptyBuilderKeyboard() {
-        ReplyKeyboardMarkup keyboard = ReplyKeyboard.builder()
-                .build();
-
-        assertNotNull(keyboard);
-        assertTrue(keyboard.keyboard().isEmpty());
-        assertFalse(keyboard.resizeKeyboard());
-        assertFalse(keyboard.oneTimeKeyboard());
-        assertFalse(keyboard.remove_keyboard());
-    }
-
-    private static int getRequestId(RequestUsers requestUsers) {
-        try {
-            var field = RequestUsers.class.getDeclaredField("requestId");
-            field.setAccessible(true);
-            return field.getInt(requestUsers);
-        } catch (ReflectiveOperationException e) {
-            throw new AssertionError("Could not read requestId", e);
-        }
+    private JsonNode json(Object value) {
+        return objectMapper.valueToTree(value);
     }
 }

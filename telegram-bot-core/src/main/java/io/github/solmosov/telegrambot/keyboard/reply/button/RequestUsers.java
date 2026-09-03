@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.keyboard.reply;
+package io.github.solmosov.telegrambot.keyboard.reply.button;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,22 +9,22 @@ public final class RequestUsers {
     private final int requestId;
 
     @JsonProperty("user_is_bot")
-    private Boolean userIsBot;
-
-    @JsonProperty("request_name")
-    private Boolean requestName;
-
-    @JsonProperty("request_username")
-    private Boolean requestUsername;
-
-    @JsonProperty("request_photo")
-    private Boolean requestPhoto;
+    private final Boolean userIsBot;
 
     @JsonProperty("user_is_premium")
-    private Boolean userIsPremium;
+    private final Boolean userIsPremium;
 
     @JsonProperty("max_quantity")
-    private Integer maxQuantity;
+    private final Integer maxQuantity;
+
+    @JsonProperty("request_name")
+    private final Boolean requestName;
+
+    @JsonProperty("request_username")
+    private final Boolean requestUsername;
+
+    @JsonProperty("request_photo")
+    private final Boolean requestPhoto;
 
     private RequestUsers(Builder builder) {
         this.requestId = builder.requestId;
@@ -36,8 +36,32 @@ public final class RequestUsers {
         this.maxQuantity = builder.maxQuantity;
     }
 
-    public RequestUsers(int requestId) {
-        this.requestId = requestId;
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public Boolean getUserIsBot() {
+        return userIsBot;
+    }
+
+    public Boolean getUserIsPremium() {
+        return userIsPremium;
+    }
+
+    public Integer getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public Boolean getRequestName() {
+        return requestName;
+    }
+
+    public Boolean getRequestUsername() {
+        return requestUsername;
+    }
+
+    public Boolean getRequestPhoto() {
+        return requestPhoto;
     }
 
     public static Builder builder(int requestId) {

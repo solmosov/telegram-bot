@@ -9,22 +9,22 @@ public final class RequestUsers {
     private final int requestId;
 
     @JsonProperty("user_is_bot")
-    private Boolean userIsBot;
+    private final Boolean userIsBot;
 
     @JsonProperty("user_is_premium")
-    private Boolean userIsPremium;
+    private final Boolean userIsPremium;
 
     @JsonProperty("max_quantity")
-    private Integer maxQuantity;
+    private final Integer maxQuantity;
 
     @JsonProperty("request_name")
-    private Boolean requestName;
+    private final Boolean requestName;
 
     @JsonProperty("request_username")
-    private Boolean requestUsername;
+    private final Boolean requestUsername;
 
     @JsonProperty("request_photo")
-    private Boolean requestPhoto;
+    private final Boolean requestPhoto;
 
     private RequestUsers(Builder builder) {
         this.requestId = builder.requestId;
@@ -34,10 +34,6 @@ public final class RequestUsers {
         this.requestPhoto = builder.requestPhoto;
         this.userIsPremium = builder.userIsPremium;
         this.maxQuantity = builder.maxQuantity;
-    }
-
-    public RequestUsers(int requestId) {
-        this.requestId = requestId;
     }
 
     public static Builder builder(int requestId) {

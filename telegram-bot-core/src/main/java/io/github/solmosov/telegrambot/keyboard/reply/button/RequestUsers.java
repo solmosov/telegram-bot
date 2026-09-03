@@ -1,4 +1,4 @@
-package io.github.solmosov.telegrambot.keyboard.reply;
+package io.github.solmosov.telegrambot.keyboard.reply.button;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

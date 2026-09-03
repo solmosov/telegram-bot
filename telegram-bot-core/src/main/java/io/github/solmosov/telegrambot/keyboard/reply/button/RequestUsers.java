@@ -36,6 +36,34 @@ public final class RequestUsers {
         this.maxQuantity = builder.maxQuantity;
     }
 
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public Boolean getUserIsBot() {
+        return userIsBot;
+    }
+
+    public Boolean getUserIsPremium() {
+        return userIsPremium;
+    }
+
+    public Integer getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public Boolean getRequestName() {
+        return requestName;
+    }
+
+    public Boolean getRequestUsername() {
+        return requestUsername;
+    }
+
+    public Boolean getRequestPhoto() {
+        return requestPhoto;
+    }
+
     public static Builder builder(int requestId) {
         return new Builder(requestId);
     }

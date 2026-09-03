@@ -11,6 +11,12 @@ public final class RequestUsers {
     @JsonProperty("user_is_bot")
     private Boolean userIsBot;
 
+    @JsonProperty("user_is_premium")
+    private Boolean userIsPremium;
+
+    @JsonProperty("max_quantity")
+    private Integer maxQuantity;
+
     @JsonProperty("request_name")
     private Boolean requestName;
 
@@ -19,12 +25,6 @@ public final class RequestUsers {
 
     @JsonProperty("request_photo")
     private Boolean requestPhoto;
-
-    @JsonProperty("user_is_premium")
-    private Boolean userIsPremium;
-
-    @JsonProperty("max_quantity")
-    private Integer maxQuantity;
 
     private RequestUsers(Builder builder) {
         this.requestId = builder.requestId;

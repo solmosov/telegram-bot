@@ -114,8 +114,8 @@ public final class TelegramClient {
     ) {
 
         String url = API_BASE_URL + "/bot" + botToken + "/setWebhook"
-                + "?url="+ URLEncoder.encode(webhookUrl, StandardCharsets.UTF_8)
-                + "&secret_token="+URLEncoder.encode(secret, StandardCharsets.UTF_8);
+                + "?url=" + URLEncoder.encode(webhookUrl, StandardCharsets.UTF_8)
+                + "&secret_token=" + URLEncoder.encode(secret, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -455,6 +455,29 @@ public final class TelegramClient {
                 .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
                 .build();
 
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
+    // --------------------- Send Audio ---------------------
+    public TelegramResponse<Message> sendAudio(
+            SendAudioRequest requestBody
+    ) {
+        acquirePermit(requestBody.getChatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
+
+        String jsonBody = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
 
         return execute(
                 request,

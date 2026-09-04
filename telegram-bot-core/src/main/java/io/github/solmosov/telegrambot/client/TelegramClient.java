@@ -486,6 +486,28 @@ public final class TelegramClient {
         );
     }
 
+    public TelegramResponse<Message> sendAudio(
+            SendAudioUploadRequest requestBody
+    ) {
+        acquirePermit(requestBody.getChatId());
+
+        String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
+
+        MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .build();
+
+        return execute(
+                request,
+                new TypeReference<TelegramResponse<Message>>() {
+                }
+        );
+    }
+
     /* ---------------------------------------------
                        HELPERS
     -------------------------------------------- */

@@ -1158,7 +1158,7 @@ class TelegramClientTest {
                     SendDocumentUploadRequest.builder()
                             .chatId(456L)
                             .document(document)
-                            .disableContentTypeDetection(true)
+                            .disableContentTypeDetection()
                             .build();
 
             telegramClient.sendDocument(request);
@@ -1237,7 +1237,7 @@ class TelegramClientTest {
                             .chatId(456L)
                             .photo("https://example.com/AgACAgIAAxkBAAIB.png")
                             .caption("Test photo")
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .build();
 
@@ -1269,7 +1269,7 @@ class TelegramClientTest {
                             .chatId(456L)
                             .photo("https://example.com/AgACAgIAAxkBAAIB.png")
                             .caption("Test photo")
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .build();
 
@@ -1354,7 +1354,7 @@ class TelegramClientTest {
                             .chatId(456L)
                             .photo(photo)
                             .caption("Test photo")
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .build();
 
@@ -1395,7 +1395,7 @@ class TelegramClientTest {
                             .chatId(456L)
                             .photo(photo)
                             .caption("Test photo")
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .build();
 
@@ -1482,7 +1482,7 @@ class TelegramClientTest {
                             .duration(120)
                             .width(1920)
                             .height(1080)
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .caption("Test video")
                             .build();
@@ -1517,7 +1517,7 @@ class TelegramClientTest {
                             .duration(120)
                             .width(1920)
                             .height(1080)
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .caption("Test video")
                             .build();
@@ -1598,7 +1598,7 @@ class TelegramClientTest {
                             .duration(120)
                             .width(1920)
                             .height(1080)
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .caption("Test video")
                             .build();
@@ -1642,7 +1642,7 @@ class TelegramClientTest {
                             .duration(120)
                             .width(1920)
                             .height(1080)
-                            .hasSpoiler(true)
+                            .hasSpoiler()
                             .showCaptionAboveMedia()
                             .caption("Test video")
                             .build();

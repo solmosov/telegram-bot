@@ -69,8 +69,8 @@ public final class SendVideoUploadRequest extends MediaRequest {
             return this;
         }
 
-        public Builder hasSpoiler(boolean value) {
-            this.hasSpoiler = value;
+        public Builder hasSpoiler() {
+            this.hasSpoiler = true;
             return this;
         }
 

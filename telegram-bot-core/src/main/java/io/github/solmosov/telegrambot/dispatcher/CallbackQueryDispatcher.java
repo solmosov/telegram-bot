@@ -13,12 +13,12 @@ import io.github.solmosov.telegrambot.registry.Registry;
 
 import java.util.List;
 
-public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
+public class CallbackQueryDispatcher implements UpdateTypeDispatcher {
 
     private final Registry registry;
     private final AuthorizationManager authorizationManager;
 
-    public CallbackQueryUpdateDispatcher(
+    public CallbackQueryDispatcher(
             Registry registry,
             AuthorizationManager authorizationManager
     ) {
@@ -35,7 +35,7 @@ public class CallbackQueryUpdateDispatcher implements UpdateTypeDispatcher {
     public void dispatch(String botName, Update update, BotContext botContext) {
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        String key = botName + callbackQuery.data();
+        String key = (botName + callbackQuery.data()).toLowerCase();
 
         List<Handler> handlerGroups = registry.findCallbackQuery(key);
 

@@ -25,8 +25,10 @@ public final class MessageHandlerStore {
         Map<String, Handler> typedHandlers = handlers
                 .computeIfAbsent(registration.type(), k -> new HashMap<>());
 
+        String registrationKey = registration.key().toLowerCase();
+
         Handler existingHandler = typedHandlers
-                .putIfAbsent(registration.key(), registration.handler());
+                .putIfAbsent(registrationKey, registration.handler());
 
         if(existingHandler != null){
             throw new HandlerRegistrationException(
@@ -52,13 +54,17 @@ public final class MessageHandlerStore {
 
         List<Handler> result = new ArrayList<>();
 
-        Handler exactHandlers = typeHandlers.get(key);
+        String lookupKey = key == null
+                ? null
+                : key.toLowerCase();
+
+        Handler exactHandlers = typeHandlers.get(lookupKey);
 
         if (exactHandlers != null) {
             result.add(exactHandlers);
         }
 
-        if (key != null) {
+        if (lookupKey != null) {
             Handler globalHandler = typeHandlers.get(botName);
 
             if (globalHandler != null) {

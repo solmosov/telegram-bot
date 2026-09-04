@@ -24,7 +24,7 @@ public final class CallbackQueryHandlerStore {
     public void register(
             CallbackQueryHandlerRegistration registration
     ) {
-        String mapKey = CallbackParamResolver.generateKey(registration.key());
+        String mapKey = CallbackParamResolver.generateKey(registration.key().toLowerCase());
 
         Handler previous = handlers.putIfAbsent(mapKey, registration.handler());
 
@@ -41,12 +41,14 @@ public final class CallbackQueryHandlerStore {
     }
 
     public List<Handler> find(String key) {
-        String mapKey = CallbackParamResolver.convertToPatternKey(key);
+        String lookupKey = key.toLowerCase();
+
+        String mapKey = CallbackParamResolver.convertToPatternKey(lookupKey);
 
 
         List<Handler> result = new ArrayList<>();
 
-        Handler exactHandler = handlers.get(key);
+        Handler exactHandler = handlers.get(lookupKey);
 
         if (exactHandler != null) {
             result.add(exactHandler);

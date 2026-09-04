@@ -20,7 +20,7 @@ public final class UpdateHandlerStore {
     }
 
     public void register(UpdateHandlerRegistration registration) {
-        Handler previous = updateHandlers.putIfAbsent(registration.botName(), registration.handler());
+        Handler previous = updateHandlers.putIfAbsent(registration.botName().toLowerCase(), registration.handler());
 
         if (previous != null) {
             throw new HandlerRegistrationException(

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.mock;
 
 class UpdateHandlerStoreTest {
 
-    private static final String BOT_NAME = "myBot";
+    private static final String BOT_NAME = "myBot".toLowerCase();
 
     private UpdateHandlerStore store;
 
@@ -74,7 +74,7 @@ class UpdateHandlerStoreTest {
         );
 
         assertEquals(
-                "UpdateHandler already registered for bot='myBot'",
+                "UpdateHandler already registered for bot='mybot'",
                 exception.getMessage()
         );
     }

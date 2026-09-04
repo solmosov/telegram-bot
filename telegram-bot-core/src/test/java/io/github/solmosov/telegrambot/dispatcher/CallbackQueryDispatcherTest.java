@@ -19,9 +19,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class CallbackQueryUpdateDispatcherTest {
+class CallbackQueryDispatcherTest {
 
-    private static final String BOT_NAME = "myBot";
+    private static final String BOT_NAME = "myBot".toLowerCase();
 
     @Test
     void supports_shouldReturnTrue_whenTypeIsCallbackQuery() {
@@ -29,8 +29,8 @@ class CallbackQueryUpdateDispatcherTest {
         AuthorizationManager authorizationManager =
                 mock(AuthorizationManager.class);
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );
@@ -44,8 +44,8 @@ class CallbackQueryUpdateDispatcherTest {
         AuthorizationManager authorizationManager =
                 mock(AuthorizationManager.class);
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );
@@ -70,7 +70,7 @@ class CallbackQueryUpdateDispatcherTest {
         when(update.callbackQuery()).thenReturn(callbackQuery);
         when(callbackQuery.data()).thenReturn("buy");
 
-        when(registry.findCallbackQuery("myBotbuy"))
+        when(registry.findCallbackQuery("mybotbuy"))
                 .thenReturn(List.of(handler));
 
         when(authorizationManager.authorize(botContext, handler))
@@ -82,15 +82,15 @@ class CallbackQueryUpdateDispatcherTest {
         when(botContext.callbackQuery())
                 .thenReturn(callbackQueryContext);
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );
 
         dispatcher.dispatch(BOT_NAME, update, botContext);
 
-        verify(registry).findCallbackQuery("myBotbuy");
+        verify(registry).findCallbackQuery("mybotbuy");
         verify(authorizationManager).authorize(botContext, handler);
         verify(callbackQueryContext).setCallbackParams(Map.of());
         verify(handler).handle(update, botContext);
@@ -112,15 +112,15 @@ class CallbackQueryUpdateDispatcherTest {
         when(registry.findCallbackQuery("myBotproduct:123"))
                 .thenReturn(List.of());
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );
 
         dispatcher.dispatch(BOT_NAME, update, botContext);
 
-        verify(registry).findCallbackQuery("myBotproduct:123");
+        verify(registry).findCallbackQuery("mybotproduct:123");
     }
 
     @Test
@@ -140,7 +140,7 @@ class CallbackQueryUpdateDispatcherTest {
         when(update.callbackQuery()).thenReturn(callbackQuery);
         when(callbackQuery.data()).thenReturn("product:123");
 
-        when(registry.findCallbackQuery("myBotproduct:123"))
+        when(registry.findCallbackQuery("mybotproduct:123"))
                 .thenReturn(List.of(handler));
 
         when(authorizationManager.authorize(botContext, handler))
@@ -152,8 +152,8 @@ class CallbackQueryUpdateDispatcherTest {
         when(botContext.callbackQuery())
                 .thenReturn(callbackQueryContext);
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );
@@ -182,14 +182,14 @@ class CallbackQueryUpdateDispatcherTest {
         when(update.callbackQuery()).thenReturn(callbackQuery);
         when(callbackQuery.data()).thenReturn("buy");
 
-        when(registry.findCallbackQuery("myBotbuy"))
+        when(registry.findCallbackQuery("mybotbuy"))
                 .thenReturn(List.of(handler));
 
         when(authorizationManager.authorize(botContext, handler))
                 .thenReturn(AuthorizationDecision.denied());
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );
@@ -222,7 +222,7 @@ class CallbackQueryUpdateDispatcherTest {
         when(update.callbackQuery()).thenReturn(callbackQuery);
         when(callbackQuery.data()).thenReturn("buy");
 
-        when(registry.findCallbackQuery("myBotbuy"))
+        when(registry.findCallbackQuery("mybotbuy"))
                 .thenReturn(List.of(firstHandler, secondHandler));
 
         when(authorizationManager.authorize(botContext, firstHandler))
@@ -240,8 +240,8 @@ class CallbackQueryUpdateDispatcherTest {
         when(botContext.callbackQuery())
                 .thenReturn(callbackQueryContext);
 
-        CallbackQueryUpdateDispatcher dispatcher =
-                new CallbackQueryUpdateDispatcher(
+        CallbackQueryDispatcher dispatcher =
+                new CallbackQueryDispatcher(
                         registry,
                         authorizationManager
                 );

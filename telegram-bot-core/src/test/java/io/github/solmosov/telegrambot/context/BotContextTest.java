@@ -410,6 +410,54 @@ class BotContextTest {
     }
 
     @Nested
+    class AudioTests {
+
+        @Test
+        void shouldCreateAudioBuilder() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(100L, null, null, null, null, null)
+            );
+
+            Update update = new Update(123L, message, null);
+            BotContext context = new BotContext(client, update);
+
+            // when
+            AudioBuilder result =
+                    context.audio("https://example.com/audio.mp3");
+
+            // then
+            assertNotNull(result);
+        }
+
+        @Test
+        void shouldCreateAudioUploadBuilder() {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(100L, null, null, null, null, null)
+            );
+
+            Update update = new Update(123L, message, null);
+            BotContext context = new BotContext(client, update);
+
+            byte[] file = "audio".getBytes();
+
+            // when
+            AudioUploadBuilder result =
+                    context.audio(file, "audio.mp3", "audio/mpeg");
+
+            // then
+            assertNotNull(result);
+        }
+    }
+
+    @Nested
     class DocumentTests {
 
         @Test

@@ -24,7 +24,9 @@ public record UsersShared(
             @JsonProperty("last_name")
             String lastName,
 
-            String username
+            String username,
+
+            List<PhotoSize> photo
     ) {
     }
 }

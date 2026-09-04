@@ -31,6 +31,9 @@ public final class ReplyKeyboardButton implements ReplyKeyboardElement {
     @JsonProperty("web_app")
     private final WebAppInfo webApp;
 
+    public Style getStyle(){
+        return this.style;
+    }
 
     private ReplyKeyboardButton(Builder builder) {
         this.text = builder.text;

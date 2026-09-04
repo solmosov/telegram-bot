@@ -210,18 +210,6 @@ class ReplyKeyboardTest {
         assertTrue(called.get());
     }
 
-    @Test
-    void buttonRequestUsers_shouldThrowWhenConsumerIsNull() {
-        assertThrows(
-                NullPointerException.class,
-                () -> ReplyKeyboard.buttonRequestUsers(
-                        "Users",
-                        1,
-                        null
-                )
-        );
-    }
-
     // --------------------------------------------------
     // row
     // --------------------------------------------------
@@ -439,6 +427,96 @@ class ReplyKeyboardTest {
         assertEquals(
                 List.of(users),
                 markup.keyboard().get(2)
+        );
+    }
+
+    @Test
+    void button_shouldSetStyle() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.button("Hello", ReplyKeyboardButton.Style.PRIMARY);
+
+        assertEquals(
+                ReplyKeyboardButton.Style.PRIMARY,
+                button.getStyle()
+        );
+    }
+
+    @Test
+    void buttonLocation_shouldSetStyle() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonLocation(
+                        "Location",
+                        ReplyKeyboardButton.Style.SUCCESS
+                );
+
+        assertEquals(
+                ReplyKeyboardButton.Style.SUCCESS,
+                button.getStyle()
+        );
+    }
+
+    @Test
+    void buttonContact_shouldSetStyle() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonContact(
+                        "Contact",
+                        ReplyKeyboardButton.Style.DANGER
+                );
+
+        assertEquals(
+                ReplyKeyboardButton.Style.DANGER,
+                button.getStyle()
+        );
+    }
+
+    @Test
+    void buttonRequestUsers_shouldSetStyle() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonRequestUsers(
+                        "Users",
+                        42,
+                        ReplyKeyboardButton.Style.PRIMARY
+                );
+
+        assertEquals(
+                ReplyKeyboardButton.Style.PRIMARY,
+                button.getStyle()
+        );
+    }
+
+    @Test
+    void buttonRequestUsers_shouldSetStyleWithConsumer() {
+        ReplyKeyboardButton button =
+                ReplyKeyboard.buttonRequestUsers(
+                        "Users",
+                        42,
+                        builder -> builder
+                                .userIsBot()
+                                .maxQuantity(5),
+                        ReplyKeyboardButton.Style.SUCCESS
+                );
+
+        assertEquals(
+                ReplyKeyboardButton.Style.SUCCESS,
+                button.getStyle()
+        );
+
+        JsonNode requestUsers =
+                json(button).path("request_users");
+
+        assertEquals(
+                objectMapper.valueToTree(42),
+                requestUsers.path("request_id")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(true),
+                requestUsers.path("user_is_bot")
+        );
+
+        assertEquals(
+                objectMapper.valueToTree(5),
+                requestUsers.path("max_quantity")
         );
     }
 

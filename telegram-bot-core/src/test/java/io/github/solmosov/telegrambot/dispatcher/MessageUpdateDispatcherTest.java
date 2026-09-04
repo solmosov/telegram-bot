@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 class MessageUpdateDispatcherTest {
 
 
-    private static final String BOT_NAME = "myBot";
+    private static final String BOT_NAME = "mybot".toLowerCase();
 
     @Test
     void supports_shouldReturnTrue_whenTypeIsMessage() {
@@ -71,7 +71,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.TEXT));
         when(message.text()).thenReturn("hello");
 
-        when(registry.find(MessageType.TEXT, "myBothello"))
+        when(registry.find(MessageType.TEXT, "mybothello"))
                 .thenReturn(List.of(handler));
 
         when(authorizationManager.authorize(context, handler))
@@ -86,7 +86,7 @@ class MessageUpdateDispatcherTest {
 
         dispatcher.dispatch(BOT_NAME, update, context);
 
-        verify(registry).find(MessageType.TEXT, "myBothello");
+        verify(registry).find(MessageType.TEXT, "mybothello");
         verify(authorizationManager).authorize(context, handler);
         verify(handler).handle(update, context);
 
@@ -111,7 +111,7 @@ class MessageUpdateDispatcherTest {
         when(fallbackResolver.resolve(message)).thenReturn(MessageType.TEXT);
         when(message.text()).thenReturn("hello");
 
-        when(registry.find(MessageType.TEXT, "myBothello"))
+        when(registry.find(MessageType.TEXT, "mybothello"))
                 .thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -124,7 +124,7 @@ class MessageUpdateDispatcherTest {
         dispatcher.dispatch(BOT_NAME, update, context);
 
         verify(fallbackResolver).resolve(message);
-        verify(registry).find(MessageType.TEXT, "myBothello");
+        verify(registry).find(MessageType.TEXT, "mybothello");
     }
 
     @Test
@@ -147,7 +147,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.TEXT));
 
         when(message.text()).thenReturn("hello");
-        when(registry.find(MessageType.TEXT, "myBothello"))
+        when(registry.find(MessageType.TEXT, "mybothello"))
                 .thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -182,7 +182,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.COMMAND));
 
         when(message.text()).thenReturn("/start hello world");
-        when(registry.find(MessageType.COMMAND, "myBot/start"))
+        when(registry.find(MessageType.COMMAND, "mybot/start"))
                 .thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -194,7 +194,7 @@ class MessageUpdateDispatcherTest {
 
         dispatcher.dispatch(BOT_NAME, update, context);
 
-        verify(registry).find(MessageType.COMMAND, "myBot/start");
+        verify(registry).find(MessageType.COMMAND, "mybot/start");
     }
 
     @Test
@@ -215,7 +215,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.COMMAND));
 
         when(message.text()).thenReturn("/start abc123");
-        when(registry.find(MessageType.COMMAND, "myBot/start"))
+        when(registry.find(MessageType.COMMAND, "mybot/start"))
                 .thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -248,7 +248,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.COMMAND));
 
         when(message.text()).thenReturn("/help");
-        when(registry.find(MessageType.COMMAND, "myBot/help"))
+        when(registry.find(MessageType.COMMAND, "mybot/help"))
                 .thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -281,7 +281,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.PHOTO));
 
         when(message.caption()).thenReturn("Photo caption");
-        when(registry.find(MessageType.PHOTO, "myBotPhoto caption"))
+        when(registry.find(MessageType.PHOTO, "mybotPhoto caption"))
                 .thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -295,7 +295,7 @@ class MessageUpdateDispatcherTest {
 
         verify(registry).find(
                 MessageType.PHOTO,
-                "myBotPhoto caption"
+                "mybotphoto caption"
         );
     }
 
@@ -322,7 +322,7 @@ class MessageUpdateDispatcherTest {
 
         when(registry.find(
                 MessageType.LOCATION,
-                "myBotSend location"
+                "mybotSend location"
         )).thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -336,7 +336,7 @@ class MessageUpdateDispatcherTest {
 
         verify(registry).find(
                 MessageType.LOCATION,
-                "myBotSend location"
+                "mybotsend location"
         );
     }
 
@@ -367,7 +367,7 @@ class MessageUpdateDispatcherTest {
 
         when(registry.find(
                 MessageType.USERS_SHARED,
-                "myBot123"
+                "mybot123"
         )).thenReturn(List.of());
 
         MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
@@ -381,7 +381,7 @@ class MessageUpdateDispatcherTest {
 
         verify(registry).find(
                 MessageType.USERS_SHARED,
-                "myBot123"
+                "mybot123"
         );
     }
 
@@ -404,7 +404,7 @@ class MessageUpdateDispatcherTest {
                 .thenReturn(Optional.of(MessageType.TEXT));
 
         when(message.text()).thenReturn("hello");
-        when(registry.find(MessageType.TEXT, "myBothello"))
+        when(registry.find(MessageType.TEXT, "mybothello"))
                 .thenReturn(List.of(handler));
 
         when(authorizationManager.authorize(context, handler))
@@ -447,7 +447,7 @@ class MessageUpdateDispatcherTest {
 
         when(message.text()).thenReturn("hello");
 
-        when(registry.find(MessageType.TEXT, "myBothello"))
+        when(registry.find(MessageType.TEXT, "mybothello"))
                 .thenReturn(List.of(firstHandler, secondHandler));
 
         when(authorizationManager.authorize(context, firstHandler))

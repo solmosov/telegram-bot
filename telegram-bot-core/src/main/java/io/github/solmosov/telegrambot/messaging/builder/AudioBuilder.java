@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
-public class AudioBuilder extends AbstractMessageBuilder<Message> {
+final public class AudioBuilder extends AbstractMessageBuilder<Message> {
 
     private static final Logger log = LoggerFactory.getLogger(AudioBuilder.class);
     private final SendAudioRequest.Builder reqBuilder;

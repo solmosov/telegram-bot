@@ -1706,6 +1706,218 @@ class TelegramClientTest {
         }
     }
 
+    @Nested
+    @DisplayName("sendAudio")
+    class SendAudio {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+            {
+              "ok": true,
+              "result": {
+                "message_id": 123,
+                "chat": {
+                  "id": 456
+                },
+                "caption": "Test audio"
+              }
+            }
+            """);
+
+            SendAudioRequest request =
+                    SendAudioRequest.builder()
+                            .chatId(456L)
+                            .audio("https://example.com/audio.mp3")
+                            .duration(120)
+                            .caption("Test audio")
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendAudio(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectRequest() throws Exception {
+            mockResponse("""
+            {
+              "ok": true,
+              "result": {
+                "message_id": 123,
+                "chat": {
+                  "id": 456
+                }
+              }
+            }
+            """);
+
+            SendAudioRequest request =
+                    SendAudioRequest.builder()
+                            .chatId(456L)
+                            .audio("https://example.com/audio.mp3")
+                            .duration(120)
+                            .caption("Test audio")
+                            .build();
+
+            telegramClient.sendAudio(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendAudio",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            assertEquals(
+                    "application/json",
+                    httpRequest.headers()
+                            .firstValue("Content-Type")
+                            .orElseThrow()
+            );
+
+            JsonNode body =
+                    jsonMapper.readTree(readRequestBody(httpRequest));
+
+            assertEquals(456, body.get("chat_id").asLong());
+            assertEquals(
+                    "https://example.com/audio.mp3",
+                    body.get("audio").asString()
+            );
+            assertEquals(120, body.get("duration").asInt());
+            assertEquals(
+                    "Test audio",
+                    body.get("caption").asString()
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("sendAudio upload")
+    class SendAudioUpload {
+
+        @Test
+        void shouldReturnMessage() throws Exception {
+            mockResponse("""
+            {
+              "ok": true,
+              "result": {
+                "message_id": 123,
+                "chat": {
+                  "id": 456
+                }
+              }
+            }
+            """);
+
+            InputFile audio = new InputFile(
+                    "fake audio data".getBytes(StandardCharsets.UTF_8),
+                    "audio.mp3",
+                    "audio/mpeg"
+            );
+
+            SendAudioUploadRequest request =
+                    SendAudioUploadRequest.builder()
+                            .chatId(456L)
+                            .audio(audio)
+                            .duration(120)
+                            .build();
+
+            TelegramResponse<Message> response =
+                    telegramClient.sendAudio(request);
+
+            assertNotNull(response);
+            assertTrue(response.ok());
+            assertNotNull(response.result());
+            assertEquals(123, response.result().messageId());
+        }
+
+        @Test
+        void shouldSendCorrectMultipartRequest() throws Exception {
+            mockResponse("""
+            {
+              "ok": true,
+              "result": {
+                "message_id": 123,
+                "chat": {
+                  "id": 456
+                }
+              }
+            }
+            """);
+
+            byte[] audioData =
+                    "fake audio data".getBytes(StandardCharsets.UTF_8);
+
+            InputFile audio = new InputFile(
+                    audioData,
+                    "audio.mp3",
+                    "audio/mpeg"
+            );
+
+            SendAudioUploadRequest request =
+                    SendAudioUploadRequest.builder()
+                            .chatId(456L)
+                            .audio(audio)
+                            .duration(120)
+                            .build();
+
+            telegramClient.sendAudio(request);
+
+            ArgumentCaptor<HttpRequest> captor =
+                    ArgumentCaptor.forClass(HttpRequest.class);
+
+            verify(httpClient).send(
+                    captor.capture(),
+                    any(HttpResponse.BodyHandler.class)
+            );
+
+            HttpRequest httpRequest = captor.getValue();
+
+            assertEquals(
+                    "https://api.telegram.org/bottest-token/sendAudio",
+                    httpRequest.uri().toString()
+            );
+
+            assertEquals("POST", httpRequest.method());
+
+            String contentType = httpRequest.headers()
+                    .firstValue("Content-Type")
+                    .orElseThrow();
+
+            assertTrue(
+                    contentType.startsWith("multipart/form-data; boundary=")
+            );
+
+            String body = readRequestBody(httpRequest);
+
+            assertTrue(body.contains("name=\"chat_id\""));
+            assertTrue(body.contains("456"));
+
+            assertTrue(body.contains("name=\"duration\""));
+            assertTrue(body.contains("120"));
+
+            assertTrue(body.contains("name=\"audio\""));
+            assertTrue(body.contains("filename=\"audio.mp3\""));
+            assertTrue(body.contains("Content-Type: audio/mpeg"));
+            assertTrue(body.contains("fake audio data"));
+        }
+    }
+
     private String readRequestBody(HttpRequest request) {
         return new String(
                 readRequestBodyBytes(request),

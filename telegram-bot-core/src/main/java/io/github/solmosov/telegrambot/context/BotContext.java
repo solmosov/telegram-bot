@@ -25,11 +25,11 @@ public final class BotContext {
         this.client = telegramClient;
         this.update = update;
 
-        if(update.message() != null){
+        if (update.message() != null) {
             this.messageContext = new MessageContext(update.message());
-        }else if(update.callbackQuery() != null && update.callbackQuery().message() != null){
+        } else if (update.callbackQuery() != null && update.callbackQuery().message() != null) {
             this.messageContext = new MessageContext(update.callbackQuery().message());
-        }else {
+        } else {
             this.messageContext = null;
         }
 
@@ -96,7 +96,7 @@ public final class BotContext {
         );
     }
 
-    public EditMessageReplyMarkupBuilder editInlineKeyboard(long messageId, ReplyMarkup replyMarkup){
+    public EditMessageReplyMarkupBuilder editInlineKeyboard(long messageId, ReplyMarkup replyMarkup) {
         return new EditMessageReplyMarkupBuilder(
                 client,
                 update.updateId(),
@@ -106,7 +106,7 @@ public final class BotContext {
         );
     }
 
-    public EditMessageReplyMarkupBuilder removeInlineKeyboard(long messageId){
+    public EditMessageReplyMarkupBuilder removeInlineKeyboard(long messageId) {
         return new EditMessageReplyMarkupBuilder(
                 client,
                 update().updateId(),
@@ -158,6 +158,26 @@ public final class BotContext {
                 client,
                 update().updateId(),
                 message().chatId(),
+                file,
+                fileName,
+                mimeType
+        );
+    }
+
+    public AudioBuilder audio(String audioUrl) {
+        return new AudioBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                audioUrl
+        );
+    }
+
+    public AudioUploadBuilder audio(byte[] file, String fileName, String mimeType) {
+        return new AudioUploadBuilder(
+                client,
+                update().updateId(),
+                messageContext.chatId(),
                 file,
                 fileName,
                 mimeType

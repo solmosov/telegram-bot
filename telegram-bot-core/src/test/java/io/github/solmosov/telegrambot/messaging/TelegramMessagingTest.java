@@ -88,6 +88,22 @@ class TelegramMessagingTest {
     }
 
     @Test
+    void audio_shouldReturnAudioBuilder() {
+        assertInstanceOf(
+                AudioBuilder.class,
+                messaging.audio("https://example.com/audio.mp3")
+        );
+    }
+
+    @Test
+    void audioUpload_shouldReturnAudioUploadBuilder() {
+        assertInstanceOf(
+                AudioUploadBuilder.class,
+                messaging.audio(new byte[]{1, 2, 3}, "audio.mp3", "audio/mpeg")
+        );
+    }
+
+    @Test
     void document_shouldReturnDocumentBuilder() {
         assertInstanceOf(DocumentBuilder.class, messaging.document("https://example.com/document.pdf"));
     }
@@ -108,6 +124,8 @@ class TelegramMessagingTest {
         assertNotNull(messaging.photo(new byte[]{1}, "photo.jpg", "image/jpeg"));
         assertNotNull(messaging.video("video.mp4"));
         assertNotNull(messaging.video(new byte[]{1}, "video.mp4", "video/mp4"));
+        assertNotNull(messaging.audio("audio.mp3"));
+        assertNotNull(messaging.audio(new byte[]{1}, "audio.mp3", "audio/mpeg"));
         assertNotNull(messaging.document("document.pdf"));
         assertNotNull(messaging.document(new byte[]{1}, "document.pdf", "application/pdf"));
     }

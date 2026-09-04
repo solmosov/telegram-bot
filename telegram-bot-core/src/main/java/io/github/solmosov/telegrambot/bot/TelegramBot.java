@@ -75,7 +75,7 @@ public final class TelegramBot {
     ) {
         this.config = config;
 
-        this.name = name;
+        this.name = name.toLowerCase();
         this.token = botToken;
 
         // Object Mapper

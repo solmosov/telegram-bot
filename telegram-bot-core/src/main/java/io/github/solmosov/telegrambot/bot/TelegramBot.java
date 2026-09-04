@@ -2,7 +2,7 @@ package io.github.solmosov.telegrambot.bot;
 
 import io.github.solmosov.telegrambot.authorization.AuthorizationManager;
 import io.github.solmosov.telegrambot.client.TelegramClient;
-import io.github.solmosov.telegrambot.dispatcher.CallbackQueryUpdateDispatcher;
+import io.github.solmosov.telegrambot.dispatcher.CallbackQueryDispatcher;
 import io.github.solmosov.telegrambot.dispatcher.Dispatcher;
 import io.github.solmosov.telegrambot.dispatcher.MessageUpdateDispatcher;
 import io.github.solmosov.telegrambot.dispatcher.UpdateTypeDispatcher;
@@ -103,7 +103,7 @@ public final class TelegramBot {
         // Update dispatchers
         List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
                 new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver, authorizationManager),
-                new CallbackQueryUpdateDispatcher(registry, authorizationManager)
+                new CallbackQueryDispatcher(registry, authorizationManager)
         );
 
         this.dispatcher = new Dispatcher(name, registry, updateTypeDispatchers, authorizationManager);

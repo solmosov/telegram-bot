@@ -18,6 +18,15 @@ public class AudioBuilder extends AbstractMessageBuilder<Message> {
 
     public AudioBuilder(
             TelegramClient client,
+            String audioUrl
+    ) {
+        super(client, null);
+        this.reqBuilder = SendAudioRequest.builder()
+                .audio(audioUrl);
+    }
+
+    public AudioBuilder(
+            TelegramClient client,
             Long updateId,
             Long defaultChatId,
             String audioUrl
@@ -28,7 +37,7 @@ public class AudioBuilder extends AbstractMessageBuilder<Message> {
                 .audio(audioUrl);
     }
 
-    public AudioBuilder toChat(long chatId){
+    public AudioBuilder toChat(long chatId) {
         reqBuilder.chatId(chatId);
         return this;
     }

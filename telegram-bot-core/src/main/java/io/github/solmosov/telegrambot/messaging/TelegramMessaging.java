@@ -96,6 +96,13 @@ public final class TelegramMessaging {
         );
     }
 
+    public AudioBuilder audio(String audioUrl) {
+        return new AudioBuilder(
+                client,
+                audioUrl
+        );
+    }
+
     public DocumentBuilder document(String documentUrl){
         return new DocumentBuilder(
                 client,

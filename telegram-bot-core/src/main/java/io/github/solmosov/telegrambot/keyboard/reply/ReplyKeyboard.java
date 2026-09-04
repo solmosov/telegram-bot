@@ -22,21 +22,35 @@ public final class ReplyKeyboard {
 
     // ---------------- Buttons ---------------
     public static ReplyKeyboardButton button(String text) {
+        return button(text, null);
+    }
+    public static ReplyKeyboardButton button(String text, ReplyKeyboardButton.Style style) {
         return ReplyKeyboardButton.builder()
                 .text(text)
+                .style(style)
                 .build();
     }
 
     public static ReplyKeyboardButton buttonLocation(String text) {
+        return buttonLocation(text, null);
+    }
+
+    public static ReplyKeyboardButton buttonLocation(String text, ReplyKeyboardButton.Style style) {
         return ReplyKeyboardButton.builder()
                 .text(text)
+                .style(style)
                 .requestLocation()
                 .build();
     }
 
     public static ReplyKeyboardButton buttonContact(String text) {
+        return buttonContact(text, null);
+    }
+
+    public static ReplyKeyboardButton buttonContact(String text, ReplyKeyboardButton.Style style) {
         return ReplyKeyboardButton.builder()
                 .text(text)
+                .style(style)
                 .requestContact()
                 .build();
     }
@@ -50,7 +64,21 @@ public final class ReplyKeyboard {
                 .build();
     }
 
+    public static ReplyKeyboardButton buttonRequestUsers(String text, int requestId, ReplyKeyboardButton.Style style) {
+        RequestUsers.Builder requestUsersBuilder = RequestUsers.builder(requestId);
+
+        return ReplyKeyboardButton.builder()
+                .text(text)
+                .style(style)
+                .requestUsers(requestUsersBuilder.build())
+                .build();
+    }
+
     public static ReplyKeyboardButton buttonRequestUsers(String text, int requestId, Consumer<RequestUsers.Builder> consumer) {
+        return buttonRequestUsers(text, requestId, consumer, null);
+    }
+
+    public static ReplyKeyboardButton buttonRequestUsers(String text, int requestId, Consumer<RequestUsers.Builder> consumer, ReplyKeyboardButton.Style style) {
         RequestUsers.Builder requestUsersBuilder = RequestUsers.builder(requestId);
 
         consumer.accept(requestUsersBuilder);
@@ -58,6 +86,7 @@ public final class ReplyKeyboard {
         return ReplyKeyboardButton.builder()
                 .text(text)
                 .requestUsers(requestUsersBuilder.build())
+                .style(style)
                 .build();
     }
 

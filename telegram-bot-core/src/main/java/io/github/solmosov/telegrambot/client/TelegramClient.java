@@ -469,7 +469,7 @@ public final class TelegramClient {
     ) {
         acquirePermit(requestBody.getChatId());
 
-        String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
+        String url = API_BASE_URL + "/bot" + botToken + "/sendAudio";
 
         String jsonBody = objectMapper.writeValueAsString(requestBody);
 
@@ -491,13 +491,13 @@ public final class TelegramClient {
     ) {
         acquirePermit(requestBody.getChatId());
 
-        String url = API_BASE_URL + "/bot" + botToken + "/sendVideo";
+        String url = API_BASE_URL + "/bot" + botToken + "/sendAudio";
 
         MultipartBody multipartBody = multipartBodyBuilder.build(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .header("Content-Type", "application/json")
+                .header("Content-Type", multipartBody.contentType())
                 .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
                 .build();
 

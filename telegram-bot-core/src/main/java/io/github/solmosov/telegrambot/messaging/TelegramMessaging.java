@@ -103,6 +103,15 @@ public final class TelegramMessaging {
         );
     }
 
+    public AudioUploadBuilder audio(byte[] file, String fileName, String mimeType) {
+        return new AudioUploadBuilder(
+                client,
+                file,
+                fileName,
+                mimeType
+        );
+    }
+
     public DocumentBuilder document(String documentUrl){
         return new DocumentBuilder(
                 client,

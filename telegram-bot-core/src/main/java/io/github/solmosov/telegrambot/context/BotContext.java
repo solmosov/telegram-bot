@@ -173,6 +173,17 @@ public final class BotContext {
         );
     }
 
+    public AudioUploadBuilder audio(byte[] file, String fileName, String mimeType) {
+        return new AudioUploadBuilder(
+                client,
+                update().updateId(),
+                messageContext.chatId(),
+                file,
+                fileName,
+                mimeType
+        );
+    }
+
     public DocumentBuilder document(String documentUrl) {
         return new DocumentBuilder(
                 client,

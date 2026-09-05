@@ -9,6 +9,9 @@ import io.github.solmosov.telegrambot.model.Message;
 import io.github.solmosov.telegrambot.model.Update;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -336,29 +339,29 @@ class BotContextTest {
             // then
             assertNotNull(result);
         }
-//
-//        @Test
-//        void shouldCreatePhotoUploadBuilder() {
-//            // given
-//            TelegramClient client = mock(TelegramClient.class);
-//
-//            Message message = mock(Message.class);
-//            when(message.chat()).thenReturn(
-//                    new Chat(100L, null, null, null, null, null)
-//            );
-//
-//            Update update = new Update(123L, message, null);
-//            BotContext context = new BotContext(client, update);
-//
-//            byte[] file = "image".getBytes();
-//
-//            // when
-//            PhotoUploadBuilder result =
-//                    context.photo(file, "photo.jpg", "image/jpeg");
-//
-//            // then
-//            assertNotNull(result);
-//        }
+
+        @Test
+        void shouldCreatePhotoUploadBuilderWithPathAndFileName(@TempDir Path tempDir) {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(100L, null, null, null, null, null)
+            );
+
+            Update update = new Update(123L, message, null);
+            BotContext context = new BotContext(client, update);
+
+            Path filePath = tempDir.resolve("test_photo.jpg");
+            String fileName = "photo.jpg";
+
+            // when
+            PhotoUploadBuilder result = context.photo(filePath, fileName);
+
+            // then
+            assertNotNull(result, "PhotoUploadBuilder instance should not be null");
+        }
     }
 
     @Nested
@@ -384,29 +387,28 @@ class BotContextTest {
             // then
             assertNotNull(result);
         }
-//
-//        @Test
-//        void shouldCreateVideoUploadBuilder() {
-//            // given
-//            TelegramClient client = mock(TelegramClient.class);
-//
-//            Message message = mock(Message.class);
-//            when(message.chat()).thenReturn(
-//                    new Chat(100L, null, null, null, null, null)
-//            );
-//
-//            Update update = new Update(123L, message, null);
-//            BotContext context = new BotContext(client, update);
-//
-//            byte[] file = "video".getBytes();
-//
-//            // when
-//            VideoUploadBuilder result =
-//                    context.video(file, "video.mp4", "video/mp4");
-//
-//            // then
-//            assertNotNull(result);
-//        }
+
+        @Test
+        void shouldCreateVideoUploadBuilderWithPath(@TempDir Path tempDir) {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(100L, null, null, null, null, null)
+            );
+
+            Update update = new Update(123L, message, null);
+            BotContext context = new BotContext(client, update);
+
+            Path filePath = tempDir.resolve("sample_video.mp4");
+
+            // when
+            VideoUploadBuilder result = context.video(filePath, "sample_video.mp4");
+
+            // then
+            assertNotNull(result, "VideoUploadBuilder instance should not be null");
+        }
     }
 
     @Nested
@@ -433,28 +435,28 @@ class BotContextTest {
             assertNotNull(result);
         }
 
-//        @Test
-//        void shouldCreateAudioUploadBuilder() {
-//            // given
-//            TelegramClient client = mock(TelegramClient.class);
-//
-//            Message message = mock(Message.class);
-//            when(message.chat()).thenReturn(
-//                    new Chat(100L, null, null, null, null, null)
-//            );
-//
-//            Update update = new Update(123L, message, null);
-//            BotContext context = new BotContext(client, update);
-//
-//            byte[] file = "audio".getBytes();
-//
-//            // when
-//            AudioUploadBuilder result =
-//                    context.audio(file, "audio.mp3", "audio/mpeg");
-//
-//            // then
-//            assertNotNull(result);
-//        }
+        @Test
+        void shouldCreateAudioUploadBuilderWithPathAndFileName(@TempDir Path tempDir) {
+            // given
+            TelegramClient client = mock(TelegramClient.class);
+
+            Message message = mock(Message.class);
+            when(message.chat()).thenReturn(
+                    new Chat(100L, null, null, null, null, null)
+            );
+
+            Update update = new Update(123L, message, null);
+            BotContext context = new BotContext(client, update);
+
+            Path filePath = tempDir.resolve("audio.mp3");
+            String fileName = "audio.mp3";
+
+            // when
+            AudioUploadBuilder result = context.audio(filePath, fileName);
+
+            // then
+            assertNotNull(result, "AudioUploadBuilder instance should not be null");
+        }
     }
 
     @Nested

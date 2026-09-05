@@ -10,6 +10,7 @@ import io.github.solmosov.telegrambot.request.message.options.LinkPreviewOptions
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 final public  class AudioUploadBuilder extends AbstractMessageBuilder<Message> {
@@ -19,13 +20,12 @@ final public  class AudioUploadBuilder extends AbstractMessageBuilder<Message> {
 
     public AudioUploadBuilder(
             TelegramClient client,
-            byte[] audio,
-            String audioName,
-            String mimeType
+            Path path,
+            String audioName
     ) {
         super(client, null);
 
-        InputFile inputFile = new InputFile(audio, audioName, mimeType);
+        InputFile inputFile = new InputFile(path, audioName);
 
         this.reqBuilder = SendAudioUploadRequest.builder()
                 .audio(inputFile);
@@ -35,13 +35,12 @@ final public  class AudioUploadBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             Long defaultChatId,
-            byte[] audio,
-            String audioName,
-            String mimeType
+            Path path,
+            String audioName
     ) {
         super(client, updateId);
 
-        InputFile inputFile = new InputFile(audio, audioName, mimeType);
+        InputFile inputFile = new InputFile(path, audioName);
         this.reqBuilder = SendAudioUploadRequest.builder()
                 .chatId(defaultChatId)
                 .audio(inputFile);

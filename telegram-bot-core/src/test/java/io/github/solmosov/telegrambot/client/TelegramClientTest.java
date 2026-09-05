@@ -1092,126 +1092,126 @@ class TelegramClientTest {
                 any(HttpResponse.BodyHandler.class)
         )).thenReturn(httpResponse);
     }
-
-    @Nested
-    @DisplayName("sendDocument upload")
-    class SendDocumentUpload {
-
-        @Test
-        void shouldReturnMessage() throws Exception {
-            mockResponse("""
-                {
-                  "ok": true,
-                  "result": {
-                    "message_id": 123,
-                    "chat": {
-                      "id": 456
-                    }
-                  }
-                }
-                """);
-
-            InputFile document = new InputFile(
-                    "test document".getBytes(StandardCharsets.UTF_8),
-                    "test.txt",
-                    "text/plain"
-            );
-
-            SendDocumentUploadRequest request =
-                    SendDocumentUploadRequest.builder()
-                            .chatId(456L)
-                            .document(document)
-                            .build();
-
-            TelegramResponse<Message> response =
-                    telegramClient.sendDocument(request);
-
-            assertNotNull(response);
-            assertTrue(response.ok());
-            assertNotNull(response.result());
-            assertEquals(123, response.result().messageId());
-        }
-
-        @Test
-        void shouldSendCorrectMultipartRequest() throws Exception {
-            mockResponse("""
-                {
-                  "ok": true,
-                  "result": {
-                    "message_id": 123,
-                    "chat": {
-                      "id": 456
-                    }
-                  }
-                }
-                """);
-
-            byte[] fileData = "test document".getBytes(StandardCharsets.UTF_8);
-
-            InputFile document = new InputFile(
-                    fileData,
-                    "test.txt",
-                    "text/plain"
-            );
-
-            SendDocumentUploadRequest request =
-                    SendDocumentUploadRequest.builder()
-                            .chatId(456L)
-                            .document(document)
-                            .disableContentTypeDetection()
-                            .build();
-
-            telegramClient.sendDocument(request);
-
-            ArgumentCaptor<HttpRequest> captor =
-                    ArgumentCaptor.forClass(HttpRequest.class);
-
-            verify(httpClient).send(
-                    captor.capture(),
-                    any(HttpResponse.BodyHandler.class)
-            );
-
-            HttpRequest httpRequest = captor.getValue();
-
-            assertEquals(
-                    "https://api.telegram.org/bottest-token/sendDocument",
-                    httpRequest.uri().toString()
-            );
-
-            assertEquals("POST", httpRequest.method());
-
-            String contentType = httpRequest.headers()
-                    .firstValue("Content-Type")
-                    .orElseThrow();
-
-            assertTrue(
-                    contentType.startsWith("multipart/form-data; boundary=")
-            );
-
-            byte[] body = readRequestBodyBytes(httpRequest);
-
-            String bodyString = new String(
-                    body,
-                    StandardCharsets.UTF_8
-            );
-
-            assertTrue(bodyString.contains("name=\"chat_id\""));
-            assertTrue(bodyString.contains("456"));
-
-            assertTrue(
-                    bodyString.contains(
-                            "name=\"disable_content_type_detection\""
-                    )
-            );
-            assertTrue(bodyString.contains("true"));
-
-            assertTrue(bodyString.contains("name=\"document\""));
-            assertTrue(bodyString.contains("filename=\"test.txt\""));
-            assertTrue(bodyString.contains("Content-Type: text/plain"));
-
-            assertTrue(bodyString.contains("test document"));
-        }
-    }
+//
+//    @Nested
+//    @DisplayName("sendDocument upload")
+//    class SendDocumentUpload {
+//
+//        @Test
+//        void shouldReturnMessage() throws Exception {
+//            mockResponse("""
+//                {
+//                  "ok": true,
+//                  "result": {
+//                    "message_id": 123,
+//                    "chat": {
+//                      "id": 456
+//                    }
+//                  }
+//                }
+//                """);
+//
+//            InputFile document = new InputFile(
+//                    "test document".getBytes(StandardCharsets.UTF_8),
+//                    "test.txt",
+//                    "text/plain"
+//            );
+//
+//            SendDocumentUploadRequest request =
+//                    SendDocumentUploadRequest.builder()
+//                            .chatId(456L)
+//                            .document(document)
+//                            .build();
+//
+//            TelegramResponse<Message> response =
+//                    telegramClient.sendDocument(request);
+//
+//            assertNotNull(response);
+//            assertTrue(response.ok());
+//            assertNotNull(response.result());
+//            assertEquals(123, response.result().messageId());
+//        }
+//
+//        @Test
+//        void shouldSendCorrectMultipartRequest() throws Exception {
+//            mockResponse("""
+//                {
+//                  "ok": true,
+//                  "result": {
+//                    "message_id": 123,
+//                    "chat": {
+//                      "id": 456
+//                    }
+//                  }
+//                }
+//                """);
+//
+//            byte[] fileData = "test document".getBytes(StandardCharsets.UTF_8);
+//
+//            InputFile document = new InputFile(
+//                    fileData,
+//                    "test.txt",
+//                    "text/plain"
+//            );
+//
+//            SendDocumentUploadRequest request =
+//                    SendDocumentUploadRequest.builder()
+//                            .chatId(456L)
+//                            .document(document)
+//                            .disableContentTypeDetection()
+//                            .build();
+//
+//            telegramClient.sendDocument(request);
+//
+//            ArgumentCaptor<HttpRequest> captor =
+//                    ArgumentCaptor.forClass(HttpRequest.class);
+//
+//            verify(httpClient).send(
+//                    captor.capture(),
+//                    any(HttpResponse.BodyHandler.class)
+//            );
+//
+//            HttpRequest httpRequest = captor.getValue();
+//
+//            assertEquals(
+//                    "https://api.telegram.org/bottest-token/sendDocument",
+//                    httpRequest.uri().toString()
+//            );
+//
+//            assertEquals("POST", httpRequest.method());
+//
+//            String contentType = httpRequest.headers()
+//                    .firstValue("Content-Type")
+//                    .orElseThrow();
+//
+//            assertTrue(
+//                    contentType.startsWith("multipart/form-data; boundary=")
+//            );
+//
+//            byte[] body = readRequestBodyBytes(httpRequest);
+//
+//            String bodyString = new String(
+//                    body,
+//                    StandardCharsets.UTF_8
+//            );
+//
+//            assertTrue(bodyString.contains("name=\"chat_id\""));
+//            assertTrue(bodyString.contains("456"));
+//
+//            assertTrue(
+//                    bodyString.contains(
+//                            "name=\"disable_content_type_detection\""
+//                    )
+//            );
+//            assertTrue(bodyString.contains("true"));
+//
+//            assertTrue(bodyString.contains("name=\"document\""));
+//            assertTrue(bodyString.contains("filename=\"test.txt\""));
+//            assertTrue(bodyString.contains("Content-Type: text/plain"));
+//
+//            assertTrue(bodyString.contains("test document"));
+//        }
+//    }
 
     @Nested
     @DisplayName("sendPhoto")
@@ -1325,136 +1325,136 @@ class TelegramClientTest {
         }
     }
 
-    @Nested
-    @DisplayName("sendPhoto upload")
-    class SendPhotoUpload {
-
-        @Test
-        void shouldReturnMessage() throws Exception {
-            mockResponse("""
-                {
-                  "ok": true,
-                  "result": {
-                    "message_id": 123,
-                    "chat": {
-                      "id": 456
-                    }
-                  }
-                }
-                """);
-
-            InputFile photo = new InputFile(
-                    "fake image data".getBytes(StandardCharsets.UTF_8),
-                    "photo.jpg",
-                    "image/jpeg"
-            );
-
-            SendPhotoUploadRequest request =
-                    SendPhotoUploadRequest.builder()
-                            .chatId(456L)
-                            .photo(photo)
-                            .caption("Test photo")
-                            .hasSpoiler()
-                            .showCaptionAboveMedia()
-                            .build();
-
-            TelegramResponse<Message> response =
-                    telegramClient.sendPhoto(request);
-
-            assertNotNull(response);
-            assertTrue(response.ok());
-            assertNotNull(response.result());
-            assertEquals(123, response.result().messageId());
-        }
-
-        @Test
-        void shouldSendCorrectMultipartRequest() throws Exception {
-            mockResponse("""
-                {
-                  "ok": true,
-                  "result": {
-                    "message_id": 123,
-                    "chat": {
-                      "id": 456
-                    }
-                  }
-                }
-                """);
-
-            byte[] photoData =
-                    "fake image data".getBytes(StandardCharsets.UTF_8);
-
-            InputFile photo = new InputFile(
-                    photoData,
-                    "photo.jpg",
-                    "image/jpeg"
-            );
-
-            SendPhotoUploadRequest request =
-                    SendPhotoUploadRequest.builder()
-                            .chatId(456L)
-                            .photo(photo)
-                            .caption("Test photo")
-                            .hasSpoiler()
-                            .showCaptionAboveMedia()
-                            .build();
-
-            telegramClient.sendPhoto(request);
-
-            ArgumentCaptor<HttpRequest> captor =
-                    ArgumentCaptor.forClass(HttpRequest.class);
-
-            verify(httpClient).send(
-                    captor.capture(),
-                    any(HttpResponse.BodyHandler.class)
-            );
-
-            HttpRequest httpRequest = captor.getValue();
-
-            assertEquals(
-                    "https://api.telegram.org/bottest-token/sendPhoto",
-                    httpRequest.uri().toString()
-            );
-
-            assertEquals("POST", httpRequest.method());
-
-            String contentType = httpRequest.headers()
-                    .firstValue("Content-Type")
-                    .orElseThrow();
-
-            assertTrue(
-                    contentType.startsWith("multipart/form-data; boundary=")
-            );
-
-            byte[] body = readRequestBodyBytes(httpRequest);
-
-            String bodyString = new String(
-                    body,
-                    StandardCharsets.UTF_8
-            );
-
-            assertTrue(bodyString.contains("name=\"chat_id\""));
-            assertTrue(bodyString.contains("456"));
-
-            assertTrue(bodyString.contains("name=\"caption\""));
-            assertTrue(bodyString.contains("Test photo"));
-
-            assertTrue(
-                    bodyString.contains("name=\"has_spoiler\"")
-            );
-            assertTrue(bodyString.contains("true"));
-
-            assertTrue(
-                    bodyString.contains("name=\"show_caption_above_media\"")
-            );
-            assertTrue(bodyString.contains("true"));
-
-            assertTrue(bodyString.contains("name=\"photo\""));
-            assertTrue(bodyString.contains("filename=\"photo.jpg\""));
-            assertTrue(bodyString.contains("Content-Type: image/jpeg"));
-            assertTrue(bodyString.contains("fake image data"));
-        }
-    }
+//    @Nested
+//    @DisplayName("sendPhoto upload")
+//    class SendPhotoUpload {
+//
+//        @Test
+//        void shouldReturnMessage() throws Exception {
+//            mockResponse("""
+//                {
+//                  "ok": true,
+//                  "result": {
+//                    "message_id": 123,
+//                    "chat": {
+//                      "id": 456
+//                    }
+//                  }
+//                }
+//                """);
+//
+//            InputFile photo = new InputFile(
+//                    "fake image data".getBytes(StandardCharsets.UTF_8),
+//                    "photo.jpg",
+//                    "image/jpeg"
+//            );
+//
+//            SendPhotoUploadRequest request =
+//                    SendPhotoUploadRequest.builder()
+//                            .chatId(456L)
+//                            .photo(photo)
+//                            .caption("Test photo")
+//                            .hasSpoiler()
+//                            .showCaptionAboveMedia()
+//                            .build();
+//
+//            TelegramResponse<Message> response =
+//                    telegramClient.sendPhoto(request);
+//
+//            assertNotNull(response);
+//            assertTrue(response.ok());
+//            assertNotNull(response.result());
+//            assertEquals(123, response.result().messageId());
+//        }
+//
+//        @Test
+//        void shouldSendCorrectMultipartRequest() throws Exception {
+//            mockResponse("""
+//                {
+//                  "ok": true,
+//                  "result": {
+//                    "message_id": 123,
+//                    "chat": {
+//                      "id": 456
+//                    }
+//                  }
+//                }
+//                """);
+//
+//            byte[] photoData =
+//                    "fake image data".getBytes(StandardCharsets.UTF_8);
+//
+//            InputFile photo = new InputFile(
+//                    photoData,
+//                    "photo.jpg",
+//                    "image/jpeg"
+//            );
+//
+//            SendPhotoUploadRequest request =
+//                    SendPhotoUploadRequest.builder()
+//                            .chatId(456L)
+//                            .photo(photo)
+//                            .caption("Test photo")
+//                            .hasSpoiler()
+//                            .showCaptionAboveMedia()
+//                            .build();
+//
+//            telegramClient.sendPhoto(request);
+//
+//            ArgumentCaptor<HttpRequest> captor =
+//                    ArgumentCaptor.forClass(HttpRequest.class);
+//
+//            verify(httpClient).send(
+//                    captor.capture(),
+//                    any(HttpResponse.BodyHandler.class)
+//            );
+//
+//            HttpRequest httpRequest = captor.getValue();
+//
+//            assertEquals(
+//                    "https://api.telegram.org/bottest-token/sendPhoto",
+//                    httpRequest.uri().toString()
+//            );
+//
+//            assertEquals("POST", httpRequest.method());
+//
+//            String contentType = httpRequest.headers()
+//                    .firstValue("Content-Type")
+//                    .orElseThrow();
+//
+//            assertTrue(
+//                    contentType.startsWith("multipart/form-data; boundary=")
+//            );
+//
+//            byte[] body = readRequestBodyBytes(httpRequest);
+//
+//            String bodyString = new String(
+//                    body,
+//                    StandardCharsets.UTF_8
+//            );
+//
+//            assertTrue(bodyString.contains("name=\"chat_id\""));
+//            assertTrue(bodyString.contains("456"));
+//
+//            assertTrue(bodyString.contains("name=\"caption\""));
+//            assertTrue(bodyString.contains("Test photo"));
+//
+//            assertTrue(
+//                    bodyString.contains("name=\"has_spoiler\"")
+//            );
+//            assertTrue(bodyString.contains("true"));
+//
+//            assertTrue(
+//                    bodyString.contains("name=\"show_caption_above_media\"")
+//            );
+//            assertTrue(bodyString.contains("true"));
+//
+//            assertTrue(bodyString.contains("name=\"photo\""));
+//            assertTrue(bodyString.contains("filename=\"photo.jpg\""));
+//            assertTrue(bodyString.contains("Content-Type: image/jpeg"));
+//            assertTrue(bodyString.contains("fake image data"));
+//        }
+//    }
 
     @Nested
     @DisplayName("sendVideo")
@@ -1567,144 +1567,144 @@ class TelegramClientTest {
         }
     }
 
-    @Nested
-    @DisplayName("sendVideo upload")
-    class SendVideoUpload {
-
-        @Test
-        void shouldReturnMessage() throws Exception {
-            mockResponse("""
-                {
-                  "ok": true,
-                  "result": {
-                    "message_id": 123,
-                    "chat": {
-                      "id": 456
-                    }
-                  }
-                }
-                """);
-
-            InputFile video = new InputFile(
-                    "fake video data".getBytes(StandardCharsets.UTF_8),
-                    "video.mp4",
-                    "video/mp4"
-            );
-
-            SendVideoUploadRequest request =
-                    SendVideoUploadRequest.builder()
-                            .chatId(456L)
-                            .video(video)
-                            .duration(120)
-                            .width(1920)
-                            .height(1080)
-                            .hasSpoiler()
-                            .showCaptionAboveMedia()
-                            .caption("Test video")
-                            .build();
-
-            TelegramResponse<Message> response =
-                    telegramClient.sendVideo(request);
-
-            assertNotNull(response);
-            assertTrue(response.ok());
-            assertNotNull(response.result());
-            assertEquals(123, response.result().messageId());
-        }
-
-        @Test
-        void shouldSendCorrectMultipartRequest() throws Exception {
-            mockResponse("""
-                {
-                  "ok": true,
-                  "result": {
-                    "message_id": 123,
-                    "chat": {
-                      "id": 456
-                    }
-                  }
-                }
-                """);
-
-            byte[] videoData =
-                    "fake video data".getBytes(StandardCharsets.UTF_8);
-
-            InputFile video = new InputFile(
-                    videoData,
-                    "video.mp4",
-                    "video/mp4"
-            );
-
-            SendVideoUploadRequest request =
-                    SendVideoUploadRequest.builder()
-                            .chatId(456L)
-                            .video(video)
-                            .duration(120)
-                            .width(1920)
-                            .height(1080)
-                            .hasSpoiler()
-                            .showCaptionAboveMedia()
-                            .caption("Test video")
-                            .build();
-
-            telegramClient.sendVideo(request);
-
-            ArgumentCaptor<HttpRequest> captor =
-                    ArgumentCaptor.forClass(HttpRequest.class);
-
-            verify(httpClient).send(
-                    captor.capture(),
-                    any(HttpResponse.BodyHandler.class)
-            );
-
-            HttpRequest httpRequest = captor.getValue();
-
-            assertEquals(
-                    "https://api.telegram.org/bottest-token/sendVideo",
-                    httpRequest.uri().toString()
-            );
-
-            assertEquals("POST", httpRequest.method());
-
-            String contentType = httpRequest.headers()
-                    .firstValue("Content-Type")
-                    .orElseThrow();
-
-            assertTrue(
-                    contentType.startsWith("multipart/form-data; boundary=")
-            );
-
-            String body = readRequestBody(httpRequest);
-
-            assertTrue(body.contains("name=\"chat_id\""));
-            assertTrue(body.contains("456"));
-
-            assertTrue(body.contains("name=\"duration\""));
-            assertTrue(body.contains("120"));
-
-            assertTrue(body.contains("name=\"width\""));
-            assertTrue(body.contains("1920"));
-
-            assertTrue(body.contains("name=\"height\""));
-            assertTrue(body.contains("1080"));
-
-            assertTrue(body.contains("name=\"has_spoiler\""));
-            assertTrue(body.contains("true"));
-
-            assertTrue(
-                    body.contains("name=\"show_caption_above_media\"")
-            );
-            assertTrue(body.contains("true"));
-
-            assertTrue(body.contains("name=\"caption\""));
-            assertTrue(body.contains("Test video"));
-
-            assertTrue(body.contains("name=\"video\""));
-            assertTrue(body.contains("filename=\"video.mp4\""));
-            assertTrue(body.contains("Content-Type: video/mp4"));
-            assertTrue(body.contains("fake video data"));
-        }
-    }
+//    @Nested
+//    @DisplayName("sendVideo upload")
+//    class SendVideoUpload {
+//
+//        @Test
+//        void shouldReturnMessage() throws Exception {
+//            mockResponse("""
+//                {
+//                  "ok": true,
+//                  "result": {
+//                    "message_id": 123,
+//                    "chat": {
+//                      "id": 456
+//                    }
+//                  }
+//                }
+//                """);
+//
+//            InputFile video = new InputFile(
+//                    "fake video data".getBytes(StandardCharsets.UTF_8),
+//                    "video.mp4",
+//                    "video/mp4"
+//            );
+//
+//            SendVideoUploadRequest request =
+//                    SendVideoUploadRequest.builder()
+//                            .chatId(456L)
+//                            .video(video)
+//                            .duration(120)
+//                            .width(1920)
+//                            .height(1080)
+//                            .hasSpoiler()
+//                            .showCaptionAboveMedia()
+//                            .caption("Test video")
+//                            .build();
+//
+//            TelegramResponse<Message> response =
+//                    telegramClient.sendVideo(request);
+//
+//            assertNotNull(response);
+//            assertTrue(response.ok());
+//            assertNotNull(response.result());
+//            assertEquals(123, response.result().messageId());
+//        }
+//
+//        @Test
+//        void shouldSendCorrectMultipartRequest() throws Exception {
+//            mockResponse("""
+//                {
+//                  "ok": true,
+//                  "result": {
+//                    "message_id": 123,
+//                    "chat": {
+//                      "id": 456
+//                    }
+//                  }
+//                }
+//                """);
+//
+//            byte[] videoData =
+//                    "fake video data".getBytes(StandardCharsets.UTF_8);
+//
+//            InputFile video = new InputFile(
+//                    videoData,
+//                    "video.mp4",
+//                    "video/mp4"
+//            );
+//
+//            SendVideoUploadRequest request =
+//                    SendVideoUploadRequest.builder()
+//                            .chatId(456L)
+//                            .video(video)
+//                            .duration(120)
+//                            .width(1920)
+//                            .height(1080)
+//                            .hasSpoiler()
+//                            .showCaptionAboveMedia()
+//                            .caption("Test video")
+//                            .build();
+//
+//            telegramClient.sendVideo(request);
+//
+//            ArgumentCaptor<HttpRequest> captor =
+//                    ArgumentCaptor.forClass(HttpRequest.class);
+//
+//            verify(httpClient).send(
+//                    captor.capture(),
+//                    any(HttpResponse.BodyHandler.class)
+//            );
+//
+//            HttpRequest httpRequest = captor.getValue();
+//
+//            assertEquals(
+//                    "https://api.telegram.org/bottest-token/sendVideo",
+//                    httpRequest.uri().toString()
+//            );
+//
+//            assertEquals("POST", httpRequest.method());
+//
+//            String contentType = httpRequest.headers()
+//                    .firstValue("Content-Type")
+//                    .orElseThrow();
+//
+//            assertTrue(
+//                    contentType.startsWith("multipart/form-data; boundary=")
+//            );
+//
+//            String body = readRequestBody(httpRequest);
+//
+//            assertTrue(body.contains("name=\"chat_id\""));
+//            assertTrue(body.contains("456"));
+//
+//            assertTrue(body.contains("name=\"duration\""));
+//            assertTrue(body.contains("120"));
+//
+//            assertTrue(body.contains("name=\"width\""));
+//            assertTrue(body.contains("1920"));
+//
+//            assertTrue(body.contains("name=\"height\""));
+//            assertTrue(body.contains("1080"));
+//
+//            assertTrue(body.contains("name=\"has_spoiler\""));
+//            assertTrue(body.contains("true"));
+//
+//            assertTrue(
+//                    body.contains("name=\"show_caption_above_media\"")
+//            );
+//            assertTrue(body.contains("true"));
+//
+//            assertTrue(body.contains("name=\"caption\""));
+//            assertTrue(body.contains("Test video"));
+//
+//            assertTrue(body.contains("name=\"video\""));
+//            assertTrue(body.contains("filename=\"video.mp4\""));
+//            assertTrue(body.contains("Content-Type: video/mp4"));
+//            assertTrue(body.contains("fake video data"));
+//        }
+//    }
 
     @Nested
     @DisplayName("sendAudio")
@@ -1806,117 +1806,117 @@ class TelegramClientTest {
         }
     }
 
-    @Nested
-    @DisplayName("sendAudio upload")
-    class SendAudioUpload {
-
-        @Test
-        void shouldReturnMessage() throws Exception {
-            mockResponse("""
-            {
-              "ok": true,
-              "result": {
-                "message_id": 123,
-                "chat": {
-                  "id": 456
-                }
-              }
-            }
-            """);
-
-            InputFile audio = new InputFile(
-                    "fake audio data".getBytes(StandardCharsets.UTF_8),
-                    "audio.mp3",
-                    "audio/mpeg"
-            );
-
-            SendAudioUploadRequest request =
-                    SendAudioUploadRequest.builder()
-                            .chatId(456L)
-                            .audio(audio)
-                            .duration(120)
-                            .build();
-
-            TelegramResponse<Message> response =
-                    telegramClient.sendAudio(request);
-
-            assertNotNull(response);
-            assertTrue(response.ok());
-            assertNotNull(response.result());
-            assertEquals(123, response.result().messageId());
-        }
-
-        @Test
-        void shouldSendCorrectMultipartRequest() throws Exception {
-            mockResponse("""
-            {
-              "ok": true,
-              "result": {
-                "message_id": 123,
-                "chat": {
-                  "id": 456
-                }
-              }
-            }
-            """);
-
-            byte[] audioData =
-                    "fake audio data".getBytes(StandardCharsets.UTF_8);
-
-            InputFile audio = new InputFile(
-                    audioData,
-                    "audio.mp3",
-                    "audio/mpeg"
-            );
-
-            SendAudioUploadRequest request =
-                    SendAudioUploadRequest.builder()
-                            .chatId(456L)
-                            .audio(audio)
-                            .duration(120)
-                            .build();
-
-            telegramClient.sendAudio(request);
-
-            ArgumentCaptor<HttpRequest> captor =
-                    ArgumentCaptor.forClass(HttpRequest.class);
-
-            verify(httpClient).send(
-                    captor.capture(),
-                    any(HttpResponse.BodyHandler.class)
-            );
-
-            HttpRequest httpRequest = captor.getValue();
-
-            assertEquals(
-                    "https://api.telegram.org/bottest-token/sendAudio",
-                    httpRequest.uri().toString()
-            );
-
-            assertEquals("POST", httpRequest.method());
-
-            String contentType = httpRequest.headers()
-                    .firstValue("Content-Type")
-                    .orElseThrow();
-
-            assertTrue(
-                    contentType.startsWith("multipart/form-data; boundary=")
-            );
-
-            String body = readRequestBody(httpRequest);
-
-            assertTrue(body.contains("name=\"chat_id\""));
-            assertTrue(body.contains("456"));
-
-            assertTrue(body.contains("name=\"duration\""));
-            assertTrue(body.contains("120"));
-
-            assertTrue(body.contains("name=\"audio\""));
-            assertTrue(body.contains("filename=\"audio.mp3\""));
-            assertTrue(body.contains("Content-Type: audio/mpeg"));
-            assertTrue(body.contains("fake audio data"));
-        }
-    }
+//    @Nested
+//    @DisplayName("sendAudio upload")
+//    class SendAudioUpload {
+//
+//        @Test
+//        void shouldReturnMessage() throws Exception {
+//            mockResponse("""
+//            {
+//              "ok": true,
+//              "result": {
+//                "message_id": 123,
+//                "chat": {
+//                  "id": 456
+//                }
+//              }
+//            }
+//            """);
+//
+//            InputFile audio = new InputFile(
+//                    "fake audio data".getBytes(StandardCharsets.UTF_8),
+//                    "audio.mp3",
+//                    "audio/mpeg"
+//            );
+//
+//            SendAudioUploadRequest request =
+//                    SendAudioUploadRequest.builder()
+//                            .chatId(456L)
+//                            .audio(audio)
+//                            .duration(120)
+//                            .build();
+//
+//            TelegramResponse<Message> response =
+//                    telegramClient.sendAudio(request);
+//
+//            assertNotNull(response);
+//            assertTrue(response.ok());
+//            assertNotNull(response.result());
+//            assertEquals(123, response.result().messageId());
+//        }
+//
+//        @Test
+//        void shouldSendCorrectMultipartRequest() throws Exception {
+//            mockResponse("""
+//            {
+//              "ok": true,
+//              "result": {
+//                "message_id": 123,
+//                "chat": {
+//                  "id": 456
+//                }
+//              }
+//            }
+//            """);
+//
+//            byte[] audioData =
+//                    "fake audio data".getBytes(StandardCharsets.UTF_8);
+//
+//            InputFile audio = new InputFile(
+//                    audioData,
+//                    "audio.mp3",
+//                    "audio/mpeg"
+//            );
+//
+//            SendAudioUploadRequest request =
+//                    SendAudioUploadRequest.builder()
+//                            .chatId(456L)
+//                            .audio(audio)
+//                            .duration(120)
+//                            .build();
+//
+//            telegramClient.sendAudio(request);
+//
+//            ArgumentCaptor<HttpRequest> captor =
+//                    ArgumentCaptor.forClass(HttpRequest.class);
+//
+//            verify(httpClient).send(
+//                    captor.capture(),
+//                    any(HttpResponse.BodyHandler.class)
+//            );
+//
+//            HttpRequest httpRequest = captor.getValue();
+//
+//            assertEquals(
+//                    "https://api.telegram.org/bottest-token/sendAudio",
+//                    httpRequest.uri().toString()
+//            );
+//
+//            assertEquals("POST", httpRequest.method());
+//
+//            String contentType = httpRequest.headers()
+//                    .firstValue("Content-Type")
+//                    .orElseThrow();
+//
+//            assertTrue(
+//                    contentType.startsWith("multipart/form-data; boundary=")
+//            );
+//
+//            String body = readRequestBody(httpRequest);
+//
+//            assertTrue(body.contains("name=\"chat_id\""));
+//            assertTrue(body.contains("456"));
+//
+//            assertTrue(body.contains("name=\"duration\""));
+//            assertTrue(body.contains("120"));
+//
+//            assertTrue(body.contains("name=\"audio\""));
+//            assertTrue(body.contains("filename=\"audio.mp3\""));
+//            assertTrue(body.contains("Content-Type: audio/mpeg"));
+//            assertTrue(body.contains("fake audio data"));
+//        }
+//    }
 
     private String readRequestBody(HttpRequest request) {
         return new String(

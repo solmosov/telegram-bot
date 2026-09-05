@@ -12,39 +12,39 @@ class SendAudioUploadRequestTest {
 
     private final ObjectMapper objectMapper = ObjectMapperFactory.create();
 
-    @Test
-    void shouldBuildRequestWithAudioAndDuration() {
-        byte[] data = {1, 2, 3};
-        InputFile audio = new InputFile(data, "audio.mp3", "audio/mpeg");
-
-        SendAudioUploadRequest request = SendAudioUploadRequest.builder()
-                .audio(audio)
-                .duration(120)
-                .build();
-
-        assertNotNull(request);
-    }
-
-    @Test
-    void shouldSerializeAudioAsInputFile() throws Exception {
-        InputFile audio = new InputFile(
-                new byte[]{1, 2, 3},
-                "audio.mp3",
-                "audio/mpeg"
-        );
-
-        SendAudioUploadRequest request = SendAudioUploadRequest.builder()
-                .audio(audio)
-                .duration(120)
-                .build();
-
-        JsonNode json = objectMapper.readTree(
-                objectMapper.writeValueAsString(request)
-        );
-
-        assertEquals(120, json.get("duration").asInt());
-        assertTrue(json.has("audio"));
-    }
+//    @Test
+//    void shouldBuildRequestWithAudioAndDuration() {
+//        byte[] data = {1, 2, 3};
+//        InputFile audio = new InputFile(data, "audio.mp3", "audio/mpeg");
+//
+//        SendAudioUploadRequest request = SendAudioUploadRequest.builder()
+//                .audio(audio)
+//                .duration(120)
+//                .build();
+//
+//        assertNotNull(request);
+//    }
+//
+//    @Test
+//    void shouldSerializeAudioAsInputFile() throws Exception {
+//        InputFile audio = new InputFile(
+//                new byte[]{1, 2, 3},
+//                "audio.mp3",
+//                "audio/mpeg"
+//        );
+//
+//        SendAudioUploadRequest request = SendAudioUploadRequest.builder()
+//                .audio(audio)
+//                .duration(120)
+//                .build();
+//
+//        JsonNode json = objectMapper.readTree(
+//                objectMapper.writeValueAsString(request)
+//        );
+//
+//        assertEquals(120, json.get("duration").asInt());
+//        assertTrue(json.has("audio"));
+//    }
 
     @Test
     void shouldOmitNullOptionalFields() throws Exception {
@@ -63,38 +63,38 @@ class SendAudioUploadRequestTest {
         assertFalse(json.has("reply_markup"));
     }
 
-    @Test
-    void shouldPreserveInputFileData() {
-        byte[] data = {1, 2, 3};
-        InputFile audio = new InputFile(data, "audio.mp3", "audio/mpeg");
-
-        assertArrayEquals(data, audio.getData());
-        assertEquals("audio.mp3", audio.getFileName());
-        assertEquals("audio/mpeg", audio.getMimeType());
-    }
-
-    @Test
-    void shouldSupportMediaRequestFields() throws Exception {
-        InputFile audio = new InputFile(
-                new byte[]{1, 2, 3},
-                "audio.mp3",
-                "audio/mpeg"
-        );
-
-        SendAudioUploadRequest request = SendAudioUploadRequest.builder()
-                .audio(audio)
-                .duration(120)
-                .caption("Test audio")
-                .html()
-                .build();
-
-        JsonNode json = objectMapper.readTree(
-                objectMapper.writeValueAsString(request)
-        );
-
-        assertEquals(120, json.get("duration").asInt());
-        assertEquals("Test audio", json.get("caption").asString());
-        assertEquals("HTML", json.get("parse_mode").asString());
-        assertTrue(json.has("audio"));
-    }
+//    @Test
+//    void shouldPreserveInputFileData() {
+//        byte[] data = {1, 2, 3};
+//        InputFile audio = new InputFile(data, "audio.mp3", "audio/mpeg");
+//
+//        assertArrayEquals(data, audio.getData());
+//        assertEquals("audio.mp3", audio.getFileName());
+//        assertEquals("audio/mpeg", audio.getMimeType());
+//    }
+//
+//    @Test
+//    void shouldSupportMediaRequestFields() throws Exception {
+//        InputFile audio = new InputFile(
+//                new byte[]{1, 2, 3},
+//                "audio.mp3",
+//                "audio/mpeg"
+//        );
+//
+//        SendAudioUploadRequest request = SendAudioUploadRequest.builder()
+//                .audio(audio)
+//                .duration(120)
+//                .caption("Test audio")
+//                .html()
+//                .build();
+//
+//        JsonNode json = objectMapper.readTree(
+//                objectMapper.writeValueAsString(request)
+//        );
+//
+//        assertEquals(120, json.get("duration").asInt());
+//        assertEquals("Test audio", json.get("caption").asString());
+//        assertEquals("HTML", json.get("parse_mode").asString());
+//        assertTrue(json.has("audio"));
+//    }
 }

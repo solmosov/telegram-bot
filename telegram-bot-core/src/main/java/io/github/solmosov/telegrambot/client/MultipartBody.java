@@ -1,20 +1,22 @@
 package io.github.solmosov.telegrambot.client;
 
+import java.net.http.HttpRequest;
+
 final class MultipartBody {
 
     private final String boundary;
-    private final byte[] body;
+    private final HttpRequest.BodyPublisher bodyPublisher;
 
-    public MultipartBody(String boundary, byte[] body) {
+    public MultipartBody(String boundary, HttpRequest.BodyPublisher bodyPublisher) {
         this.boundary = boundary;
-        this.body = body;
+        this.bodyPublisher = bodyPublisher;
     }
 
     public String contentType() {
         return "multipart/form-data; boundary=" + boundary;
     }
 
-    public byte[] bytes() {
-        return body;
+    public HttpRequest.BodyPublisher bodyPublisher() {
+        return bodyPublisher;
     }
 }

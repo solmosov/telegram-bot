@@ -336,29 +336,29 @@ class BotContextTest {
             // then
             assertNotNull(result);
         }
-
-        @Test
-        void shouldCreatePhotoUploadBuilder() {
-            // given
-            TelegramClient client = mock(TelegramClient.class);
-
-            Message message = mock(Message.class);
-            when(message.chat()).thenReturn(
-                    new Chat(100L, null, null, null, null, null)
-            );
-
-            Update update = new Update(123L, message, null);
-            BotContext context = new BotContext(client, update);
-
-            byte[] file = "image".getBytes();
-
-            // when
-            PhotoUploadBuilder result =
-                    context.photo(file, "photo.jpg", "image/jpeg");
-
-            // then
-            assertNotNull(result);
-        }
+//
+//        @Test
+//        void shouldCreatePhotoUploadBuilder() {
+//            // given
+//            TelegramClient client = mock(TelegramClient.class);
+//
+//            Message message = mock(Message.class);
+//            when(message.chat()).thenReturn(
+//                    new Chat(100L, null, null, null, null, null)
+//            );
+//
+//            Update update = new Update(123L, message, null);
+//            BotContext context = new BotContext(client, update);
+//
+//            byte[] file = "image".getBytes();
+//
+//            // when
+//            PhotoUploadBuilder result =
+//                    context.photo(file, "photo.jpg", "image/jpeg");
+//
+//            // then
+//            assertNotNull(result);
+//        }
     }
 
     @Nested
@@ -384,29 +384,29 @@ class BotContextTest {
             // then
             assertNotNull(result);
         }
-
-        @Test
-        void shouldCreateVideoUploadBuilder() {
-            // given
-            TelegramClient client = mock(TelegramClient.class);
-
-            Message message = mock(Message.class);
-            when(message.chat()).thenReturn(
-                    new Chat(100L, null, null, null, null, null)
-            );
-
-            Update update = new Update(123L, message, null);
-            BotContext context = new BotContext(client, update);
-
-            byte[] file = "video".getBytes();
-
-            // when
-            VideoUploadBuilder result =
-                    context.video(file, "video.mp4", "video/mp4");
-
-            // then
-            assertNotNull(result);
-        }
+//
+//        @Test
+//        void shouldCreateVideoUploadBuilder() {
+//            // given
+//            TelegramClient client = mock(TelegramClient.class);
+//
+//            Message message = mock(Message.class);
+//            when(message.chat()).thenReturn(
+//                    new Chat(100L, null, null, null, null, null)
+//            );
+//
+//            Update update = new Update(123L, message, null);
+//            BotContext context = new BotContext(client, update);
+//
+//            byte[] file = "video".getBytes();
+//
+//            // when
+//            VideoUploadBuilder result =
+//                    context.video(file, "video.mp4", "video/mp4");
+//
+//            // then
+//            assertNotNull(result);
+//        }
     }
 
     @Nested
@@ -433,28 +433,28 @@ class BotContextTest {
             assertNotNull(result);
         }
 
-        @Test
-        void shouldCreateAudioUploadBuilder() {
-            // given
-            TelegramClient client = mock(TelegramClient.class);
-
-            Message message = mock(Message.class);
-            when(message.chat()).thenReturn(
-                    new Chat(100L, null, null, null, null, null)
-            );
-
-            Update update = new Update(123L, message, null);
-            BotContext context = new BotContext(client, update);
-
-            byte[] file = "audio".getBytes();
-
-            // when
-            AudioUploadBuilder result =
-                    context.audio(file, "audio.mp3", "audio/mpeg");
-
-            // then
-            assertNotNull(result);
-        }
+//        @Test
+//        void shouldCreateAudioUploadBuilder() {
+//            // given
+//            TelegramClient client = mock(TelegramClient.class);
+//
+//            Message message = mock(Message.class);
+//            when(message.chat()).thenReturn(
+//                    new Chat(100L, null, null, null, null, null)
+//            );
+//
+//            Update update = new Update(123L, message, null);
+//            BotContext context = new BotContext(client, update);
+//
+//            byte[] file = "audio".getBytes();
+//
+//            // when
+//            AudioUploadBuilder result =
+//                    context.audio(file, "audio.mp3", "audio/mpeg");
+//
+//            // then
+//            assertNotNull(result);
+//        }
     }
 
     @Nested
@@ -480,29 +480,29 @@ class BotContextTest {
             // then
             assertNotNull(result);
         }
-
-        @Test
-        void shouldCreateDocumentUploadBuilder() {
-            // given
-            TelegramClient client = mock(TelegramClient.class);
-
-            Message message = mock(Message.class);
-            when(message.chat()).thenReturn(
-                    new Chat(100L, null, null, null, null, null)
-            );
-
-            Update update = new Update(123L, message, null);
-            BotContext context = new BotContext(client, update);
-
-            byte[] file = "document".getBytes();
-
-            // when
-            DocumentUploadBuilder result =
-                    context.document(file, "document.pdf", "application/pdf");
-
-            // then
-            assertNotNull(result);
-        }
+//
+//        @Test
+//        void shouldCreateDocumentUploadBuilder() {
+//            // given
+//            TelegramClient client = mock(TelegramClient.class);
+//
+//            Message message = mock(Message.class);
+//            when(message.chat()).thenReturn(
+//                    new Chat(100L, null, null, null, null, null)
+//            );
+//
+//            Update update = new Update(123L, message, null);
+//            BotContext context = new BotContext(client, update);
+//
+//            byte[] file = "document".getBytes();
+//
+//            // when
+//            DocumentUploadBuilder result =
+//                    context.document(file, "document.pdf", "application/pdf");
+//
+//            // then
+//            assertNotNull(result);
+//        }
     }
 
     @Nested

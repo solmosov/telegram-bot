@@ -9,6 +9,7 @@ import io.github.solmosov.telegrambot.request.message.media.SendVideoUploadReque
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
@@ -21,13 +22,12 @@ public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             Long defaultChatId,
-            byte[] file,
-            String fileName,
-            String mimeType
+            Path path,
+            String fileName
     ) {
         super(client, updateId);
 
-        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        InputFile inputFile = new InputFile(path, fileName);
         this.reqBuilder = SendVideoUploadRequest.builder()
                 .chatId(defaultChatId)
                 .video(inputFile);
@@ -35,13 +35,12 @@ public class VideoUploadBuilder extends AbstractMessageBuilder<Message> {
 
     public VideoUploadBuilder(
             TelegramClient client,
-            byte[] file,
-            String fileName,
-            String mimeType
+            Path path,
+            String fileName
     ) {
         super(client, null);
 
-        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        InputFile inputFile = new InputFile(path, fileName);
         this.reqBuilder = SendVideoUploadRequest.builder()
                 .video(inputFile);
     }

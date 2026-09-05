@@ -364,7 +364,7 @@ public final class TelegramClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", multipartBody.contentType())
-                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .POST(multipartBody.bodyPublisher())
                 .build();
 
         return execute(request, new TypeReference<TelegramResponse<Message>>() {
@@ -406,7 +406,7 @@ public final class TelegramClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", multipartBody.contentType())
-                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .POST(multipartBody.bodyPublisher())
                 .build();
 
         return execute(
@@ -452,7 +452,8 @@ public final class TelegramClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", multipartBody.contentType())
-                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+//                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .POST(multipartBody.bodyPublisher())
                 .build();
 
 
@@ -498,7 +499,7 @@ public final class TelegramClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", multipartBody.contentType())
-                .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBody.bytes()))
+                .POST(multipartBody.bodyPublisher())
                 .build();
 
         return execute(

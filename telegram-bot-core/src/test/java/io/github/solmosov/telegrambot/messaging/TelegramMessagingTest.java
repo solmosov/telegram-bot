@@ -5,6 +5,9 @@ import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -72,20 +75,36 @@ class TelegramMessagingTest {
         assertInstanceOf(PhotoBuilder.class, messaging.photo("https://example.com/photo.jpg"));
     }
 
-//    @Test
-//    void photoUpload_shouldReturnPhotoUploadBuilder() {
-//        assertInstanceOf(PhotoUploadBuilder.class, messaging.photo(new byte[]{1, 2, 3}, "photo.jpg", "image/jpeg"));
-//    }
+    @Test
+    void shouldCreatePhotoUploadBuilder(@TempDir Path tempDir) {
+        // given
+        Path filePath = tempDir.resolve("photo.jpg");
+        String fileName = "photo.jpg";
+
+        // when
+        PhotoUploadBuilder result = messaging.photo(filePath, fileName);
+
+        // then
+        assertNotNull(result, "PhotoUploadBuilder instance should not be null");
+    }
 
     @Test
     void video_shouldReturnVideoBuilder() {
         assertInstanceOf(VideoBuilder.class, messaging.video("https://example.com/video.mp4"));
     }
 
-//    @Test
-//    void videoUpload_shouldReturnVideoUploadBuilder() {
-//        assertInstanceOf(VideoUploadBuilder.class, messaging.video(new byte[]{1, 2, 3}, "video.mp4", "video/mp4"));
-//    }
+    @Test
+    void shouldCreateVideoUploadBuilder(@TempDir Path tempDir) {
+        // given
+        Path filePath = tempDir.resolve("video.mp4");
+        String fileName = "video.mp4";
+
+        // when
+        VideoUploadBuilder result = messaging.video(filePath, fileName);
+
+        // then
+        assertNotNull(result, "VideoUploadBuilder instance should not be null");
+    }
 
     @Test
     void audio_shouldReturnAudioBuilder() {
@@ -95,23 +114,36 @@ class TelegramMessagingTest {
         );
     }
 
-//    @Test
-//    void audioUpload_shouldReturnAudioUploadBuilder() {
-//        assertInstanceOf(
-//                AudioUploadBuilder.class,
-//                messaging.audio(new byte[]{1, 2, 3}, "audio.mp3", "audio/mpeg")
-//        );
-//    }
+    @Test
+    void shouldCreateAudioUploadBuilder(@TempDir Path tempDir) {
+        // given
+        Path filePath = tempDir.resolve("audio.mp3");
+        String fileName = "audio.mp3";
+
+        // when
+        AudioUploadBuilder result = messaging.audio(filePath, fileName);
+
+        // then
+        assertNotNull(result, "AudioUploadBuilder instance should not be null");
+    }
 
     @Test
     void document_shouldReturnDocumentBuilder() {
         assertInstanceOf(DocumentBuilder.class, messaging.document("https://example.com/document.pdf"));
     }
 
-//    @Test
-//    void documentUpload_shouldReturnDocumentUploadBuilder() {
-//        assertInstanceOf(DocumentUploadBuilder.class, messaging.document(new byte[]{1, 2, 3}, "document.pdf", "application/pdf"));
-//    }
+    @Test
+    void shouldCreateDocumentUploadBuilder(@TempDir Path tempDir) {
+        // given
+        Path filePath = tempDir.resolve("document.pdf");
+        String fileName = "document.pdf";
+
+        // when
+        DocumentUploadBuilder result = messaging.document(filePath, fileName);
+
+        // then
+        assertNotNull(result, "DocumentUploadBuilder instance should not be null");
+    }
 
     @Test
     void allBuilders_shouldNotBeNull() {

@@ -33,6 +33,9 @@ final class MultipartBodyBuilder {
 
     public MultipartBody build(Object requestBody) {
         String boundary = "----TelegramBotBoundary" + UUID.randomUUID().toString().replace("-", "");
+        String requestName = requestBody.getClass().getSimpleName();
+
+        log.info("Preparing multipart request body for: {}", requestName);
 
         try {
             StringBuilder textFields = new StringBuilder();
@@ -50,15 +53,19 @@ final class MultipartBodyBuilder {
                 String name = resolveName(field);
 
                 if (value instanceof InputFile file) {
+                    long fileSize = Files.size(file.getPath());
+
+                    log.debug("Attaching file field '{}': filename='{}', size={} bytes, path='{}'",name, file.getFileName(), fileSize, file.getPath());
+
+
                     String fileHeader = "--" + boundary + LINE
                             + "Content-Disposition: form-data; name=\"" + name + "\"; " + "filename=\"" + file.getFileName() + "\"" + LINE
                             + "Content-Type: " + file.getMimeType() + LINE + LINE;
 
                     byte[] headerBytes = fileHeader.getBytes(StandardCharsets.UTF_8);
                     byte[] separatorBytes = LINE.getBytes(StandardCharsets.UTF_8);
-                    long fileSize = Files.size(file.getPath());
 
-                    fileParts.add(new FilePart(headerBytes, file.getPath(), separatorBytes, fileSize));
+                    fileParts.add(new FilePart(name, headerBytes, file.getPath(), separatorBytes, fileSize));
                 } else {
                     textFields.append("--").append(boundary).append(LINE)
                             .append("Content-Disposition: form-data; name=\"").append(name).append("\"").append(LINE).append(LINE)
@@ -66,14 +73,15 @@ final class MultipartBodyBuilder {
                 }
             }
 
-            HttpRequest.BodyPublisher publisher = getBodyPublisher(boundary, textFields, fileParts);
+            HttpRequest.BodyPublisher publisher = getBodyPublisher(requestName, boundary, textFields, fileParts);
             return new MultipartBody(boundary, publisher);
         } catch (IOException | IllegalAccessException ex) {
+            log.error("Failed to build multipart body for request: {}", requestName, ex);
             throw new RuntimeException("Error creating the multipart body: " + requestBody.getClass(), ex);
         }
     }
 
-    private static HttpRequest.BodyPublisher getBodyPublisher(String boundary, StringBuilder textFields, List<FilePart> fileParts) {
+    private static HttpRequest.BodyPublisher getBodyPublisher(String requestName, String boundary, StringBuilder textFields, List<FilePart> fileParts) {
         String footer = "--" + boundary + "--" + LINE;
 
         byte[] textFieldsBytes = textFields.toString().getBytes(StandardCharsets.UTF_8);
@@ -85,7 +93,11 @@ final class MultipartBodyBuilder {
             totalLength += part.headerBytes().length + part.fileSize() + part.separatorBytes().length;
         }
 
+        log.info("Multipart body built for {}: total size = {} bytes, files count={}", requestName, totalLength, fileParts.size());
+
         HttpRequest.BodyPublisher streamPublisher = HttpRequest.BodyPublishers.ofInputStream(() -> {
+            log.info("Starting streaming multipart payload for: {}", requestName);
+
             List<InputStream> streams = new ArrayList<>();
             List<InputStream> openedFileStreams = new ArrayList<>();
 
@@ -93,6 +105,7 @@ final class MultipartBodyBuilder {
 
             for (FilePart part : fileParts) {
                 try {
+                    log.debug("Opening file input stream for field '{}' from path: {}", part.fieldName(), part.filePath());
                     InputStream fileStream = Files.newInputStream(part.filePath());
                     openedFileStreams.add(fileStream);
 
@@ -100,7 +113,7 @@ final class MultipartBodyBuilder {
                     streams.add(fileStream);
                     streams.add(new ByteArrayInputStream(part.separatorBytes()));
                 } catch (IOException ex) {
-                    log.error("Failed to open input stream for path: " + part.filePath(), ex);
+                    log.error("Failed to open input stream for field '{}' at path: {} ", part.fieldName(), part.filePath(), ex);
                     throw new TelegramBotException("Failed to open stream for " + part.filePath(), ex);
                 }
             }
@@ -121,7 +134,7 @@ final class MultipartBodyBuilder {
                             }
                         }
 
-                        log.info("All multipart file streams closed successfully.");
+                        log.info("Successfully finished streaming and closed all file resources for: {}", requestName);
                     }
                 }
             };
@@ -130,7 +143,7 @@ final class MultipartBodyBuilder {
         return HttpRequest.BodyPublishers.fromPublisher(streamPublisher, totalLength);
     }
 
-    private record FilePart(byte[] headerBytes, Path filePath, byte[] separatorBytes, long fileSize) {
+    private record FilePart(String fieldName, byte[] headerBytes, Path filePath, byte[] separatorBytes, long fileSize) {
     }
 
 
@@ -173,14 +186,5 @@ final class MultipartBodyBuilder {
 
         return json;
     }
-
-//    private void writeFilePart(ByteArrayOutputStream out, String boundary, String name, InputFile file) throws IOException {
-//        out.write(("--" + boundary + LINE).getBytes(StandardCharsets.UTF_8));
-//        out.write(("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + file.getFileName() + "\"" + LINE).getBytes(StandardCharsets.UTF_8));
-//        out.write(("Content-Type: " + file.getMimeType() + LINE + LINE).getBytes(StandardCharsets.UTF_8));
-//        out.write(file.getData());
-//        out.write(LINE.getBytes(StandardCharsets.UTF_8));
-//    }
-//
 
 }

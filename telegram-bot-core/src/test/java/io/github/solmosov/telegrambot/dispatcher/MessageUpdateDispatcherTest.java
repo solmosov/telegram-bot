@@ -468,4 +468,34 @@ class MessageUpdateDispatcherTest {
         verify(firstHandler).handle(update, context);
         verify(secondHandler).handle(update, context);
     }
+
+    @Test
+    void dispatch_shouldResolveContactKeyAsEmptyString() {
+        Registry registry = mock(Registry.class);
+        MessageTypeResolver resolver = mock(MessageTypeResolver.class);
+        FallbackMessageTypeResolver fallbackResolver = mock(FallbackMessageTypeResolver.class);
+        AuthorizationManager authorizationManager = mock(AuthorizationManager.class);
+
+        BotContext context = mock(BotContext.class);
+        Update update = mock(Update.class);
+        Message message = mock(Message.class);
+
+        when(update.message()).thenReturn(message);
+        when(resolver.resolve(message))
+                .thenReturn(Optional.of(MessageType.CONTACT));
+
+        when(registry.find(MessageType.CONTACT, "mybot"))
+                .thenReturn(List.of());
+
+        MessageUpdateDispatcher dispatcher = new MessageUpdateDispatcher(
+                registry,
+                List.of(resolver),
+                fallbackResolver,
+                authorizationManager
+        );
+
+        dispatcher.dispatch(BOT_NAME, update, context);
+
+        verify(registry).find(MessageType.CONTACT, "mybot");
+    }
 }

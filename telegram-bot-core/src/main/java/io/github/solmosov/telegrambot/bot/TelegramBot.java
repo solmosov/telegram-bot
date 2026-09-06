@@ -35,7 +35,7 @@ public final class TelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
 
-    private final String name;
+    private final String botName;
     private final String token;
     private final TelegramClient telegramClient;
     private final TelegramMessaging messaging;
@@ -75,7 +75,7 @@ public final class TelegramBot {
     ) {
         this.config = config;
 
-        this.name = name.toLowerCase();
+        this.botName = name.toLowerCase();
         this.token = botToken;
 
         // Object Mapper
@@ -145,7 +145,7 @@ public final class TelegramBot {
                 registry,
                 annotationHandlerResolvers,
                 argumentResolverComposite,
-                name
+                botName
         );
 
         this.handlerRegistrar = handlerRegistrar != null
@@ -169,7 +169,7 @@ public final class TelegramBot {
     }
 
     private void initializeUpdateSource(TelegramBotConfig config) {
-        MDC.put("bot", name);
+        MDC.put("bot", botName);
         log.info("Bot initializing...");
         try {
 
@@ -177,7 +177,7 @@ public final class TelegramBot {
             switch (config.getUpdatesMode()) {
                 case POLLING:
                     this.updateSource = new PollingUpdateSource(
-                            name,
+                            botName,
                             telegramClient,
                             dispatcher,
                             config.getExecutionMode(),
@@ -187,7 +187,7 @@ public final class TelegramBot {
                     break;
                 case WEBHOOK:
                     this.updateSource = new WebhookUpdateSource(
-                            name,
+                            botName,
                             telegramClient,
                             dispatcher,
                             config.getExecutionMode(),
@@ -211,8 +211,8 @@ public final class TelegramBot {
     }
 
 
-    public String getName() {
-        return this.name;
+    public String getBotName() {
+        return this.botName;
     }
 
     public String getToken() {
@@ -229,11 +229,11 @@ public final class TelegramBot {
 
     public void start() {
         if (started) {
-            throw new TelegramBotException("Bot '%s' already been started".formatted(name));
+            throw new TelegramBotException("Bot '%s' already been started".formatted(botName));
         }
 
 
-        MDC.put("bot", name);
+        MDC.put("bot", botName);
 
         try {
             if (config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN) {
@@ -256,7 +256,7 @@ public final class TelegramBot {
 
     public void stopBot() {
 
-        MDC.put("bot", name);
+        MDC.put("bot", botName);
 
         try {
             log.info("Shutdown signal received");

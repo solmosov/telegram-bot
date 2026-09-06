@@ -82,6 +82,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
             // Reply Keyboard actions
             case LOCATION -> message.replyToMessage().text();
             case USERS_SHARED -> String.valueOf(message.usersShared().requestId());
+            case CONTACT -> "";
             default -> message.text();
         };
     }

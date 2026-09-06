@@ -60,11 +60,14 @@ public final class HandlerRegistrar {
         }
 
         final String botNameOfHandler = botHandler.value();
+
         if (botNameOfHandler == null || botNameOfHandler.isBlank()) {
             throw new TelegramBotException("@BotHandler bot name is required");
         }
 
-        if (!botName.equals(botNameOfHandler)) {
+        final String botNameOfHandlerKey = botNameOfHandler.toLowerCase();
+
+        if (!botName.equals(botNameOfHandlerKey)) {
             return;
         }
 
@@ -76,7 +79,7 @@ public final class HandlerRegistrar {
 
                 Handler handler = getHandler(method, instance);
 
-                resolver.register(botNameOfHandler, method, handler, registry);
+                resolver.register(botNameOfHandlerKey, method, handler, registry);
             }
         }
     }

@@ -6,6 +6,8 @@ import io.github.solmosov.telegrambot.messaging.builder.*;
 import io.github.solmosov.telegrambot.model.Update;
 import io.github.solmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
 
+import java.nio.file.Path;
+
 public final class BotContext {
 
     private final TelegramClient client;
@@ -133,14 +135,13 @@ public final class BotContext {
         );
     }
 
-    public PhotoUploadBuilder photo(byte[] file, String fileName, String mimeType) {
+    public PhotoUploadBuilder photo(Path path, String fileName) {
         return new PhotoUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 
@@ -153,14 +154,13 @@ public final class BotContext {
         );
     }
 
-    public VideoUploadBuilder video(byte[] file, String fileName, String mimeType) {
+    public VideoUploadBuilder video(Path path, String fileName) {
         return new VideoUploadBuilder(
                 client,
                 update().updateId(),
                 message().chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 
@@ -173,14 +173,13 @@ public final class BotContext {
         );
     }
 
-    public AudioUploadBuilder audio(byte[] file, String fileName, String mimeType) {
+    public AudioUploadBuilder audio(Path path, String fileName) {
         return new AudioUploadBuilder(
                 client,
                 update().updateId(),
                 messageContext.chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 
@@ -193,14 +192,13 @@ public final class BotContext {
         );
     }
 
-    public DocumentUploadBuilder document(byte[] file, String fileName, String mimeType) {
+    public DocumentUploadBuilder document(Path path, String fileName) {
         return new DocumentUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 

@@ -24,6 +24,8 @@ class HandlerRegistrarTest {
     private HandlerAnnotationResolver resolver;
     private HandlerArgumentResolverComposite argumentResolver;
 
+    private final String BOT_NAME = "myBot".toLowerCase();
+
     private HandlerRegistrar registrar;
 
     @BeforeEach
@@ -40,7 +42,7 @@ class HandlerRegistrarTest {
                 registry,
                 List.of(resolver),
                 argumentResolver,
-                "myBot"
+                BOT_NAME
         );
     }
 
@@ -95,7 +97,7 @@ class HandlerRegistrarTest {
         registrar.register(instance);
 
         verify(resolver).register(
-                eq("myBot"),
+                eq(BOT_NAME),
                 eq(method),
                 any(Handler.class),
                 eq(registry)
@@ -131,14 +133,14 @@ class HandlerRegistrarTest {
         registrar.register(instance);
 
         verify(resolver).register(
-                eq("myBot"),
+                eq(BOT_NAME),
                 eq(supported),
                 any(Handler.class),
                 eq(registry)
         );
 
         verify(resolver, never()).register(
-                eq("myBot"),
+                eq(BOT_NAME),
                 eq(unsupported),
                 any(Handler.class),
                 eq(registry)
@@ -186,7 +188,7 @@ class HandlerRegistrarTest {
         verify(factory).create(handlerClass);
 
         verify(resolver, atLeastOnce()).register(
-                eq("myBot"),
+                eq(BOT_NAME),
                 any(Method.class),
                 any(Handler.class),
                 eq(registry)
@@ -204,7 +206,7 @@ class HandlerRegistrarTest {
         registrar.register(instance);
 
         verify(resolver).register(
-                eq("myBot"),
+                eq(BOT_NAME),
                 eq(method),
                 any(Handler.class),
                 eq(registry)

@@ -85,7 +85,7 @@ public final class TelegramBot {
         this.messaging = new TelegramMessaging(telegramClient);
 
         // Registry
-        final Registry registry = new Registry(name);
+        final Registry registry = new Registry(this.botName);
 
         // Authorization Manager
         final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());
@@ -106,7 +106,7 @@ public final class TelegramBot {
                 new CallbackQueryDispatcher(registry, authorizationManager)
         );
 
-        this.dispatcher = new Dispatcher(name, registry, updateTypeDispatchers, authorizationManager);
+        this.dispatcher = new Dispatcher(this.botName, registry, updateTypeDispatchers, authorizationManager);
         // Annotation Resolvers
         List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
                 // Message
@@ -145,7 +145,7 @@ public final class TelegramBot {
                 registry,
                 annotationHandlerResolvers,
                 argumentResolverComposite,
-                botName
+                this.botName
         );
 
         this.handlerRegistrar = handlerRegistrar != null
@@ -169,7 +169,7 @@ public final class TelegramBot {
     }
 
     private void initializeUpdateSource(TelegramBotConfig config) {
-        MDC.put("bot", botName);
+        MDC.put("bot", this.botName);
         log.info("Bot initializing...");
         try {
 

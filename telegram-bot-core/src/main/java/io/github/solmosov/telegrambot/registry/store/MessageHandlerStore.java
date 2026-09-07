@@ -64,7 +64,7 @@ public final class MessageHandlerStore {
             result.add(exactHandlers);
         }
 
-        if (lookupKey != null) {
+        if (lookupKey != null && !lookupKey.equals(botName)) {
             Handler globalHandler = typeHandlers.get(botName);
 
             if (globalHandler != null) {

@@ -1,7 +1,10 @@
 package io.github.solmosov.telegrambot.messaging;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
+
+import java.nio.file.Path;
 
 public final class TelegramMessaging {
 
@@ -41,6 +44,21 @@ public final class TelegramMessaging {
         );
     }
 
+    public EditMessageReplyMarkupBuilder editInlineKeyboard(long messageId, ReplyMarkup replyMarkup){
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                messageId,
+                replyMarkup
+        );
+    }
+
+    public EditMessageReplyMarkupBuilder removeInlineKeyboard(long messageId){
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                messageId
+        );
+    }
+
     public DeleteMessageBuilder deleteMessage(long messageId){
         return new DeleteMessageBuilder(
                 client,
@@ -55,12 +73,11 @@ public final class TelegramMessaging {
         );
     }
 
-    public PhotoUploadBuilder photo(byte[] file, String fileName, String mimeType){
+    public PhotoUploadBuilder photo(Path path, String fileName){
         return new PhotoUploadBuilder(
                 client,
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 
@@ -71,12 +88,26 @@ public final class TelegramMessaging {
         );
     }
 
-    public VideoUploadBuilder video(byte[] file, String fileName, String mimeType){
+    public VideoUploadBuilder video(Path path, String fileName){
         return new VideoUploadBuilder(
                 client,
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
+        );
+    }
+
+    public AudioBuilder audio(String audioUrl) {
+        return new AudioBuilder(
+                client,
+                audioUrl
+        );
+    }
+
+    public AudioUploadBuilder audio(Path path, String fileName) {
+        return new AudioUploadBuilder(
+                client,
+                path,
+                fileName
         );
     }
 
@@ -87,12 +118,11 @@ public final class TelegramMessaging {
         );
     }
 
-    public DocumentUploadBuilder document(byte[] file, String fileName, String mimeType){
+    public DocumentUploadBuilder document(Path path, String fileName){
         return new DocumentUploadBuilder(
                 client,
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 }

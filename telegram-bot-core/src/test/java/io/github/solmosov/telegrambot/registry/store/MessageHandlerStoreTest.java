@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 
 class MessageHandlerStoreTest {
 
-    private static final String BOT_NAME = "myBot";
+    private static final String BOT_NAME = "myBot".toLowerCase();
 
     private MessageHandlerStore store;
 
@@ -172,7 +172,7 @@ class MessageHandlerStoreTest {
         );
 
         assertEquals(
-                "MessageHandler already registered for type='TEXT' and key='hello' in bot='myBot'",
+                "MessageHandler already registered for type='TEXT' and key='hello' in bot='mybot'",
                 exception.getMessage()
         );
     }
@@ -225,4 +225,61 @@ class MessageHandlerStoreTest {
                 ))
         );
     }
+
+    @Test
+    void shouldFindHandlerRegardlessOfKeyCase() {
+        Handler handler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "demo",
+                handler
+        ));
+
+        assertEquals(
+                List.of(handler),
+                store.find(MessageType.TEXT, BOT_NAME + "demo")
+        );
+
+        assertEquals(
+                List.of(handler),
+                store.find(MessageType.TEXT, BOT_NAME + "Demo")
+        );
+
+        assertEquals(
+                List.of(handler),
+                store.find(MessageType.TEXT, BOT_NAME + "dEmO")
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionWhenHandlerRegisteredWithDifferentKeyCase() {
+        Handler firstHandler = mock(Handler.class);
+        Handler secondHandler = mock(Handler.class);
+
+        store.register(new MessageHandlerRegistration(
+                MessageType.TEXT,
+                BOT_NAME + "demo",
+                firstHandler
+        ));
+
+        assertThrows(
+                HandlerRegistrationException.class,
+                () -> store.register(new MessageHandlerRegistration(
+                        MessageType.TEXT,
+                        BOT_NAME + "Demo",
+                        secondHandler
+                ))
+        );
+
+        assertThrows(
+                HandlerRegistrationException.class,
+                () -> store.register(new MessageHandlerRegistration(
+                        MessageType.TEXT,
+                        BOT_NAME + "dEmO",
+                        secondHandler
+                ))
+        );
+    }
+
 }

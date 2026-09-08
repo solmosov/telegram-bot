@@ -2,7 +2,7 @@ package io.github.solmosov.telegrambot.bot;
 
 import io.github.solmosov.telegrambot.authorization.AuthorizationManager;
 import io.github.solmosov.telegrambot.client.TelegramClient;
-import io.github.solmosov.telegrambot.dispatcher.CallbackQueryUpdateDispatcher;
+import io.github.solmosov.telegrambot.dispatcher.CallbackQueryDispatcher;
 import io.github.solmosov.telegrambot.dispatcher.Dispatcher;
 import io.github.solmosov.telegrambot.dispatcher.MessageUpdateDispatcher;
 import io.github.solmosov.telegrambot.dispatcher.UpdateTypeDispatcher;
@@ -35,7 +35,7 @@ public final class TelegramBot {
 
     private static final Logger log = LoggerFactory.getLogger(TelegramBot.class);
 
-    private final String name;
+    private final String botName;
     private final String token;
     private final TelegramClient telegramClient;
     private final TelegramMessaging messaging;
@@ -75,7 +75,7 @@ public final class TelegramBot {
     ) {
         this.config = config;
 
-        this.name = name;
+        this.botName = name.toLowerCase();
         this.token = botToken;
 
         // Object Mapper
@@ -85,7 +85,7 @@ public final class TelegramBot {
         this.messaging = new TelegramMessaging(telegramClient);
 
         // Registry
-        final Registry registry = new Registry(name);
+        final Registry registry = new Registry(this.botName);
 
         // Authorization Manager
         final AuthorizationManager authorizationManager = new AuthorizationManager(config.getAuthorizationProvider());
@@ -103,10 +103,10 @@ public final class TelegramBot {
         // Update dispatchers
         List<UpdateTypeDispatcher> updateTypeDispatchers = List.of(
                 new MessageUpdateDispatcher(registry, messageTypeResolvers, fallbackMessageTypeResolver, authorizationManager),
-                new CallbackQueryUpdateDispatcher(registry, authorizationManager)
+                new CallbackQueryDispatcher(registry, authorizationManager)
         );
 
-        this.dispatcher = new Dispatcher(name, registry, updateTypeDispatchers, authorizationManager);
+        this.dispatcher = new Dispatcher(this.botName, registry, updateTypeDispatchers, authorizationManager);
         // Annotation Resolvers
         List<HandlerAnnotationResolver> annotationHandlerResolvers = List.of(
                 // Message
@@ -145,7 +145,7 @@ public final class TelegramBot {
                 registry,
                 annotationHandlerResolvers,
                 argumentResolverComposite,
-                name
+                this.botName
         );
 
         this.handlerRegistrar = handlerRegistrar != null
@@ -169,7 +169,7 @@ public final class TelegramBot {
     }
 
     private void initializeUpdateSource(TelegramBotConfig config) {
-        MDC.put("bot", name);
+        MDC.put("bot", this.botName);
         log.info("Bot initializing...");
         try {
 
@@ -177,7 +177,7 @@ public final class TelegramBot {
             switch (config.getUpdatesMode()) {
                 case POLLING:
                     this.updateSource = new PollingUpdateSource(
-                            name,
+                            botName,
                             telegramClient,
                             dispatcher,
                             config.getExecutionMode(),
@@ -187,7 +187,7 @@ public final class TelegramBot {
                     break;
                 case WEBHOOK:
                     this.updateSource = new WebhookUpdateSource(
-                            name,
+                            botName,
                             telegramClient,
                             dispatcher,
                             config.getExecutionMode(),
@@ -211,8 +211,8 @@ public final class TelegramBot {
     }
 
 
-    public String getName() {
-        return this.name;
+    public String getBotName() {
+        return this.botName;
     }
 
     public String getToken() {
@@ -229,11 +229,11 @@ public final class TelegramBot {
 
     public void start() {
         if (started) {
-            throw new TelegramBotException("Bot '%s' already been started".formatted(name));
+            throw new TelegramBotException("Bot '%s' already been started".formatted(botName));
         }
 
 
-        MDC.put("bot", name);
+        MDC.put("bot", botName);
 
         try {
             if (config.getHandlerRegistrationMode() == HandlerRegistrationMode.CLASSPATH_SCAN) {
@@ -256,7 +256,7 @@ public final class TelegramBot {
 
     public void stopBot() {
 
-        MDC.put("bot", name);
+        MDC.put("bot", botName);
 
         try {
             log.info("Shutdown signal received");

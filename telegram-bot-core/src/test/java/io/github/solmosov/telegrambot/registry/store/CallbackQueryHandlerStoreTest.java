@@ -13,7 +13,7 @@ import static org.mockito.Mockito.mock;
 
 class CallbackQueryHandlerStoreTest {
 
-    private static final String BOT_NAME = "myBot";
+    private static final String BOT_NAME = "mybot".toLowerCase();
 
     private CallbackQueryHandlerStore store;
 
@@ -62,7 +62,7 @@ class CallbackQueryHandlerStoreTest {
         );
 
         assertEquals(
-                "CallbackQueryHandler already registered for key='hello' in bot='myBot'",
+                "CallbackQueryHandler already registered for key='hello' in bot='mybot'",
                 exception.getMessage()
         );
     }

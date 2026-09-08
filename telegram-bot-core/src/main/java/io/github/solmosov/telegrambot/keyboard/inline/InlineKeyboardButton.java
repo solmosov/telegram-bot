@@ -3,6 +3,7 @@ package io.github.solmosov.telegrambot.keyboard.inline;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.github.solmosov.telegrambot.keyboard.util.WebAppInfo;
 
 import java.nio.charset.StandardCharsets;
 
@@ -18,7 +19,7 @@ public record InlineKeyboardButton(
         String url,
 
         @JsonProperty("web_app")
-        WebApp webApp
+        WebAppInfo webApp
 ) implements InlineKeyboardElement {
 
 
@@ -62,7 +63,7 @@ public record InlineKeyboardButton(
                 null,
                 style,
                 null,
-                new WebApp(webAppUrl)
+                new WebAppInfo(webAppUrl)
         );
     }
 
@@ -83,14 +84,5 @@ public record InlineKeyboardButton(
         public String value() {
             return value;
         }
-
-        public String toApiValue() {
-            return value;
-        }
-    }
-
-    private record WebApp(
-            String url
-    ) {
     }
 }

@@ -1,8 +1,12 @@
 package io.github.solmosov.telegrambot.context;
 
 import io.github.solmosov.telegrambot.client.TelegramClient;
+import io.github.solmosov.telegrambot.keyboard.ReplyMarkup;
 import io.github.solmosov.telegrambot.messaging.builder.*;
 import io.github.solmosov.telegrambot.model.Update;
+import io.github.solmosov.telegrambot.request.message.message_action.EditMessageReplyMarkupRequest;
+
+import java.nio.file.Path;
 
 public final class BotContext {
 
@@ -23,11 +27,11 @@ public final class BotContext {
         this.client = telegramClient;
         this.update = update;
 
-        if(update.message() != null){
+        if (update.message() != null) {
             this.messageContext = new MessageContext(update.message());
-        }else if(update.callbackQuery() != null && update.callbackQuery().message() != null){
+        } else if (update.callbackQuery() != null && update.callbackQuery().message() != null) {
             this.messageContext = new MessageContext(update.callbackQuery().message());
-        }else {
+        } else {
             this.messageContext = null;
         }
 
@@ -56,6 +60,7 @@ public final class BotContext {
         return message().messageId();
     }
 
+    // --------------------- Requests ---------------------
     public ChatActionBuilder chatAction() {
         return new ChatActionBuilder(
                 client,
@@ -93,6 +98,25 @@ public final class BotContext {
         );
     }
 
+    public EditMessageReplyMarkupBuilder editInlineKeyboard(long messageId, ReplyMarkup replyMarkup) {
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                messageId,
+                replyMarkup
+        );
+    }
+
+    public EditMessageReplyMarkupBuilder removeInlineKeyboard(long messageId) {
+        return new EditMessageReplyMarkupBuilder(
+                client,
+                update().updateId(),
+                message().chatId(),
+                messageId
+        );
+    }
+
     public DeleteMessageBuilder deleteMessage(long messageId) {
         return new DeleteMessageBuilder(
                 client,
@@ -111,14 +135,13 @@ public final class BotContext {
         );
     }
 
-    public PhotoUploadBuilder photo(byte[] file, String fileName, String mimeType) {
+    public PhotoUploadBuilder photo(Path path, String fileName) {
         return new PhotoUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 
@@ -131,14 +154,32 @@ public final class BotContext {
         );
     }
 
-    public VideoUploadBuilder video(byte[] file, String fileName, String mimeType) {
+    public VideoUploadBuilder video(Path path, String fileName) {
         return new VideoUploadBuilder(
                 client,
                 update().updateId(),
                 message().chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
+        );
+    }
+
+    public AudioBuilder audio(String audioUrl) {
+        return new AudioBuilder(
+                client,
+                update.updateId(),
+                message().chatId(),
+                audioUrl
+        );
+    }
+
+    public AudioUploadBuilder audio(Path path, String fileName) {
+        return new AudioUploadBuilder(
+                client,
+                update().updateId(),
+                messageContext.chatId(),
+                path,
+                fileName
         );
     }
 
@@ -151,14 +192,13 @@ public final class BotContext {
         );
     }
 
-    public DocumentUploadBuilder document(byte[] file, String fileName, String mimeType) {
+    public DocumentUploadBuilder document(Path path, String fileName) {
         return new DocumentUploadBuilder(
                 client,
                 update.updateId(),
                 message().chatId(),
-                file,
-                fileName,
-                mimeType
+                path,
+                fileName
         );
     }
 

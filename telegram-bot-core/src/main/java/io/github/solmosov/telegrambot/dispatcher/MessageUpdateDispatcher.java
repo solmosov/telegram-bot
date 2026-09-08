@@ -46,7 +46,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
         Message message = update.message();
 
         MessageType type = resolveType(message);
-        String key = botName + resolveKey(type, message);
+        String key = (botName + resolveKey(type, message)).toLowerCase();
 
         List<Handler> handlers = registry.find(type, key);
 
@@ -82,6 +82,7 @@ public class MessageUpdateDispatcher implements UpdateTypeDispatcher {
             // Reply Keyboard actions
             case LOCATION -> message.replyToMessage().text();
             case USERS_SHARED -> String.valueOf(message.usersShared().requestId());
+            case CONTACT -> "";
             default -> message.text();
         };
     }

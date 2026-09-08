@@ -26,10 +26,6 @@ public final class CallbackQueryContext {
         return callbackQuery;
     }
 
-    public Message message() {
-        return callbackQuery.message();
-    }
-
     public String data() {
         return callbackQuery.data();
     }
@@ -38,7 +34,7 @@ public final class CallbackQueryContext {
         this.callbackParams = callbackParams;
     }
 
-    public Map<String, Object> callbackParams() {
+    public Map<String, Object> getCallbackParams() {
         return callbackParams;
     }
 

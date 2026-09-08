@@ -10,6 +10,7 @@ import io.github.solmosov.telegrambot.request.message.options.LinkPreviewOptions
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
@@ -23,13 +24,12 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
             TelegramClient client,
             Long updateId,
             Long defaultChatId,
-            byte[] file,
-            String fileName,
-            String mimeType
+            Path path,
+            String fileName
     ) {
         super(client, updateId);
 
-        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        InputFile inputFile = new InputFile(path, fileName);
 
         this.reqBuilder = SendDocumentUploadRequest.builder()
                 .chatId(defaultChatId)
@@ -38,13 +38,12 @@ public class DocumentUploadBuilder extends AbstractMessageBuilder<Message> {
 
     public DocumentUploadBuilder(
             TelegramClient client,
-            byte[] file,
-            String fileName,
-            String mimeType
+            Path path,
+            String fileName
     ) {
         super(client, null);
 
-        InputFile inputFile = new InputFile(file, fileName, mimeType);
+        InputFile inputFile = new InputFile(path, fileName);
 
         this.reqBuilder = SendDocumentUploadRequest.builder()
                 .document(inputFile);

@@ -36,7 +36,7 @@ class TelegramBotApplicationFactoryTest {
         TelegramBotApplication application = factory.create();
         assertTrue(application.containsBot("my-bot"));
         assertDoesNotThrow(() -> application.getBot("my-bot"));
-        assertEquals("my-bot", application.getBot("my-bot").getName());
+        assertEquals("my-bot", application.getBot("my-bot").getBotName());
         assertEquals("my-token", application.getBot("my-bot").getToken());
     }
 

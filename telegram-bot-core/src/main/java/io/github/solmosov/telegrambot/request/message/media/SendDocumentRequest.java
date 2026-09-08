@@ -33,8 +33,8 @@ public final class SendDocumentRequest extends MediaRequest {
             return this;
         }
 
-        public Builder disableContentTypeDetection(boolean value) {
-            this.disableContentTypeDetection = value;
+        public Builder disableContentTypeDetection() {
+            this.disableContentTypeDetection = true;
             return this;
         }
 

@@ -51,7 +51,7 @@ A framework for building Telegram bots with Java and Spring Boot.
     <dependency>
         <groupId>io.github.solmosov</groupId>
         <artifactId>telegram-bot-core</artifactId>
-        <version>1.0.0-beta.1</version>
+        <version>1.0.0-beta.4</version>
     </dependency>
     ``` 
 - ### Spring Boot
@@ -61,7 +61,7 @@ A framework for building Telegram bots with Java and Spring Boot.
   <dependency>
         <groupId>io.github.solmosov</groupId>
         <artifactId>telegram-bot-spring-boot</artifactId>
-        <version>1.0.0-beta.1</version>
+        <version>1.0.0-beta.4</version>
   </dependency>
   ```
 

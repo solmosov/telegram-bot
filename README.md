@@ -1,4 +1,4 @@
-# Telegram Bot Framework
+# Telegram Bot Framework - Open Source
 
 A framework for building Telegram bots with Java and Spring Boot.
 

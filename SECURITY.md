@@ -8,7 +8,7 @@ If you discover a security vulnerability in this project, please report it priva
 
 Please send a vulnerability report to:
 
-**Email:** `solmosov.dev@gmail.com`
+**Email:** `contact@shahbozolmosov.uz`
 
 When reporting a vulnerability, please include:
 

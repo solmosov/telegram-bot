@@ -63,6 +63,10 @@ public class TelegramBotApplication {
         return bots.values();
     }
 
+    public boolean hasBots() {
+        return !bots.isEmpty();
+    }
+
     public void start() {
         if (bots.isEmpty()) {
             throw new IllegalStateException("No telegram bots registered");

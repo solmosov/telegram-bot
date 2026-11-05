@@ -15,6 +15,7 @@ class TelegramBotLifecycleTest {
     @BeforeEach
     void setUp() {
         application = mock(TelegramBotApplication.class);
+        when(application.hasBots()).thenReturn(true);
         lifecycle = new TelegramBotLifecycle(application);
     }
 
@@ -98,6 +99,7 @@ class TelegramBotLifecycleTest {
         assertThrows(RuntimeException.class, lifecycle::start);
 
         reset(application);
+        when(application.hasBots()).thenReturn(true);
 
         lifecycle.start();
 
@@ -147,5 +149,27 @@ class TelegramBotLifecycleTest {
     @Test
     void shouldHaveMaxPhase() {
         assertEquals(Integer.MAX_VALUE, lifecycle.getPhase());
+    }
+
+    @Test
+    void shouldSkipStartWhenNoBotsRegistered() {
+        when(application.hasBots()).thenReturn(false);
+
+        lifecycle.start();
+
+        assertFalse(lifecycle.isRunning());
+        verify(application, never()).start();
+    }
+
+    @Test
+    void shouldNotFailOnStopWhenNoBotsRegistered() {
+        when(application.hasBots()).thenReturn(false);
+
+        lifecycle.start();
+        lifecycle.stop();
+
+        assertFalse(lifecycle.isRunning());
+        verify(application, never()).start();
+        verify(application, never()).stop();
     }
 }

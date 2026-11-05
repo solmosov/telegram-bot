@@ -2,11 +2,15 @@ package io.github.solmosov.telegrambot.spring.boot;
 
 import io.github.solmosov.telegrambot.bot.TelegramBotApplication;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.SmartLifecycle;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class TelegramBotLifecycle implements SmartLifecycle {
+
+    private static final Logger log = LoggerFactory.getLogger(TelegramBotLifecycle.class);
 
     private final TelegramBotApplication telegramBotApplication;
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -17,6 +21,11 @@ class TelegramBotLifecycle implements SmartLifecycle {
 
     @Override
     public void start() {
+        if (!telegramBotApplication.hasBots()) {
+            log.info("No telegram bots registered, skipping telegram bot application startup");
+            return;
+        }
+
         if (!running.compareAndSet(false, true)) {
             return;
         }

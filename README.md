@@ -2,8 +2,6 @@
 
 A framework for building Telegram bots with Java and Spring Boot.
 
-> ⚠️ **Beta:** This project is currently in beta. APIs and features may change between releases.
-
 ## Feature
 
 - Fast and Simple way to build Telegram bots

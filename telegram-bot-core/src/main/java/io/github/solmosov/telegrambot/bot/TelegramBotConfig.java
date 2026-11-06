@@ -3,6 +3,7 @@ package io.github.solmosov.telegrambot.bot;
 import io.github.solmosov.telegrambot.authorization.AuthorizationProvider;
 import io.github.solmosov.telegrambot.handler.DefaultGlobalExceptionHandler;
 import io.github.solmosov.telegrambot.exception.GlobalExceptionHandler;
+import io.github.solmosov.telegrambot.source.webhook.WebhookServerMode;
 
 public class TelegramBotConfig {
 
@@ -13,6 +14,7 @@ public class TelegramBotConfig {
     private final ExecutionMode executionMode;
 
     // Webhook configuration
+    private final WebhookServerMode webhookServerMode;
     private final String webhookHost;
     private final int webhookPort;
     private final String webhookPath;
@@ -33,6 +35,7 @@ public class TelegramBotConfig {
             ExecutionMode executionMode,
             UpdatesMode updatesMode,
 
+            WebhookServerMode webhookServerMode,
             String webhookHost,
             int webhookPort,
             String webhookPath,
@@ -50,6 +53,7 @@ public class TelegramBotConfig {
         this.executionMode = executionMode;
         this.updatesMode = updatesMode;
 
+        this.webhookServerMode = webhookServerMode;
         this.webhookHost = webhookHost;
         this.webhookPath = webhookPath;
         this.webhookPathSecret = webhookPathSecret;
@@ -92,6 +96,9 @@ public class TelegramBotConfig {
 
 
     // Webhook methods
+    public WebhookServerMode getWebhookServerMode() {
+        return webhookServerMode;
+    }
     public String getWebhookHost() {
         return webhookHost;
     }
@@ -135,6 +142,7 @@ public class TelegramBotConfig {
         private ExecutionMode executionMode = ExecutionMode.SINGLE_THREAD;
         private UpdatesMode updatesMode = UpdatesMode.POLLING;
 
+        private WebhookServerMode webhookServerMode = WebhookServerMode.EMBEDDED;
         private String webhookHost = "0.0.0.0";
         private int webhookPort = 8080;
         private String webhookPath;
@@ -174,6 +182,11 @@ public class TelegramBotConfig {
         }
 
         // Webhook methods
+        public Builder webhookServerMode(WebhookServerMode mode){
+            this.webhookServerMode = mode;
+            return this;
+        }
+
         public Builder webhookHost(String host) {
             this.webhookHost = host;
             return this;
@@ -226,6 +239,7 @@ public class TelegramBotConfig {
                     executionMode,
                     updatesMode,
 
+                    webhookServerMode,
                     webhookHost,
                     webhookPort,
                     webhookPath,

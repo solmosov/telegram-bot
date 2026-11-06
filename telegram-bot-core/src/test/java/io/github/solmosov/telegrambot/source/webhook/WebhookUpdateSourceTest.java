@@ -12,6 +12,7 @@ import io.github.solmosov.telegrambot.json.ObjectMapperFactory;
 import io.github.solmosov.telegrambot.source.UpdateSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 import org.mockito.MockedConstruction;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -27,6 +28,7 @@ class WebhookUpdateSourceTest {
     private static final String URL = "https://example.com";
     private static final String PATH_SECRET = "path-secret";
     private static final String SECRET = "telegram-secret";
+    private static final String FULL_URL = "https://example.com/webhook/test_bot/path-secret";
     private static final long TIMEOUT = 5000L;
 
     private TelegramClient client;
@@ -42,18 +44,20 @@ class WebhookUpdateSourceTest {
         exceptionHandler = mock(GlobalExceptionHandler.class);
     }
 
-
     @Test
     void shouldCreateSingleThreadExecutor() {
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            create(ExecutionMode.SINGLE_THREAD);
+            create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
             assertEquals(1, executor.constructed().size());
+            assertEquals(1, receiver.constructed().size());
             assertEquals(1, server.constructed().size());
         }
     }
@@ -63,54 +67,126 @@ class WebhookUpdateSourceTest {
         try (
                 MockedConstruction<MultiVirtualThreadUpdateExecutor> executor =
                         mockConstruction(MultiVirtualThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            create(ExecutionMode.MULTI_VIRTUAL_THREAD);
+            create(ExecutionMode.MULTI_VIRTUAL_THREAD, WebhookServerMode.EMBEDDED);
 
             assertEquals(1, executor.constructed().size());
+            assertEquals(1, receiver.constructed().size());
             assertEquals(1, server.constructed().size());
         }
     }
 
     @Test
-    void shouldSetWebhookAndStartServer() {
-        when(client.setWebhook(
-                "https://example.com/webhook/test_bot/path-secret",
-                SECRET
-        )).thenReturn(null);
+    void shouldNotCreateServerInExternalMode() {
+        try (
+                MockedConstruction<SingleThreadUpdateExecutor> executor =
+                        mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
+                MockedConstruction<WebhookServer> server =
+                        mockConstruction(WebhookServer.class)
+        ) {
+            create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EXTERNAL);
+
+            assertEquals(1, receiver.constructed().size());
+            assertEquals(0, server.constructed().size());
+        }
+    }
+
+    @Test
+    void shouldExposeReceiverInExternalMode() {
+        try (
+                MockedConstruction<SingleThreadUpdateExecutor> executor =
+                        mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
+                MockedConstruction<WebhookServer> server =
+                        mockConstruction(WebhookServer.class)
+        ) {
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EXTERNAL);
+
+            assertTrue(source.externalReceiver().isPresent());
+            assertSame(receiver.constructed().getFirst(), source.externalReceiver().get());
+        }
+    }
+
+    @Test
+    void shouldNotExposeReceiverInEmbeddedMode() {
+        try (
+                MockedConstruction<SingleThreadUpdateExecutor> executor =
+                        mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
+                MockedConstruction<WebhookServer> server =
+                        mockConstruction(WebhookServer.class)
+        ) {
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
+
+            assertTrue(source.externalReceiver().isEmpty());
+        }
+    }
+
+    @Test
+    void shouldStartReceiverAndServerThenSetWebhook() {
+        when(client.setWebhook(FULL_URL, SECRET)).thenReturn(null);
 
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD);
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
             source.start();
 
-            verify(client).setWebhook(
-                    "https://example.com/webhook/test_bot/path-secret",
-                    SECRET
-            );
-
+            WebhookReceiver receiverMock = receiver.constructed().getFirst();
             WebhookServer serverMock = server.constructed().getFirst();
 
-            verify(serverMock).start();
+            InOrder order = inOrder(receiverMock, serverMock, client);
+            order.verify(receiverMock).start();
+            order.verify(serverMock).start();
+            order.verify(client).setWebhook(FULL_URL, SECRET);
+        }
+    }
+
+    @Test
+    void shouldStartReceiverAndSetWebhookInExternalMode() {
+        when(client.setWebhook(FULL_URL, SECRET)).thenReturn(null);
+
+        try (
+                MockedConstruction<SingleThreadUpdateExecutor> executor =
+                        mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
+                MockedConstruction<WebhookServer> server =
+                        mockConstruction(WebhookServer.class)
+        ) {
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EXTERNAL);
+
+            source.start();
+
+            verify(receiver.constructed().getFirst()).start();
+            verify(client).setWebhook(FULL_URL, SECRET);
+            assertEquals(0, server.constructed().size());
         }
     }
 
     @Test
     void shouldUseNormalizedWebhookUrl() {
-        when(client.setWebhook(
-                "https://example.com/webhook/test_bot/path-secret",
-                SECRET
-        )).thenReturn(null);
+        when(client.setWebhook(FULL_URL, SECRET)).thenReturn(null);
 
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
@@ -119,81 +195,60 @@ class WebhookUpdateSourceTest {
                     "/webhook/",
                     "test_bot/",
                     "/path-secret",
-                    ExecutionMode.SINGLE_THREAD
+                    ExecutionMode.SINGLE_THREAD,
+                    WebhookServerMode.EMBEDDED
             );
 
             source.start();
 
-            verify(client).setWebhook(
-                    "https://example.com/webhook/test_bot/path-secret",
-                    SECRET
-            );
+            verify(client).setWebhook(FULL_URL, SECRET);
         }
     }
 
     @Test
     void shouldThrowWebhookSetupExceptionWhenTelegramApiFails() {
-        TelegramApiException telegramException =
-                new TelegramApiException(400, "Bad Request");
+        TelegramApiException telegramException = new TelegramApiException(400, "Bad Request");
 
-        when(client.setWebhook(
-                "https://example.com/webhook/test_bot/path-secret",
-                SECRET
-        )).thenThrow(telegramException);
+        when(client.setWebhook(FULL_URL, SECRET)).thenThrow(telegramException);
 
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            WebhookUpdateSource source = create(
-                    ExecutionMode.SINGLE_THREAD
-            );
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
             WebhookSetupException exception = assertThrows(
                     WebhookSetupException.class,
                     source::start
             );
 
-            assertEquals(
-                    telegramException.getErrorCode(),
-                    exception.getErrorCode()
-            );
+            assertEquals(telegramException.getErrorCode(), exception.getErrorCode());
 
-            verify(client).setWebhook(
-                    "https://example.com/webhook/test_bot/path-secret",
-                    SECRET
-            );
-
-            verify(server.constructed().getFirst(), never()).start();
+            verify(client).setWebhook(FULL_URL, SECRET);
         }
     }
 
     @Test
     void shouldNotThrowWhenSetWebhookFailsWithUnexpectedException() {
-        when(client.setWebhook(
-                "https://example.com/webhook/test_bot/path-secret",
-                SECRET
-        )).thenThrow(new RuntimeException("Connection failed"));
+        when(client.setWebhook(FULL_URL, SECRET)).thenThrow(new RuntimeException("Connection failed"));
 
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            WebhookUpdateSource source = create(
-                    ExecutionMode.SINGLE_THREAD
-            );
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
             assertDoesNotThrow(source::start);
 
-            verify(client).setWebhook(
-                    "https://example.com/webhook/test_bot/path-secret",
-                    SECRET
-            );
-
+            verify(client).setWebhook(FULL_URL, SECRET);
             verify(server.constructed().getFirst()).start();
         }
     }
@@ -203,12 +258,12 @@ class WebhookUpdateSourceTest {
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            WebhookUpdateSource source = create(
-                    ExecutionMode.SINGLE_THREAD
-            );
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
             source.stop();
 
@@ -217,21 +272,58 @@ class WebhookUpdateSourceTest {
     }
 
     @Test
-    void shouldShutdownServerAndExecutor() {
+    void shouldNotFailOnStopInExternalMode() {
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            WebhookUpdateSource source = create(
-                    ExecutionMode.SINGLE_THREAD
-            );
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EXTERNAL);
+
+            assertDoesNotThrow(source::stop);
+        }
+    }
+
+    @Test
+    void shouldShutdownServerReceiverAndExecutor() {
+        try (
+                MockedConstruction<SingleThreadUpdateExecutor> executor =
+                        mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
+                MockedConstruction<WebhookServer> server =
+                        mockConstruction(WebhookServer.class)
+        ) {
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
             source.shutdown();
 
             verify(server.constructed().getFirst()).shutdown();
+            verify(receiver.constructed().getFirst()).shutdown();
             verify(executor.constructed().getFirst()).shutdown();
+        }
+    }
+
+    @Test
+    void shouldShutdownReceiverAndExecutorInExternalMode() {
+        try (
+                MockedConstruction<SingleThreadUpdateExecutor> executor =
+                        mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
+                MockedConstruction<WebhookServer> server =
+                        mockConstruction(WebhookServer.class)
+        ) {
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EXTERNAL);
+
+            source.shutdown();
+
+            verify(receiver.constructed().getFirst()).shutdown();
+            verify(executor.constructed().getFirst()).shutdown();
+            assertEquals(0, server.constructed().size());
         }
     }
 
@@ -240,28 +332,19 @@ class WebhookUpdateSourceTest {
         try (
                 MockedConstruction<SingleThreadUpdateExecutor> executor =
                         mockConstruction(SingleThreadUpdateExecutor.class);
+                MockedConstruction<WebhookReceiver> receiver =
+                        mockConstruction(WebhookReceiver.class);
                 MockedConstruction<WebhookServer> server =
                         mockConstruction(WebhookServer.class)
         ) {
-            WebhookUpdateSource source = create(
-                    ExecutionMode.SINGLE_THREAD
-            );
+            WebhookUpdateSource source = create(ExecutionMode.SINGLE_THREAD, WebhookServerMode.EMBEDDED);
 
-            assertEquals(
-                    UpdateSource.SourceType.WEBHOOK,
-                    source.getSourceType()
-            );
+            assertEquals(UpdateSource.SourceType.WEBHOOK, source.getSourceType());
         }
     }
 
-    private WebhookUpdateSource create(ExecutionMode executionMode) {
-        return create(
-                URL,
-                PATH,
-                BOT_NAME,
-                PATH_SECRET,
-                executionMode
-        );
+    private WebhookUpdateSource create(ExecutionMode executionMode, WebhookServerMode serverMode) {
+        return create(URL, PATH, BOT_NAME, PATH_SECRET, executionMode, serverMode);
     }
 
     private WebhookUpdateSource create(
@@ -269,7 +352,8 @@ class WebhookUpdateSourceTest {
             String path,
             String botName,
             String pathSecret,
-            ExecutionMode executionMode
+            ExecutionMode executionMode,
+            WebhookServerMode serverMode
     ) {
         return new WebhookUpdateSource(
                 botName,
@@ -277,6 +361,7 @@ class WebhookUpdateSourceTest {
                 dispatcher,
                 executionMode,
                 jsonMapper,
+                serverMode,
 
                 HOST,
                 PORT,
@@ -289,5 +374,4 @@ class WebhookUpdateSourceTest {
                 TIMEOUT
         );
     }
-
 }

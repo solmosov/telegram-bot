@@ -22,6 +22,7 @@ import io.github.solmosov.telegrambot.scanner.HandlerRegistrar;
 import io.github.solmosov.telegrambot.scanner.resolver.*;
 import io.github.solmosov.telegrambot.source.UpdateSource;
 import io.github.solmosov.telegrambot.source.polling.PollingUpdateSource;
+import io.github.solmosov.telegrambot.source.webhook.WebhookReceiver;
 import io.github.solmosov.telegrambot.source.webhook.WebhookUpdateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public final class TelegramBot {
 
@@ -192,13 +194,13 @@ public final class TelegramBot {
                             dispatcher,
                             config.getExecutionMode(),
                             jsonMapper,
+                            config.getWebhookServerMode(),
                             config.getWebhookHost(),
                             config.getWebhookPort(),
                             config.getWebhookPath(),
                             config.getWebhookUrl(),
                             config.getWebhookPathSecret(),
                             config.getWebhookSecret(),
-
                             config.getGlobalExceptionHandler(),
                             config.getProcessingTimeout()
                     );
@@ -210,6 +212,13 @@ public final class TelegramBot {
         }
     }
 
+    public Optional<WebhookReceiver> externalWebhookReceiver() {
+        if (updateSource instanceof WebhookUpdateSource webhookUpdateSource) {
+            return webhookUpdateSource.externalReceiver();
+        }
+
+        return Optional.empty();
+    }
 
     public String getBotName() {
         return this.botName;

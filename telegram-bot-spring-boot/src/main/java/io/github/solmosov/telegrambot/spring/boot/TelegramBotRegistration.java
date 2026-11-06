@@ -2,6 +2,7 @@ package io.github.solmosov.telegrambot.spring.boot;
 
 import io.github.solmosov.telegrambot.bot.HandlerRegistrationMode;
 import io.github.solmosov.telegrambot.bot.TelegramBotConfig;
+import io.github.solmosov.telegrambot.source.webhook.WebhookServerMode;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -42,7 +43,8 @@ public class TelegramBotRegistration {
         private String botName;
         private String token;
         private TelegramBotConfig.Builder config = TelegramBotConfig.builder()
-                .handlerRegistrationMode(HandlerRegistrationMode.EXTERNAL);
+                .handlerRegistrationMode(HandlerRegistrationMode.EXTERNAL)
+                .webhookServerMode(WebhookServerMode.EXTERNAL);;
 
         private Builder() {
         }
